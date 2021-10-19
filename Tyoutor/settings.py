@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'djoser',
     'widget_tweaks',
 
-    'Users'
+    'Users',
+    'Tutors'
 ]
 
 MIDDLEWARE = [
