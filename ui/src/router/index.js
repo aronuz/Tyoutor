@@ -1,12 +1,25 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
+
+import TutorDetail from './pages/tutors/TutorDetail.vue';
+import TutorsList from './pages/tutors/TutorsList.vue';
+import TutorRegistation from './pages/tutors/TutorRegistration.vue';
+import ContactTutor from './pages/requests/ContactTutor.vue';
+import RequestsReceived from './pages/requests/RequestsReceived.vue';
+import NotFound from './pages/NotFound.vue';
 
 const routes = [
+  { path: '/', redirect: '/tutors' },
+  { path: '/tutors', component: TutorsList },
   {
-    path: "/",
-    name: "Home",
-    component: Home,
+    path: '/tutors/:id',
+    component: TutorDetail,
+    children: [
+      { path: 'contact', component: ContactTutor } // /tutors/c1/contact
+    ]
   },
+  { path: '/register', component: TutorRegistation },
+  { path: '/requests', component: RequestsReceived },
+  { path: '/:notFound(.*)', component: NotFound },
   {
     path: "/about",
     name: "About",
