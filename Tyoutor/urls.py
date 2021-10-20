@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from django_registration.backends.one_step.views import RegistrationView
 
+from core.views import IndexTemplateView
 from Users.forms import CustomUserForm
 
 urlpatterns = [
@@ -28,5 +29,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
-    path('api/', include("Tutors.api.urls"))
+    path('api/', include("Tutors.api.urls")),
+    re_path(r"^.*$", IndexTemplateView.as_view(), name="ui")
 ]

@@ -131,6 +131,10 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'Users.CustomUser'
 
+STATICFILES_DIR = [
+    BASE_DIR / "static"
+]
+
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
