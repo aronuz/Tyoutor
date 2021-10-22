@@ -4,7 +4,9 @@
     <ui-card>
       <div class="controls">
         <ui-button mode="outline">Refresh</ui-button>
-        <ui-button link to="/register">Tutor registration</ui-button>
+        <ui-button v-if="!isTutor" link to="/register">
+          Tutor registration
+        </ui-button>
       </div>
       <ul v-if="hasTutors">
         <tutor-item
@@ -42,6 +44,9 @@ export default {
     };
   },
   computed: {
+    isTutor() {
+      return this.$store.getters["tutors/isTutor"];
+    },
     filteredTutors() {
       const tutors = this.$store.getters["tutors/tutors"];
       return tutors.filter((tutor) => {
