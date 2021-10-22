@@ -1,14 +1,10 @@
 <template>
   <li>
     <h3>{{ fullName }}</h3>
-    <h4>${{ rate }}/hour</h4>
+    <h4>${{ rate }}/hr</h4>
     <div>
-      <ui-badge
-        v-for="area in areas"
-        :key="area"
-        :type="area"
-        :title="area"
-      ></ui-badge>
+      <ui-badge v-for="area in areas" :key="area" :type="area" :title="area">
+      </ui-badge>
     </div>
     <div class="actions">
       <ui-button mode="outline" link :to="tutorContactLink">Contact</ui-button>
