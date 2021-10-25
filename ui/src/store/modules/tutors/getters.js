@@ -9,5 +9,14 @@ export default {
     const tutors = getters.tutors;
     const userId = rootGetters.userId;
     return tutors.some(tutor => tutor.id === userId);
+  },
+  forceUpdate(state) {
+    const lastFetch = state.lastFetch;
+    if (lastFetch) {
+      const currentTimeStamp = new Date().getTime();
+      return (currentTimeStamp - lastFetch) / 1000 > 60;
+    } else {
+      return true;
+    }
   }
 };

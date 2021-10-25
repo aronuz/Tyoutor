@@ -1,9 +1,12 @@
 <template>
+  <ui-dialog :show="!!error" title="Error" @close="handleError">
+    <p>{{ error }}</p>
+  </ui-dialog>
   <section><tutor-filter @change-filter="setFilters"></tutor-filter></section>
   <section>
     <ui-card>
       <div class="controls">
-        <ui-button mode="outline">Refresh</ui-button>
+        <ui-button mode="outline" @click="loadTutors(true)">Refresh</ui-button>
         <ui-button v-if="!isTutor" link to="/register">
           Tutor registration
         </ui-button>
@@ -41,6 +44,7 @@ export default {
         backend: true,
         career: true,
       },
+      error: null,
     };
   },
   computed: {
@@ -65,10 +69,23 @@ export default {
     hasTutors() {
       return this.$store.getters["tutors/hasTutors"];
     },
-    methods: {
-      setFilters(updatedFilters) {
-        this.activeFilters = updatedFilters;
-      },
+  },
+  created() {
+    this.loadTutors();
+  },
+  methods: {
+    setFilters(updatedFilters) {
+      this.activeFilters = updatedFilters;
+    },
+    loadTutors(refresh = false) {
+      try {
+        this.$store.dispatch("tutors/loadTutors", { forceRefresh: refresh });
+      } catch (error) {
+        this.error = error.message;
+      }
+    },
+    handleError() {
+      this.error = null;
     },
   },
 };

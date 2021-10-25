@@ -1,4 +1,7 @@
 <template>
+  <ui-dialog :show="!!error" title="Error" @close="handleError">
+    <p>{{ error }}</p>
+  </ui-dialog>
   <form @submit.prevent="submitForm">
     <div class="form-control">
       <label for="email">Your E-Mail</label>
@@ -24,6 +27,7 @@ export default {
       email: "",
       message: "",
       formIsValid: true,
+      error: null,
     };
   },
   methods: {
@@ -37,12 +41,20 @@ export default {
         this.formIsValid = false;
         return;
       }
-      this.$store.dispatch("requests/contactTutor", {
-        email: this.email,
-        message: this.message,
-        tutorId: this.$route.id,
-      });
-      this.$router.replace("/tutors");
+
+      try {
+        this.$store.dispatch("requests/contactTutor", {
+          email: this.email,
+          message: this.message,
+          tutorId: this.$route.id,
+        });
+        this.$router.replace("/tutors");
+      } catch (error) {
+        this.error = error.message;
+      }
+    },
+    handleError() {
+      this.error = null;
     },
   },
 };
