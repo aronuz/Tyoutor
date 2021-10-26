@@ -1,7 +1,10 @@
 <template>
-  <ui-dialog :show="!!error" title="Error" @close="handleError">
+  <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
     <p>{{ error }}</p>
   </ui-dialog>
+  <div v-if="isLoading">
+    <ui-spinner></ui-spinner>
+  </div>
   <form @submit.prevent="submitForm">
     <div class="form-control">
       <label for="email">Your E-Mail</label>
@@ -28,10 +31,11 @@ export default {
       message: "",
       formIsValid: true,
       error: null,
+      isLoading: false,
     };
   },
   methods: {
-    submitForm() {
+    async submitForm() {
       this.formIsValid = true;
       if (
         this.email === "" ||
@@ -41,9 +45,9 @@ export default {
         this.formIsValid = false;
         return;
       }
-
+      this.isLoading = true;
       try {
-        this.$store.dispatch("requests/contactTutor", {
+        await this.$store.dispatch("requests/contactTutor", {
           email: this.email,
           message: this.message,
           tutorId: this.$route.id,
@@ -51,9 +55,10 @@ export default {
         this.$router.replace("/tutors");
       } catch (error) {
         this.error = error.message;
+        this.isLoading = false;
       }
     },
-    handleError() {
+    closeDialogue() {
       this.error = null;
     },
   },

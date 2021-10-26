@@ -1,7 +1,10 @@
 <template>
-  <ui-dialog :show="!!error" title="Error" @close="handleError">
+  <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
     <p>{{ error }}</p>
   </ui-dialog>
+  <div v-if="isLoading">
+    <ui-spinner></ui-spinner>
+  </div>
   <section>
     <ui-card>
       <header>
@@ -36,6 +39,7 @@ export default {
   data() {
     return {
       error: null,
+      isLoading: false,
     };
   },
   computed: {
@@ -51,6 +55,7 @@ export default {
   },
   methods: {
     async loadRequests(refresh = false) {
+      this.isLoading = true;
       try {
         await this.$store.dispatch("requests/fetchRequests", {
           forceRefresh: refresh,
@@ -58,8 +63,9 @@ export default {
       } catch (error) {
         this.error = error.message;
       }
+      this.isLoading = false;
     },
-    handleError() {
+    closeDialogue() {
       this.error = null;
     },
   },

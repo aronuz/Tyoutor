@@ -1,7 +1,10 @@
 <template>
-  <ui-dialog :show="!!error" title="Error" @close="handleError">
+  <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
     <p>{{ error }}</p>
   </ui-dialog>
+  <div v-if="isLoading">
+    <ui-spinner></ui-spinner>
+  </div>
   <section><tutor-filter @change-filter="setFilters"></tutor-filter></section>
   <section>
     <ui-card>
@@ -45,6 +48,7 @@ export default {
         career: true,
       },
       error: null,
+      isLoading: false,
     };
   },
   computed: {
@@ -78,13 +82,15 @@ export default {
       this.activeFilters = updatedFilters;
     },
     loadTutors(refresh = false) {
+      this.isLoading = true;
       try {
         this.$store.dispatch("tutors/loadTutors", { forceRefresh: refresh });
       } catch (error) {
         this.error = error.message;
       }
+      this.isLoading = false;
     },
-    handleError() {
+    closeDialogue() {
       this.error = null;
     },
   },
