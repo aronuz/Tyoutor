@@ -16,19 +16,32 @@
   </section>
   <section>
     <ui-card>
-      <ui-badge v-for="area in areas" :key="area" :type="area" :title="area">
-      </ui-badge>
+      <ui-badge
+        v-for="area in areas"
+        :key="area"
+        :type="area"
+        :is-own-area="isOwnDetail"
+      ></ui-badge>
       <p>{{ description }}</p>
+    </ui-card>
+    <ui-card v-if="isOwnDetail">
+      <tutor-form @add-area="addArea"></tutor-form>
     </ui-card>
   </section>
 </template>
 
 <script>
+import AreaForm from "@/components/tutors/AreaForm.vue";
+
 export default {
   props: ["id"],
+  components: {
+    AreaForm,
+  },
   data() {
     return {
       selectedTutor: null,
+      isOwnDetail: false,
     };
   },
   computed: {
@@ -49,9 +62,16 @@ export default {
     },
   },
   created() {
-    this.selectedTutor = this.$store.getters["tutors/tutors"].find(
+    this.selectedTutor = this.$store.getters["tutors/getTutors"].find(
       (tutor) => tutor.id === this.id
     );
+    this.isOwnDetail = this.$store.getters["tutors/currentUser"](this.id);
+  },
+  methods: {
+    addArea(data) {
+      this.$store.dispatch("areas/addArea", data);
+      this.$router.replace("/tutors");
+    },
   },
 };
 </script>

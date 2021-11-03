@@ -43,37 +43,18 @@
     </div>
     <div class="form-control" :class="{ invalid: !areas.isValid }">
       <h3>Areas of Expertise</h3>
+      <label for="area">Your skills:</label>
       <div>
-        <input
-          type="checkbox"
-          id="frontend"
-          value="frontend"
-          v-model="areas.val"
+        <textarea
+          id="area"
+          rows="4"
+          cols="30"
+          placeholder="Add your skills here"
+          v-model.trim="areas.val"
           @blur="clearValidity('areas')"
-        />
-        <label for="frontend">Frontend Development</label>
+        ></textarea>
       </div>
-      <div>
-        <input
-          type="checkbox"
-          id="backend"
-          value="backend"
-          v-model="areas.val"
-          @blur="clearValidity('areas')"
-        />
-        <label for="backend">Backend Development</label>
-      </div>
-      <div>
-        <input
-          type="checkbox"
-          id="career"
-          value="career"
-          v-model="areas.val"
-          @blur="clearValidity('areas')"
-        />
-        <label for="career">Career Advisory</label>
-      </div>
-      <p v-if="!areas.isValid">Please select one or more options</p>
+      <p v-if="!areas.isValid">Please add one or more of your skills.</p>
     </div>
     <p v-if="!formIsValid">Please fix the above errors and submit again.</p>
     <ui-button>Register</ui-button>
@@ -102,7 +83,7 @@ export default {
         isValid: true,
       },
       areas: {
-        val: [],
+        val: "",
         isValid: true,
       },
       formIsValid: true,
@@ -130,7 +111,7 @@ export default {
         this.rate.isValid = false;
         this.formIsValid = false;
       }
-      if (this.areas.val.length === 0) {
+      if (this.areas.val === "") {
         this.areas.isValid = false;
         this.formIsValid = false;
       }
@@ -142,12 +123,14 @@ export default {
         return;
       }
 
+      const rawList = this.areas.val.split(",");
+      const areasList = rawList.map((n) => n.trim());
       const formData = {
         first: this.firstName.val,
         last: this.lastName.val,
         desc: this.description.val,
         rate: this.rate.val,
-        areas: this.areas.val,
+        areas: areasList,
       };
 
       this.$emit("save-data", formData);
@@ -167,12 +150,6 @@ label {
   margin-bottom: 0.5rem;
 }
 
-input[type="checkbox"] + label {
-  font-weight: normal;
-  display: inline;
-  margin: 0 0 0 0.5rem;
-}
-
 input,
 textarea {
   display: block;
@@ -186,16 +163,6 @@ textarea:focus {
   background-color: #f0e6fd;
   outline: none;
   border-color: #3d008d;
-}
-
-input[type="checkbox"] {
-  display: inline;
-  width: auto;
-  border: none;
-}
-
-input[type="checkbox"]:focus {
-  outline: #3d008d solid 1px;
 }
 
 h3 {

@@ -18,12 +18,14 @@
       Please check your email address and message.
     </p>
     <div class="actions">
-      <base-button>Send</base-button>
+      <ui-button>Send</ui-button>
     </div>
   </form>
 </template>
 
 <script>
+const emailRegEx =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export default {
   data() {
     return {
@@ -36,15 +38,8 @@ export default {
   },
   methods: {
     async submitForm() {
-      this.formIsValid = true;
-      if (
-        this.email === "" ||
-        !this.email.includes("@") ||
-        this.message === ""
-      ) {
-        this.formIsValid = false;
-        return;
-      }
+      this.formIsValid = emailRegEx.test(this.email) && this.message.length > 0;
+      if (!this.formIsValid) return;
       this.isLoading = true;
       try {
         await this.$store.dispatch("requests/contactTutor", {

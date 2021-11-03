@@ -1,34 +1,31 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import TutorDetail from './pages/tutors/TutorDetail.vue';
-import TutorsList from './pages/tutors/TutorsList.vue';
-import TutorRegistation from './pages/tutors/TutorRegistration.vue';
-import ContactTutor from './pages/requests/ContactTutor.vue';
-import RequestsReceived from './pages/requests/RequestsReceived.vue';
-import NotFound from './pages/NotFound.vue';
+import About from '@/pages/Home.vue';
+import About from '@/pages/About.vue';
+import TutorsList from '@/pages/tutors/TutorsList.vue';
+import TutorRegistation from '@/pages/tutors/TutorRegistration.vue';
+import ContactTutor from '@/pages/requests/ContactTutor.vue';
+import RequestsReceived from '@/pages/requests/RequestsReceived.vue';
+import NotFound from '@/pages/NotFound.vue';
 
 const routes = [
-  { path: '/', redirect: '/tutors' },
+  { path: '/', redirect: '/home' },
+  { path: '/home', component: Home },
+  { path: '/about', component: About },
   { path: '/tutors', component: TutorsList },
   {
     path: '/tutors/:id',
-    component: TutorDetail,
+    props: true,
     children: [
       { path: 'contact', component: ContactTutor } // /tutors/c1/contact
-    ]
+    ],
+    component: () =>
+      import(/* webpackChunkName: "tutor-page" */ "@/pages/tutors/TutorDetail.vue"),
+
   },
   { path: '/register', component: TutorRegistation },
   { path: '/requests', component: RequestsReceived },
-  { path: '/:notFound(.*)', component: NotFound },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
-  },
+  { path: '/:notFound(.*)', component: NotFound }
 ];
 
 const router = createRouter({

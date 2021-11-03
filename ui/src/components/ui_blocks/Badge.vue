@@ -1,18 +1,42 @@
 <template>
-  <span class="badge" :class="type">
+  <span class="badge" :class="getClass(type)">
     {{ text }}
   </span>
+  <ui-button v-if="isOwnArea" @click="bus.$emit('remove-area', { area: type })">
+    Remove
+  </ui-button>
 </template>
 
 <script>
+import bus from "@/bus";
+
 export default {
-  props: ['type', 'title'],
+  props: ["type", "isOwnArea"],
+  data() {
+    return {
+      classes: {
+        "a-f": /^a/,
+        "g-m": /^g/,
+        "n-t": /^n/,
+        "u-z": /^u/,
+      },
+    };
+  },
   computed: {
     text() {
-      return this.title.toUpperCase();
-    }
-  }
-}
+      return this.type.toUpperCase();
+    },
+  },
+  methods: {
+    getClass(area) {
+      const obj = this.classes;
+      const r = Object.fromEntries(
+        Object.entries(obj).filter(([key]) => obj[key].test(area))
+      );
+      return Object.keys(r)[0];
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -25,18 +49,23 @@ export default {
   margin-right: 0.5rem;
 }
 
-.frontend {
-  background-color: #3d008d;
+.a-f {
+  background-color: #b46000;
   color: white;
 }
 
-.backend {
-  background-color: #71008d;
+.g-m {
+  background-color: #f1b900;
   color: white;
 }
 
-.career {
-  background-color: #8d006e;
+.n-t {
+  background-color: #788d00;
+  color: white;
+}
+
+.u-z {
+  background-color: #04af98;
   color: white;
 }
 </style>

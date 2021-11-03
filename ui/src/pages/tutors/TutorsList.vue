@@ -5,7 +5,12 @@
   <div v-if="isLoading">
     <ui-spinner></ui-spinner>
   </div>
-  <section><tutor-filter @change-filter="setFilters"></tutor-filter></section>
+  <section>
+    <tutor-filter
+      @change-filter="setFilters"
+      :areas-list="areasList"
+    ></tutor-filter>
+  </section>
   <section>
     <ui-card>
       <div class="controls">
@@ -21,6 +26,7 @@
           :id="tutor.id"
           :first-name="tutor.firstName"
           :last-name="tutor.lastName"
+          :description="tutor.description"
           :rate="tutor.hourlyRate"
           :areas="tutor.areas"
         >
@@ -32,6 +38,7 @@
 </template>
 
 <script>
+import bus from "@/bus";
 import TutorItem from "@/components/tutors/TutorItem.vue";
 import TutorFilter from "@/components/tutors/TutorFilter.vue";
 
@@ -42,11 +49,7 @@ export default {
   },
   data() {
     return {
-      activeFilters: {
-        frontend: true,
-        backend: true,
-        career: true,
-      },
+      activeFilters: [],
       error: null,
       isLoading: false,
     };
@@ -55,20 +58,28 @@ export default {
     isTutor() {
       return this.$store.getters["tutors/isTutor"];
     },
+    areasList() {
+      return this.$store.getters["areas/getAreas"];
+    },
     filteredTutors() {
       const tutors = this.$store.getters["tutors/tutors"];
-      return tutors.filter((tutor) => {
-        if (this.activeFilters.frontend && tutor.areas.includes("frontend")) {
-          return true;
+      if (this.activeFilters.length === 0) {
+        return tutors;
+      } else {
+        const idSet = new Set();
+        let af;
+        for (let fi of this.activeFilters) {
+          af = fi.replace(" ", "-~");
+          for (let el of this.areasList) {
+            if (el.areas.includes(af)) {
+              idSet.add(el.tutor_id);
+            }
+          }
         }
-        if (this.activeFilters.backend && tutor.areas.includes("backend")) {
-          return true;
-        }
-        if (this.activeFilters.career && tutor.areas.includes("career")) {
-          return true;
-        }
-        return false;
-      });
+        return tutors.filter((tutor) => {
+          idSet.has(tutor.tutor_id);
+        });
+      }
     },
     hasTutors() {
       return this.$store.getters["tutors/hasTutors"];
@@ -76,6 +87,9 @@ export default {
   },
   created() {
     this.loadTutors();
+    bus.$on("remove-area", (data) => {
+      this.$store.dispatch("areas/removeArea", data);
+    });
   },
   methods: {
     setFilters(updatedFilters) {

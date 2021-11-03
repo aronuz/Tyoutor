@@ -9,10 +9,16 @@ router.register(r"tutors", tutor_views.TutorViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("tutors/<tutor_id:tutor_id>/areas/",
+    path("tutors/<int:tutor_id>/areas/",
          tutor_views.AreasListAPIView.as_view(), name="area-list"),
-    path("tutors/<tutor_id:tutor_id>/area/>",
+    path("tutors/area/>",
          tutor_views.AreaCreateAPIView.as_view(), name="area-add"),
-    path("areas/<area_id:area_id>/",
-         tutor_views.AreaRUDAPView.as_view(), name="area-detail")
+    path("tutors/<int:tutor_id>/areas/<int:area_id>/",
+         tutor_views.AreaRUDAPView.as_view(), name="area"),
+    path("tutors/<int:tutor_id>/requests/",
+         tutor_views.RequestsListAPIView.as_view(), name="request-list"),
+    path("tutors/<int:tutor_id>/request/>",
+         tutor_views.RequestCreateAPIView.as_view(), name="request-add"),
+    path("tutors/<int:tutor_id>/request/<str:request_id>/",
+         tutor_views.RequestRUDAPView.as_view(), name="request")
 ]

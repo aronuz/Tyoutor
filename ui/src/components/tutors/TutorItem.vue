@@ -3,8 +3,7 @@
     <h3>{{ fullName }}</h3>
     <h4>${{ rate }}/hr</h4>
     <div>
-      <ui-badge v-for="area in areas" :key="area" :type="area" :title="area">
-      </ui-badge>
+      <ui-badge v-for="area in areas" :key="area" :type="area" :is-own-area="isOwnArea"> </ui-badge>
     </div>
     <div class="actions">
       <ui-button mode="outline" link :to="tutorContactLink">Contact</ui-button>
@@ -15,7 +14,7 @@
 
 <script>
 export default {
-  props: ["id", "firstName", "lastName", "rate", "areas"],
+  props: ["id", "firstName", "lastName", "description", "rate", "areas"],
   computed: {
     fullName() {
       return `${this.firstName} ${this.lastName}`;
@@ -26,6 +25,9 @@ export default {
     tutorDetailsLink() {
       return `${this.$route.path}/${this.id}`; // /tutors/c1
     },
+    isOwnArea() {
+      return this.$store.getters["tutors/currentUser"](this.id);
+    }
   },
 };
 </script>

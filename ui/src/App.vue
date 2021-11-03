@@ -5,14 +5,17 @@
       <component :is="slotProps.Component"></component>
     </transition>
   </router-view>
+  <app-footer></app-footer>
 </template>
 
 <script>
 import appHeader from "./components/layout/Header.vue";
+import appHeader from "./components/layout/Footer.vue";
 
 export default {
   components: {
     appHeader,
+    appFooter,
   },
 };
 </script>

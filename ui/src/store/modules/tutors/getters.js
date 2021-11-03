@@ -1,11 +1,14 @@
 export default {
-  tutors(state) {
+  getTutors(state) {
     return state.tutors;
+  },
+  currentUser = (_, _1, _2, rootGetters) => (id) => {
+    return id === rootGetters.userId
   },
   hasTutors(state) {
     return state.tutors && state.tutors.length > 0;
   },
-  isTutor(_, getters, _2, rootGetters) {
+  isTutor(_, getters, _1, rootGetters) {
     const tutors = getters.tutors;
     const userId = rootGetters.userId;
     return tutors.some(tutor => tutor.id === userId);

@@ -1,45 +1,43 @@
 export default {
-  contactTutor(context, payload) {
-    const newRequest = {
-      sentDate: new Date().toISOString(),
-      userEmail: payload.email,
-      message: payload.message
+  async contactTutor(context, data) {
+    const tutorId = data.tutorId
+    const sentDate = new Date().toISOString();
+    const requestId = `${tutorId}@${sentDate}`;
+    const requestData = {
+      requestId,
+      tutorId,
+      sentDate,
+      userEmail: data.email,
+      message: data.message,
     };
 
-    const response = await fetch(`post-url`, {
-      method: 'POST',
-      body: JSON.stringify(newRequest)
-    });
-    const responseData = await response.json();
+    const response = await httpRequest(`api/tutors/${tutorId}/request/`, 'post', requestData);
 
-    if (response.ok) {
-      newRequest.id = responseData.name;
-      newRequest.tutorId = payload.tutorId;
+    if (response.data) { //if (response.ok) {
       context.commit('addRequest', newRequest);
     } else {
       const error = new Error(`${responseData.message || 'Failed to send message.'} Please try again.`);
       throw error;
     }
   },
-  async fetchRequests(context, payload) {
-    if (!payload.forceRefresh && !context.getters.shouldUpdate) {
+  async fetchRequests(context, data) {
+    if (!data.forceRefresh && !context.getters.forceUpdate) {
       return;
     }
 
     const tutorId = context.rootGetters.userId;
-    const response = await fetch('get-url');
-    const responseData = await response.json();
+    const response = await httpRequest(`api/tutors/${tutorId}/requests/`);
 
-    if (response.ok) {
-
+    if (result in response) {
       const requests = [];
-
-      for (const key in responseData) {
-        const request = {
-          id: key,
-          tutorId: tutorId,
-          userEmail: responseData[key].userEmail,
-          message: responseData[key].message
+      let request;
+      for (let item of response.result) {
+        request = {
+          tutorId,
+          requestId: item.request_id,
+          userEmail: item.user_email,
+          message: item.message,
+          sentDate: item.sent_date
         };
         requests.push(request);
       }
@@ -47,7 +45,7 @@ export default {
       context.commit('setRequests', requests);
       context.commit('setFetchTimestamp');
     } else {
-      const error = new Error(`${responseData.message || 'Failed to fetch messages.'} Please try again`);
+      const error = new Error(`${response.error || 'Failed to fetch messages.'} Please try again`);
       throw error;
     }
   }
