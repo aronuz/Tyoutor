@@ -1,6 +1,6 @@
 <template>
   <span class="badge" :class="getClass(type)">
-    {{ text }}
+    {{ text | capitalize }}
   </span>
   <ui-button v-if="isOwnArea" @click="bus.$emit('remove-area', { area: type })">
     Remove
@@ -21,6 +21,11 @@ export default {
         "u-z": /^u/,
       },
     };
+  },
+  filters: {
+    capitalize: function (v) {
+      return v.charAt(0).toUpperCase() + v.slice(1);
+    },
   },
   computed: {
     text() {
