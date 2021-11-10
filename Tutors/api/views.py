@@ -13,7 +13,7 @@ class TutorViewSet(viewsets.ModelViewSet):
     permission_classes = [IsSelfOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(tutor=self.request.user)
+        serializer.save(tutor_user=self.request.user)
 
 
 class AreasListAPIView(generics.ListAPIView):
@@ -31,7 +31,7 @@ class AreaCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         request_user = self.request.user
         areas = self.request.POST.get("area")
-        tutor = generics.get_object_or_404(Tutors, tutor=request_user)
+        tutor = generics.get_object_or_404(Tutors, tutor_user=request_user)
         has_area = 0
         for area in areas:
             area_id = '{}@{}'.format(area, tutor.tutor_id)

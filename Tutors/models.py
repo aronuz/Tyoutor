@@ -5,13 +5,13 @@ from core.models import TimeStampedModel
 
 class Tutors(TimeStampedModel):
     tutor_id = models.IntegerField(unique=True)
-    tutor = models.ForeignKey(settings.AUTH_USER_MODEL,
-                              on_delete=models.CASCADE, related_name="tutors")
+    tutor_user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.CASCADE, related_name="tutors")
     description = models.TextField(blank=True, null=True)
     hourlyRate = models.FloatField()
 
     def __str__(self):
-        return '{} {}'.format(self.tutor.first_name, self.tutor.last_name)
+        return '{} {}'.format(self.tutor_user.first_name, self.tutor_user.last_name)
 
 
 class Areas(TimeStampedModel):

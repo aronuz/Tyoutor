@@ -14,19 +14,19 @@ class TutorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tutors
-        exclude = ["id", "tutor", "updated_at"]
+        exclude = ["id", "tutor_user", "updated_at"]
 
     def get_created_at(self, instance):
         return instance.created_at.strftime("%B %d, %Y")
 
     def get_first_name(self, instance):
-        return instance.tutor.first_name
+        return instance.tutor_user.first_name
 
     def get_last_name(self, instance):
-        return instance.tutor.last_name
+        return instance.tutor_user.last_name
 
     def get_email(self, instance):
-        return instance.tutor.email
+        return instance.tutor_user.email
 
     def get_hourly_rate(self, instance):
         return '${}/hr'.format(instance.hourly_rate)
