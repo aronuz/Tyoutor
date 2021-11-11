@@ -1,7 +1,14 @@
 from django.contrib import admin
 
-from Tutors.models import Tutors, Areas, Requests
+from Tutors.models import Tutor, Area, Request
 
-admin.site.register(Tutors)
-admin.site.register(Areas)
-admin.site.register(Requests)
+
+class AreaAdmin(admin.ModelAdmin):
+    list_display = ['area', 'tutor']
+
+class RequestAdmin(admin.ModelAdmin):
+    list_display = ['message', 'email', 'tutor']
+
+admin.site.register(Tutor)
+admin.site.register(Area, AreaAdmin)
+admin.site.register(Request, RequestAdmin)

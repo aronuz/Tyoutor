@@ -1,34 +1,33 @@
 from rest_framework import serializers
 
-from Tutors.models import Tutors, Areas
+from Tutors.models import Tutor, Area, Request
 
 
 class TutorSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
-    tutor_id = serializers.StringRelatedField()
-    first_name = serializers.SerializerMethodField()
-    last_name = serializers.SerializerMethodField()
+    tutorId = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
-    hourly_rate = serializers.SerializerMethodField()
     areas = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
+    hourlyRate = serializers.SerializerMethodField()
 
     class Meta:
-        model = Tutors
-        exclude = ["id", "tutor_user", "updated_at"]
+        model = Tutor
+        exclude = ["id", "tutor_id", "tutor_user", "updated_at"]
+
+    def get_tutorId(self, instance):
+        return instance.tutor_id
 
     def get_created_at(self, instance):
         return instance.created_at.strftime("%B %d, %Y")
 
-    def get_first_name(self, instance):
-        return instance.tutor_user.first_name
-
-    def get_last_name(self, instance):
-        return instance.tutor_user.last_name
+    def get_full_name(self, instance):
+        return '{} {}'.format(instance.first_name, instance.last_name)
 
     def get_email(self, instance):
         return instance.tutor_user.email
 
-    def get_hourly_rate(self, instance):
+    def get_hourlyRate(self, instance):
         return '${}/hr'.format(instance.hourly_rate)
 
     def get_areas(self, instance):
@@ -45,7 +44,7 @@ class AreaSerializer(serializers.ModelSerializer):
     tutor_id = serializers.SerializerMethodField()
 
     class Meta:
-        model = Areas
+        model = Area
         exclude = ["id", "tutor", "updated_at"]
 
     def get_created_at(self, instance):
@@ -63,7 +62,7 @@ class RequestSerializer(serializers.ModelSerializer):
     tutor_id = serializers.SerializerMethodField()
 
     class Meta:
-        model = Areas
+        model = Request
         exclude = ["id", "updated_at"]
 
     def get_created_at(self, instance):
