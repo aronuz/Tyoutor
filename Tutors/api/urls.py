@@ -11,7 +11,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("tutors/<str:tutor_id>/areas/",
          tutor_views.AreasListAPIView.as_view(), name="area-list"),
-    path("areas/>",
+    path("areas/",
          tutor_views.AreaCreateAPIView, name="area-add"),
 #     path("areas/>",
 #          tutor_views.AreaCreateAPIView.as_view(), name="area-add"),

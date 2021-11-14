@@ -1,4 +1,4 @@
-from django.http import request
+from django.http.response import JsonResponse
 from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
 
@@ -27,48 +27,28 @@ class AreasListAPIView(generics.ListAPIView):
         return Area.objects.filter(tutor_id=tutor_id).order_by("area")
 
 
-# class AreaCreateAPIView(generics.CreateAPIView):
-    # queryset = Area.objects.all()
-    # serializer_class = AreaSerializer
+def AreaCreateAPIView(request):
+    request_user = request.user
+    areas = ['see', 'hear', 'touch']
+    tutor = generics.get_object_or_404(Tutor, tutor_user=request_user)
+    has_area = 0
+    for area in areas:
+        area_id = '{}@{}'.format(area, tutor.tutor_id)
+        if not tutor.areas.filter(area_id=area_id).exists():
+            Area.objects.create(area_id=area_id, tutor=tutor, area=area)
+        else:
+            has_area += 1
 
-    # def perform_create(self, serializer):
-    #     request_user = self.request.user
-    #     # areas = self.request.POST.get("area")
-    #     areas = ['type', 'read', 'write']
-    #     tutor = generics.get_object_or_404(Tutor, tutor_user=request_user)
-    #     has_area = 0
-    #     for area in areas:
-    #         # area_id = '{}@{}'.format(area, tutor.tutor_id)
-    #         # if not tutor.areas.filter(area_id=area_id).exists():
-    #         # serializer.save(area_id=area_id, tutor=tutor, area=area)
-    #         # else:
-    #         #     has_area += 1
-    #         area_id = '{}@{}'.format(area, tutor.tutor_id)
-    #         if not tutor.areas.filter(area_id=area_id).exists():
-    #             Area.objects.create(area_id=area_id, tutor=tutor, area=area)
-    #         else:
-    #             has_area += 1
+    added_num = len(areas) - has_area
+    data = {
+        'success': not has_area,
+        'added': added_num
+    }
+    if has_area:
+        data['message'] = '{} areas were added. User has previously added {} areas.'.format(
+            added_num, has_area)
 
-    #     if has_area:
-    #         raise ValidationError(
-    #             "Some areas of expertise were already added.")
-def AreaCreateAPIView(self):
-
-        request_user = self.request.user
-        areas = ['type', 'read', 'write']
-        tutor = generics.get_object_or_404(Tutor, tutor_user=request_user)
-        has_area = 0
-        for area in areas:
-            area_id = '{}@{}'.format(area, tutor.tutor_id)
-            if not tutor.areas.filter(area_id=area_id).exists():
-                Area.objects.create(area_id=area_id, tutor=tutor, area=area)
-            else:
-                has_area += 1
-
-        if has_area:
-            raise ValidationError(
-                "Some areas of expertise were already added.")
-    
+    return JsonResponse(data)
 
 
 class AreaRUDAPView(generics.RetrieveUpdateDestroyAPIView):
