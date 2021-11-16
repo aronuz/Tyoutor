@@ -46,8 +46,6 @@ export default {
     },
   },
   created() {
-    document.querySelectorAll(".v-application--wrap")[1].style.minHeight =
-      "100vh";
     this.initContacts();
   },
   mounted() {},
@@ -60,11 +58,19 @@ export default {
 </script>
 
 <style scoped>
-.child_1 {
+.home-page {
+  position: fixed;
+  min-height: 100vh;
+  max-height: 100vh;
   width: 100vw;
+}
+.child_1 {
   position: relative;
-  top: 0px;
-  padding: 0px;
+  bottom: 0;
+  height: 90vh;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .card-row {
   background-image: linear-gradient(
@@ -77,6 +83,10 @@ export default {
   position: relative;
   z-index: 10;
   font-family: "Arizonia" !important;
+}
+.contact-row {
+  position: absolute;
+  width: 100%;
 }
 .contact-row .row-title {
   position: relative;

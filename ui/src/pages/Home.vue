@@ -3,102 +3,117 @@
     <div v-if="isLoading">
       <ui-spinner></ui-spinner>
     </div>
-    <div class="home-page d-flex justify-center"></div>
-    <div class="child_1">
-      <v-container fluid height="100%">
-        <v-row xs12 justify="center" class="ml-n6 pt-1">
-          <v-col cols="12">
-            <v-card
-              width="100vw"
-              class="mx-auto card-row area-row"
-              color="#fff"
-            >
-              <div class="row-title title-area black--text">
-                Our tutors can help you with...
-              </div>
-              <v-row xs12 justify="start" class="area-sub-row">
-                <v-col cols="2" sm="12" md="5">
-                  <div class="ml-md-16 ml-xs-1 area-list">
-                    <AreasList :areas-list="areas" />
-                  </div>
-                </v-col>
-                <v-col cols="10" sm="0" md="7">
-                  <div
-                    class="mr-md-10 mt-md-0 pt-md-n16 ml-xs-0 pt-md-0 area-info"
-                  >
-                    <v-card
-                      class="area-card black--text px-md-2 py-md-1 py-xs-5"
-                      width="100%"
-                      v-html="areaInfo"
-                    >
-                    </v-card>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row class="ml-n6 mt-n3 tutor-row" no-gutters>
-          <v-col cols="6" class="hide-on-big pt-md-12">
-            <v-sheet color="#FFF" height="100%" width="100%" class="info-sheet">
-              <v-row align="center" justify="center">
-                <div class="display-1 black--text pa-10 info-text">
-                  {{ tutorInfo }}
+    <div class="home-page d-flex justify-center">
+      <div class="child_1">
+        <v-container fluid height="100%">
+          <v-row xs12 justify="center" class="ml-n6 pt-1">
+            <v-col cols="12">
+              <v-card
+                width="100vw"
+                class="mx-auto card-row area-row"
+                color="#fff"
+              >
+                <div class="row-title title-area black--text">
+                  Our tutors can help you with...
                 </div>
-              </v-row>
-            </v-sheet>
-          </v-col>
-          <v-col md="6" xs="12">
-            <v-lazy
-              v-model="isActive"
-              :options="{
-                threshold: 0.7,
-              }"
-              transition="fade-transition"
-            >
-              <v-card light flat color="#9ca39b" height="100%">
-                <v-carousel
-                  ref="slides"
-                  class="tutor-carousel"
-                  hide-delimiter-background
-                  cycle
-                  :show-arrows="false"
-                  :height="carouselHeight()"
-                  v-model="currentIndex"
-                >
-                  <v-carousel-item
-                    v-for="tutor in listTutors"
-                    :key="tutor.tutor_id"
-                    :src="getImgUrl_tutors(tutor.thumbnail)"
-                    :height="carouselHeight()"
-                    @click="showTutor(tutor.id)"
-                    contain
-                  >
-                  </v-carousel-item>
-                </v-carousel>
+                <v-row xs12 justify="start" class="area-sub-row">
+                  <v-col cols="2" sm="12" md="5">
+                    <div class="ml-md-16 ml-xs-1 area-list">
+                      <AreasList :areas-list="areas" />
+                    </div>
+                  </v-col>
+                  <v-col cols="10" sm="0" md="7">
+                    <div
+                      class="
+                        mr-md-10
+                        mt-md-0
+                        pt-md-n16
+                        ml-xs-0
+                        pt-md-0
+                        area-info
+                      "
+                    >
+                      <v-card
+                        class="area-card black--text px-md-2 py-md-1 py-xs-5"
+                        width="100%"
+                        v-html="areaInfo"
+                      >
+                      </v-card>
+                    </div>
+                  </v-col>
+                </v-row>
               </v-card>
-            </v-lazy>
-          </v-col>
-        </v-row>
-        <v-row xs12 justify="center" class="ml-n6 pt-1">
-          <v-col cols="12">
-            <v-card
-              width="100vw"
-              class="mx-auto card-row area-row"
-              color="#fff"
-            >
-              <div class="mr-md-10 mt-md-0 pt-md-n16 ml-xs-0 pt-md-0 area-info">
-                <v-card
-                  class="area-card black--text px-md-2 py-md-1 py-xs-5"
-                  width="100%"
-                  v-text="areaInfo"
-                >
+            </v-col>
+          </v-row>
+          <v-row class="ml-n6 mt-n3 tutor-row" no-gutters>
+            <v-col cols="6" class="hide-on-big pt-md-12">
+              <v-sheet
+                color="#FFF"
+                height="100%"
+                width="100%"
+                class="info-sheet"
+              >
+                <v-row align="center" justify="center">
+                  <div class="display-1 black--text pa-10 info-text">
+                    {{ tutorInfo }}
+                  </div>
+                </v-row>
+              </v-sheet>
+            </v-col>
+            <v-col md="6" xs="12">
+              <v-lazy
+                v-model="isActive"
+                :options="{
+                  threshold: 0.7,
+                }"
+                transition="fade-transition"
+              >
+                <v-card light flat color="#9ca39b" height="100%">
+                  <v-carousel
+                    ref="slides"
+                    class="tutor-carousel"
+                    hide-delimiter-background
+                    cycle
+                    :show-arrows="false"
+                    :height="carouselHeight()"
+                    v-model="currentIndex"
+                  >
+                    <v-carousel-item
+                      v-for="tutor in listTutors"
+                      :key="tutor.tutor_id"
+                      :src="getImgUrl_tutors(tutor.thumbnail)"
+                      :height="carouselHeight()"
+                      @click="showTutor(tutor.id)"
+                      contain
+                    >
+                    </v-carousel-item>
+                  </v-carousel>
                 </v-card>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+              </v-lazy>
+            </v-col>
+          </v-row>
+          <v-row xs12 justify="center" class="ml-n6 pt-1">
+            <v-col cols="12">
+              <v-card
+                width="100vw"
+                class="mx-auto card-row area-row"
+                color="#fff"
+              >
+                <div
+                  class="mr-md-10 mt-md-0 pt-md-n16 ml-xs-0 pt-md-0 area-info"
+                >
+                  <v-card
+                    class="area-card black--text px-md-2 py-md-1 py-xs-5"
+                    width="100%"
+                    v-text="areaInfo"
+                  >
+                  </v-card>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
     </div>
   </v-app>
 </template>
@@ -113,6 +128,7 @@ export default {
       currentIndex: 0,
       isActive: false,
       isLoading: false,
+      tutorInfo: "",
       areas: [],
       colors: [
         "indigo",
@@ -139,26 +155,32 @@ export default {
         return false;
       }
     },
-    tutorInfo() {
-      const tutorItem = this.listTutors[this.currentIndex];
-      let infoText = `${tutorItem["firstName"]} ${tutorItem["lastName"]}`;
-      infoText += `\n${tutorItem["description"]}`;
-      return infoText;
-    },
     areaInfo() {
-      const tutorId = this.listTutors[this.currentIndex].tutor_id;
-      const areaItem = this.areas.find((tutor_id) => tutor_id === tutorId);
-      return areaItem.areas.join(", ");
+      if (this.areas.length) {
+        const tutorId = this.listTutors[this.currentIndex].tutor_id;
+        const areaItem = this.areas.find((tutor_id) => tutor_id === tutorId);
+        return areaItem.areas.join(", ");
+      } else {
+        return "";
+      }
     },
   },
   watch: {
+    listTutors() {
+      if (this.listTutors.length) {
+        const tutorItem = this.listTutors[this.currentIndex];
+        let info = `${tutorItem["firstName"]} ${tutorItem["lastName"]}`;
+        info += `\n${tutorItem["description"]}`;
+        this.infoText = info;
+      } else {
+        this.infoText = "";
+      }
+    },
     listAreas() {
       this.areas = this.listAreas;
     },
   },
   mounted() {
-    document.querySelectorAll(".v-application--wrap")[1].style.minHeight =
-      "100vh";
     this.fetchAreas();
     this.loadTutors();
   },
@@ -196,11 +218,19 @@ export default {
 </script>
 
 <style scoped>
-.child_1 {
+.home-page {
+  position: fixed;
+  min-height: 100vh;
+  max-height: 100vh;
   width: 100vw;
+}
+.child_1 {
   position: relative;
-  top: 0px;
-  padding: 0px;
+  bottom: 0;
+  height: 90vh;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .tutor-row {
@@ -307,12 +337,6 @@ export default {
       rgba(103, 194, 255, 0.452) 25%
     );
   }
-  .child_1 {
-    height: 99vh;
-    padding-bottom: 200px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
   .row-title {
     top: 5px;
     left: 5px;
@@ -370,12 +394,6 @@ export default {
       rgba(234, 213, 122) 15%,
       rgba(103, 194, 255, 0.452) 25%
     );
-  }
-  .child_1 {
-    height: 99vh;
-    padding-bottom: 200px;
-    overflow-y: scroll;
-    overflow-x: hidden;
   }
   .child_1 > .container {
     min-height: 90%;
@@ -449,12 +467,6 @@ export default {
     background-image: url("../assets/logo.png");
     background-position: top;
     background-size: cover;
-  }
-  .child_1 {
-    height: 99vh;
-    padding-bottom: 250px;
-    overflow-y: scroll;
-    overflow-x: hidden;
   }
   .child_1 > .container {
     min-height: 90%;

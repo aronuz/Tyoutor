@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-footer dark padless>
+    <v-footer class="footer" dark padless>
       <v-card class="flex" flat tile>
         <v-card-title class="footer-color" height="10px">
           <div class="pad-on-small">
@@ -60,13 +60,11 @@ export default {
 </script>
 
 <style scoped>
-.footer-color {
+.footer {
   background-color: #247ba0;
-}
-.v-footer {
-  position: fixed;
+  position: absolute;
   bottom: 0px;
-  width: 100vw;
+  width: 100%;
   z-index: 999;
 }
 
