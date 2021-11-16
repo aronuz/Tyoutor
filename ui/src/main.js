@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import mitt from 'mitt';
 import router from "./router/index.js";
 import store from "./store";
 import ui_card from './components/ui_blocks/Card.vue';
@@ -8,7 +9,10 @@ import ui_badge from './components/ui_blocks/Badge.vue';
 import ui_dialog from './components/ui_blocks/Dialog.vue';
 import ui_spinner from './components/ui_blocks/Spinner.vue';
 
+const emitter = mitt();
+
 const app = createApp(App)
+app.config.globalProperties.emitter = emitter;
 app.use(store).use(router)
 
 app.component('ui-card', ui_card);

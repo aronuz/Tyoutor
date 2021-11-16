@@ -22,7 +22,7 @@
           style="display: inline-block; max-width: 50%; float: right"
           class="py-2 white--text text-right"
         >
-          {{ new Date().getFullYear() }} — <strong>Dr.K Dental</strong>
+          {{ new Date().getFullYear() }} — <strong>Tyoutor dev.</strong>
         </v-card-text>
       </v-card>
     </v-footer>

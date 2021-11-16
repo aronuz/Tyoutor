@@ -1,42 +1,44 @@
 <template>
-  <section>
-    <ui-card>
-      <h2>{{ fullName }}</h2>
-      <h3>${{ rate }}/hr</h3>
-    </ui-card>
-  </section>
-  <section>
-    <ui-card>
-      <header>
-        <h2>Send a message</h2>
-        <ui-button link :to="contactLink">Contact</ui-button>
-      </header>
-      <router-view></router-view>
-    </ui-card>
-  </section>
-  <section>
-    <ui-card>
-      <ui-badge
-        v-for="area in areas"
-        :key="area"
-        :type="area"
-        :is-own-area="isOwnDetail"
-      ></ui-badge>
-      <p>{{ description }}</p>
-    </ui-card>
-    <ui-card v-if="isOwnDetail">
-      <tutor-form @add-area="addArea"></tutor-form>
-    </ui-card>
-  </section>
+  <v-app>
+    <section>
+      <ui-card>
+        <h2>{{ fullName }}</h2>
+        <h3>${{ rate }}/hr</h3>
+      </ui-card>
+    </section>
+    <section>
+      <ui-card>
+        <header>
+          <h2>Send a message</h2>
+          <ui-button link :to="contactLink">Contact</ui-button>
+        </header>
+        <router-view></router-view>
+      </ui-card>
+    </section>
+    <section>
+      <ui-card>
+        <ui-badge
+          v-for="area in areas"
+          :key="area"
+          :type="area"
+          :is-own-area="isOwnDetail"
+        ></ui-badge>
+        <p>{{ description }}</p>
+      </ui-card>
+      <ui-card v-if="isOwnDetail">
+        <areaForm @add-area="addArea" />
+      </ui-card>
+    </section>
+  </v-app>
 </template>
 
 <script>
-import AreaForm from "@/components/tutors/AreaForm.vue";
+import areaForm from "@/components/areas/AreaForm.vue";
 
 export default {
   props: ["id"],
   components: {
-    AreaForm,
+    areaForm,
   },
   data() {
     return {

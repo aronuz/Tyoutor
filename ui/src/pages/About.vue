@@ -174,7 +174,7 @@ export default {
 
 @media (min-width: 1024px) {
   .home-page {
-    background-image: url("~assets/images/big/medical-2458202_1920.jpg");
+    background-image: url("../assets/logo.png");
     background-position: top;
     background-size: cover;
   }

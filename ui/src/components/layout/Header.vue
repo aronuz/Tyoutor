@@ -2,19 +2,33 @@
   <header>
     <nav>
       <h1>
-        <router-link to="/">Find a Tutor</router-link>
+        <router-link :to="{ name: 'home' }">Find a Tutor</router-link>
       </h1>
       <ul>
         <li>
-          <router-link to="/tutors">All Tutors</router-link>
+          <router-link :to="{ name: 'tutors' }">All Tutors</router-link>
         </li>
         <li>
-          <router-link to="/requests">Requests</router-link>
+          <router-link :to="{ name: 'requests' }">Requests</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'about' }">About Tyoutor</router-link>
+        </li>
+        <li>
+          <a class="btn btn-outline-secondary" href="/accounts/logout/">
+            Logout
+          </a>
         </li>
       </ul>
     </nav>
   </header>
 </template>
+
+<script>
+export default {
+  name: "Header",
+};
+</script>
 
 <style scoped>
 header {

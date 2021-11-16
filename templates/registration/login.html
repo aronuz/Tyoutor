@@ -5,13 +5,13 @@
 <!-- https://github.com/jazzband/django-widget-tweaks -->
 
 {% block content %}
-<h1 class="text-light">Tyoutor</h1>
-<p class="text-light mb-4">Skills galore</p>
+<h1 class="text-dark">Tyoutor</h1>
+<p class="text-dark mb-4">Skills galore</p>
 <div class="form-container">
     <form method="POST">
         {% csrf_token %}
 
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-3 top-row">
             {% render_field form.username class="form-control" id="floatingUsername" placeholder="Username" %}
             <label for="floatingUsername">Username</label>
         </div>
@@ -30,12 +30,12 @@
         {% endif %}
 
         <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-lg btn-primary">Login</button>
+            <button type="submit" class="btn btn-lg btn-primary auth-btn">Login</button>
         </div>
 
         <!-- django registraion link -->
-        <p class="text-light mt-4">
-            Or <a href="{% url 'django_registration_register' %}">Create an Account</a>
+        <p class="text-dark mt-4 lgb">
+            Or <a href="{% url 'django_registration_register' %}" class="auth-link">Create an Account</a>
         </p>
     </form>
 </div>

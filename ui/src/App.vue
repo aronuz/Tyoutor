@@ -10,7 +10,7 @@
 
 <script>
 import appHeader from "./components/layout/Header.vue";
-import appHeader from "./components/layout/Footer.vue";
+import appFooter from "./components/layout/Footer.vue";
 
 export default {
   components: {

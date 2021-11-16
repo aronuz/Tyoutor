@@ -3,7 +3,7 @@ import httpRequest from "@/common/httpRequest.js";
 
 export default {
     async registerTutor(context, data) {
-        const tutorId = context.rootGetters.userId,
+        const tutorId = context.rootGetters.userId
         const tutorData = {
             tutorId,
             description: data.desc,

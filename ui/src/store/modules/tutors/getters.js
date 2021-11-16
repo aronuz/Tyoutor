@@ -2,7 +2,7 @@ export default {
   getTutors(state) {
     return state.tutors;
   },
-  currentUser = (_, _1, _2, rootGetters) => (id) => {
+  currentUser: (_, _1, _2, rootGetters) => (id) => {
     return id === rootGetters.userId
   },
   hasTutors(state) {

@@ -1,31 +1,33 @@
 <template>
-  <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
-    <p>{{ error }}</p>
-  </ui-dialog>
-  <div v-if="isLoading">
-    <ui-spinner></ui-spinner>
-  </div>
-  <form @submit.prevent="submitForm">
-    <div class="form-control">
-      <label for="email">Your E-Mail</label>
-      <input type="email" id="email" v-model.trim="email" />
+  <v-app>
+    <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
+      <p>{{ error }}</p>
+    </ui-dialog>
+    <div v-if="isLoading">
+      <ui-spinner></ui-spinner>
     </div>
-    <div class="form-control">
-      <label for="message">Message</label>
-      <textarea rows="5" id="message" v-model.trim="message"></textarea>
-    </div>
-    <p class="errors" v-if="!formIsValid">
-      Please check your email address and message.
-    </p>
-    <div class="actions">
-      <ui-button>Send</ui-button>
-    </div>
-  </form>
+    <form @submit.prevent="submitForm">
+      <div class="form-control">
+        <label for="email">Your E-Mail</label>
+        <input type="email" id="email" v-model.trim="email" />
+      </div>
+      <div class="form-control">
+        <label for="message">Message</label>
+        <textarea rows="5" id="message" v-model.trim="message"></textarea>
+      </div>
+      <p class="errors" v-if="!formIsValid">
+        Please check your email address and message.
+      </p>
+      <div class="actions">
+        <ui-button>Send</ui-button>
+      </div>
+    </form>
+  </v-app>
 </template>
 
 <script>
 const emailRegEx =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export default {
   data() {
     return {

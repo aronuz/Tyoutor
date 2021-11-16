@@ -1,15 +1,11 @@
 <template>
   <span class="badge" :class="getClass(type)">
-    {{ text | capitalize }}
+    {{ text }}
   </span>
-  <ui-button v-if="isOwnArea" @click="bus.$emit('remove-area', { area: type })">
-    Remove
-  </ui-button>
+  <ui-button v-if="isOwnArea" @click="removeArea()"> Remove </ui-button>
 </template>
 
 <script>
-import bus from "@/bus";
-
 export default {
   props: ["type", "isOwnArea"],
   data() {
@@ -21,11 +17,6 @@ export default {
         "u-z": /^u/,
       },
     };
-  },
-  filters: {
-    capitalize: function (v) {
-      return v.charAt(0).toUpperCase() + v.slice(1);
-    },
   },
   computed: {
     text() {
@@ -39,6 +30,9 @@ export default {
         Object.entries(obj).filter(([key]) => obj[key].test(area))
       );
       return Object.keys(r)[0];
+    },
+    removeArea() {
+      this.emitter.emit("remove-area", { area: this.type });
     },
   },
 };

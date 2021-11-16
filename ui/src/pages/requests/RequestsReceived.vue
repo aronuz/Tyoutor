@@ -1,32 +1,34 @@
 <template>
-  <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
-    <p>{{ error }}</p>
-  </ui-dialog>
-  <div v-if="isLoading">
-    <ui-spinner></ui-spinner>
-  </div>
-  <section>
-    <ui-card>
-      <header>
-        <h2>Incoming messages</h2>
-      </header>
-      <div class="controls">
-        <ui-button mode="outline" @click="loadRequests(true)">
-          Refresh
-        </ui-button>
-      </div>
-      <ul v-if="hasRequests">
-        <request-item
-          v-for="req in receivedRequests"
-          :key="req.id"
-          :email="req.userEmail"
-          :message="req.message"
-        >
-        </request-item>
-      </ul>
-      <h3 v-else>There are no new messages.</h3>
-    </ui-card>
-  </section>
+  <v-app>
+    <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
+      <p>{{ error }}</p>
+    </ui-dialog>
+    <div v-if="isLoading">
+      <ui-spinner></ui-spinner>
+    </div>
+    <section>
+      <ui-card>
+        <header>
+          <h2>Incoming messages</h2>
+        </header>
+        <div class="controls">
+          <ui-button mode="outline" @click="loadRequests(true)">
+            Refresh
+          </ui-button>
+        </div>
+        <ul v-if="hasRequests">
+          <request-item
+            v-for="req in receivedRequests"
+            :key="req.id"
+            :email="req.userEmail"
+            :message="req.message"
+          >
+          </request-item>
+        </ul>
+        <h3 v-else>There are no new messages.</h3>
+      </ui-card>
+    </section>
+  </v-app>
 </template>
 
 <script>

@@ -1,4 +1,8 @@
-const axios = require('axios')
+import axiosApi from 'axios'
+
+const axios = axiosApi.create({
+    baseURL: 'http://localhost:8000/api/'
+})
 
 axios.defaults.xsrfCookieName = "csrftoken"
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"

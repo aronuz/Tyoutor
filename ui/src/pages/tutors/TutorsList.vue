@@ -1,44 +1,47 @@
 <template>
-  <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
-    <p>{{ error }}</p>
-  </ui-dialog>
-  <div v-if="isLoading">
-    <ui-spinner></ui-spinner>
-  </div>
-  <section>
-    <tutor-filter
-      @change-filter="setFilters"
-      :areas-list="areasList"
-    ></tutor-filter>
-  </section>
-  <section>
-    <ui-card>
-      <div class="controls">
-        <ui-button mode="outline" @click="loadTutors(true)">Refresh</ui-button>
-        <ui-button v-if="!isTutor" link to="/register">
-          Tutor registration
-        </ui-button>
-      </div>
-      <ul v-if="hasTutors">
-        <tutor-item
-          v-for="tutor in filteredTutors"
-          :key="tutor.id"
-          :id="tutor.id"
-          :first-name="tutor.firstName"
-          :last-name="tutor.lastName"
-          :description="tutor.description"
-          :rate="tutor.hourlyRate"
-          :areas="tutor.areas"
-        >
-        </tutor-item>
-      </ul>
-      <h3 v-else>No tutors found.</h3>
-    </ui-card>
-  </section>
+  <v-app>
+    <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
+      <p>{{ error }}</p>
+    </ui-dialog>
+    <div v-if="isLoading">
+      <ui-spinner></ui-spinner>
+    </div>
+    <section>
+      <tutor-filter
+        @change-filter="setFilters"
+        :areas-list="areasList"
+      ></tutor-filter>
+    </section>
+    <section>
+      <ui-card>
+        <div class="controls">
+          <ui-button mode="outline" @click="loadTutors(true)"
+            >Refresh</ui-button
+          >
+          <ui-button v-if="!isTutor" link to="/register">
+            Tutor registration
+          </ui-button>
+        </div>
+        <ul v-if="hasTutors">
+          <tutor-item
+            v-for="tutor in filteredTutors"
+            :key="tutor.id"
+            :id="tutor.id"
+            :first-name="tutor.firstName"
+            :last-name="tutor.lastName"
+            :description="tutor.description"
+            :rate="tutor.hourlyRate"
+            :areas="tutor.areas"
+          >
+          </tutor-item>
+        </ul>
+        <h3 v-else>No tutors found.</h3>
+      </ui-card>
+    </section>
+  </v-app>
 </template>
 
 <script>
-import bus from "@/bus";
 import TutorItem from "@/components/tutors/TutorItem.vue";
 import TutorFilter from "@/components/tutors/TutorFilter.vue";
 
@@ -85,9 +88,9 @@ export default {
       return this.$store.getters["tutors/hasTutors"];
     },
   },
-  created() {
+  mounted() {
     this.loadTutors();
-    bus.$on("remove-area", (data) => {
+    this.emitter.on("remove-area", (data) => {
       this.$store.dispatch("areas/removeArea", data);
     });
   },
@@ -95,10 +98,16 @@ export default {
     setFilters(updatedFilters) {
       this.activeFilters = updatedFilters;
     },
-    loadTutors(refresh = false) {
+    async loadTutors(refresh = false) {
       this.isLoading = true;
       try {
-        this.$store.dispatch("tutors/loadTutors", { forceRefresh: refresh });
+        await this.$store.dispatch(
+          "tutors/loadTutors",
+          {
+            forceRefresh: refresh,
+          },
+          { root: true }
+        );
       } catch (error) {
         this.error = error.message;
       }

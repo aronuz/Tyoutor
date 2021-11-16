@@ -126,8 +126,10 @@ export default {
   computed: {
     ...mapGetters({
       listAreas: "areas/getAreas",
-      listTutors: "tutors/getTutors",
     }),
+    listTutors() {
+      return this.$store.getters["tutors/getTutors"];
+    },
     isBigScreen() {
       try {
         return (
@@ -154,21 +156,31 @@ export default {
       this.areas = this.listAreas;
     },
   },
-  created() {
+  mounted() {
     document.querySelectorAll(".v-application--wrap")[1].style.minHeight =
       "100vh";
-  },
-  mounted() {
-    this.isLoading = true;
     this.fetchAreas();
     this.loadTutors();
-    this.isLoading = false;
   },
   methods: {
     ...mapActions({
       fetchAreas: "areas/fetchAreas",
-      loadTutors: "tutors/loadTutors",
     }),
+    async loadTutors() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch(
+          "tutors/loadTutors",
+          {
+            forceRefresh: false,
+          },
+          { root: true }
+        );
+      } catch (error) {
+        this.error = error.message;
+      }
+      this.isLoading = false;
+    },
     getImgUrl_tutors(link) {
       const picFolder = this.isBigScreen ? "big" : "small";
       return require(`@/assets/images/tutors/${picFolder}/${link}`);
@@ -434,7 +446,7 @@ export default {
 
 @media (min-width: 1024px) {
   .home-page {
-    background-image: url("~assets/images/big/medical-2458202_1920.jpg");
+    background-image: url("../assets/logo.png");
     background-position: top;
     background-size: cover;
   }

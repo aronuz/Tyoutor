@@ -131,7 +131,7 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'Users.CustomUser'
 
-STATICFILES_DIR = [
+STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
