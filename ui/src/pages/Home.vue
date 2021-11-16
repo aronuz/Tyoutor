@@ -120,7 +120,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+// import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -181,13 +181,21 @@ export default {
     },
   },
   mounted() {
-    this.fetchAreas();
     this.loadTutors();
+    this.fetchAreas();
   },
   methods: {
-    ...mapActions({
-      fetchAreas: "areas/fetchAreas",
-    }),
+    // ...mapActions({
+    //   fetchAreas: "areas/fetchAreas",
+    // }),
+    async fetchAreas() {
+      const idList = this.listTutors.map((tutor) => tutor.tutorId);
+      await this.$store.dispatch(
+        "areas/fetchAreas",
+        { data: idList },
+        { root: true }
+      );
+    },
     async loadTutors() {
       this.isLoading = true;
       try {
@@ -464,7 +472,12 @@ export default {
 
 @media (min-width: 1024px) {
   .home-page {
-    background-image: url("../assets/logo.png");
+    background-image: linear-gradient(
+      337deg,
+      #41c1d0 0%,
+      #d5d9db 52%,
+      #00b8ff 100%
+    );
     background-position: top;
     background-size: cover;
   }

@@ -184,7 +184,12 @@ export default {
 
 @media (min-width: 1024px) {
   .home-page {
-    background-image: url("../assets/logo.png");
+    background-image: linear-gradient(
+      337deg,
+      #41c1d0 0%,
+      #d5d9db 52%,
+      #00b8ff 100%
+    ); /* url("../assets/logo.png"); */
     background-position: top;
     background-size: cover;
   }

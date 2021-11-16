@@ -15,7 +15,7 @@ export default {
             areas: data.areas
         }
 
-        const response = await httpRequest('api/tutors/', 'post', tutorData);
+        const response = await httpRequest('tutors/', 'post', tutorData);
         // const response = await fetch(
         //     `put-url`,
         //     {
@@ -41,13 +41,13 @@ export default {
             return;
         }
 
-        const response = await httpRequest('api/tutors/');
+        const response = await httpRequest('tutors/');
 
-        if (result in response) {
+        if ('result' in response) {
             const tutors = [];
             let tutor, areas;
 
-            for (let item of response.result) {
+            for (let item of response['result']) {
                 areas = []
                 for (let area of item.areas) {
                     areas.push(area)

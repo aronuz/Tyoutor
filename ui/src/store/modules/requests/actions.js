@@ -1,3 +1,6 @@
+
+import httpRequest from "@/common/httpRequest.js";
+
 export default {
   async contactTutor(context, data) {
     const tutorId = data.tutorId
@@ -11,12 +14,12 @@ export default {
       message: data.message,
     };
 
-    const response = await httpRequest(`api/tutors/${tutorId}/request/`, 'post', requestData);
+    const response = await httpRequest(`tutors/${tutorId}/request/`, 'post', requestData);
 
     if (response.data) { //if (response.ok) {
-      context.commit('addRequest', newRequest);
+      context.commit('addRequest', response.data);
     } else {
-      const error = new Error(`${responseData.message || 'Failed to send message.'} Please try again.`);
+      const error = new Error(`${response.error.message || 'Failed to send message.'} Please try again.`);
       throw error;
     }
   },
@@ -26,12 +29,12 @@ export default {
     }
 
     const tutorId = context.rootGetters.userId;
-    const response = await httpRequest(`api/tutors/${tutorId}/requests/`);
+    const response = await httpRequest(`tutors/${tutorId}/requests/`);
 
-    if (result in response) {
+    if ('result' in response) {
       const requests = [];
       let request;
-      for (let item of response.result) {
+      for (let item of response['result']) {
         request = {
           tutorId,
           requestId: item.request_id,

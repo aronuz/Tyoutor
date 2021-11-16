@@ -3,23 +3,25 @@ import httpRequest from "@/common/httpRequest.js";
 
 export default {
     async fetchAreas(context, data) {
-        const response = await httpRequest(`api/tutors/${data.tutorId}/areas/`);
+        const areas = [];
+        for (let id of data) {
+            const response = await httpRequest(`tutors/${id}/areas/`);
 
-        if (result in response) {
-            const areas = [];
-            let area;
-            for (let item of response.result) {
-                area = {
-                    tutorId: item.tutorId,
-                    areas: item.areas
-                };
-                areas.push(area);
+            if ('result' in response) {
+                let area;
+                for (let item of response['result']) {
+                    area = {
+                        tutorId: item.tutorId,
+                        areas: item.areas
+                    };
+                    areas.push(area);
+                }
             }
-
-            context.commit('setAreas', areas);
-        } else {
-            const error = new Error(`${response.error || 'Failed to fetch expertise.'} Please try again`);
-            throw error;
+            else {
+                const error = new Error(`${response.error || 'Failed to fetch expertise.'} Please try again`);
+                throw error;
+            }
+            if (areas.length) context.commit('setAreas', areas);
         }
     },
     async addArea(context, data) {
@@ -27,10 +29,10 @@ export default {
             areas: data.areasList
         }
 
-        const response = await httpRequest(`api/tutors/area/`, 'post', data.areasList);
+        const response = await httpRequest(`tutors/area/`, 'post', data.areasList);
 
         if (response.data) {
-            areaData[tutorId] = context.rootGetters.userId
+            areaData[data.tutorId] = context.rootGetters.userId
             context.commit('addArea', areaData);
         } else {
             const error = new Error(`${response.error || 'Couldn\'t load tutors.'} Please try again.`);
@@ -45,9 +47,9 @@ export default {
         const tutorId = context.rootGetters.userId;
         const area = data[area];
         const areaId = `${area}@${tutorId}`;
-        const response = await httpRequest(`api/tutors/area/${areaId}/`, 'delete');
+        const response = await httpRequest(`tutors/area/${areaId}/`, 'delete');
 
-        if (result in response) {
+        if ('result' in response) {
             Object.assign(data, { tutorId })
             context.commit('removeArea', data);
         } else {

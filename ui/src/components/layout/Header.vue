@@ -2,7 +2,7 @@
   <header>
     <nav>
       <h1>
-        <router-link :to="{ name: 'home' }">Find a Tutor</router-link>
+        <router-link :to="{ name: 'home' }"></router-link>
       </h1>
       <ul>
         <li>
@@ -34,15 +34,24 @@ export default {
 header {
   width: 100%;
   height: 4rem;
-  background-color: #3d008d;
+  background-color: #1ecbff;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+header h1 a {
+  width: 200px;
+  height: 50px;
+  background-image: linear-gradient(#50008d4a 10%, #1929764a 30%, #cebd0a61 60%),
+    url(../../assets/logo.png) !important;
+  background-size: cover;
+}
+
 header a {
+  background-image: linear-gradient(#0064ff 30%, #005aff 30%, #002d80 60%);
   text-decoration: none;
-  color: #f391e3;
+  color: #77e104;
   display: inline-block;
   padding: 0.75rem 1.5rem;
   border: 1px solid transparent;
