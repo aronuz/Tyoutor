@@ -6,6 +6,7 @@ export default {
   namespaced: true,
   state() {
     return {
+      fetchTimeStamp: null,
       tutors: [
         {
           id: 'c1',

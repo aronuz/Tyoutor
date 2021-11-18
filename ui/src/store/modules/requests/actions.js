@@ -29,7 +29,7 @@ export default {
     }
 
     const tutorId = context.rootGetters.userId;
-    const response = await httpRequest(`tutors/${tutorId}/requests/`);
+    const response = await httpRequest(`tutors/${tutorId}/requests/`, 'get');
 
     if ('result' in response) {
       const requests = [];

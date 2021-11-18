@@ -77,11 +77,11 @@
                     :show-arrows="false"
                     :height="carouselHeight()"
                     v-model="currentIndex"
-                  >
+                    ><!--tutor.thumbnail-->
                     <v-carousel-item
                       v-for="tutor in listTutors"
                       :key="tutor.tutor_id"
-                      :src="getImgUrl_tutors(tutor.thumbnail)"
+                      :src="getImgUrl_tutors('logo.png')"
                       :height="carouselHeight()"
                       @click="showTutor(tutor.id)"
                       contain
@@ -130,6 +130,7 @@ export default {
       isLoading: false,
       tutorInfo: "",
       areas: [],
+      error: null,
       colors: [
         "indigo",
         "warning",
@@ -181,13 +182,28 @@ export default {
     },
   },
   mounted() {
-    this.loadTutors();
-    this.fetchAreas();
+    // const loadData = new Promise((resolve, reject) => {
+    //   try {
+    //     this.fetchTutors();
+    //     resolve(true);
+    //   } catch (e) {
+    //     reject(e);
+    //   }
+    // });
+    // loadData
+    //   .then(() => {
+    //     this.fetchAreas();
+    //   })
+    //   .catch((e) => {
+    //     alert(`Failed to load tutor data. ${e}`);
+    //   });
+    this.fetchTutors();
   },
   methods: {
     // ...mapActions({
     //   fetchAreas: "areas/fetchAreas",
     // }),
+    // ...mapActions("tutors", ["loadTutors"]),
     async fetchAreas() {
       const idList = this.listTutors.map((tutor) => tutor.tutorId);
       await this.$store.dispatch(
@@ -196,20 +212,19 @@ export default {
         { root: true }
       );
     },
-    async loadTutors() {
+    async fetchTutors() {
       this.isLoading = true;
       try {
-        await this.$store.dispatch(
-          "tutors/loadTutors",
-          {
-            forceRefresh: false,
-          },
-          { root: true }
-        );
-      } catch (error) {
-        this.error = error.message;
+        await this.$store.dispatch("tutors/loadTutors", {
+          forceRefresh: true,
+        });
+        this.fetchAreas();
+      } catch (e) {
+        this.error = e;
+        console.log(`Error.\n${this.error}`);
+      } finally {
+        this.isLoading = false;
       }
-      this.isLoading = false;
     },
     getImgUrl_tutors(link) {
       const picFolder = this.isBigScreen ? "big" : "small";

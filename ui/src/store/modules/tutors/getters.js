@@ -14,10 +14,10 @@ export default {
     return tutors.some(tutor => tutor.id === userId);
   },
   forceUpdate(state) {
-    const lastFetch = state.lastFetch;
-    if (lastFetch) {
+    const fetchTimeStamp = state.fetchTimeStamp;
+    if (fetchTimeStamp) {
       const currentTimeStamp = new Date().getTime();
-      return (currentTimeStamp - lastFetch) / 1000 > 60;
+      return (currentTimeStamp - fetchTimeStamp) / 1000 > 60;
     } else {
       return true;
     }

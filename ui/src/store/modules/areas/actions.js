@@ -5,7 +5,7 @@ export default {
     async fetchAreas(context, data) {
         const areas = [];
         for (let id of data) {
-            const response = await httpRequest(`tutors/${id}/areas/`);
+            const response = await httpRequest(`tutors/${id}/areas/`, 'get');
 
             if ('result' in response) {
                 let area;

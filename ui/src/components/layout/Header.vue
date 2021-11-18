@@ -2,7 +2,7 @@
   <header>
     <nav>
       <h1>
-        <router-link :to="{ name: 'home' }"></router-link>
+        <router-link :to="{ name: 'home' }" class="home"></router-link>
       </h1>
       <ul>
         <li>
@@ -34,7 +34,7 @@ export default {
 header {
   width: 100%;
   height: 4rem;
-  background-color: #1ecbff;
+  background-image: linear-gradient(34deg, #06b9fe, #66c8ee 49%, #d3d9db 60%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,9 +57,18 @@ header a {
   border: 1px solid transparent;
 }
 
-a:active,
-a:hover,
-a.router-link-active {
+a:active:not(.home),
+a.router-link-active:not(.home) {
+  box-shadow: 2px 2px 8px #002d80 inset;
+  background-image: linear-gradient(
+    to top,
+    #0064ff 30%,
+    #005aff 30%,
+    #002d80 60%
+  ) !important;
+}
+
+a:hover {
   border: 1px solid #f391e3;
 }
 

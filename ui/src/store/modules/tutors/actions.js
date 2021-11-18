@@ -1,4 +1,3 @@
-
 import httpRequest from "@/common/httpRequest.js";
 
 export default {
@@ -36,18 +35,15 @@ export default {
             throw error;
         }
     },
-    async loadTutors(context, data) {
+    loadTutors(context, data) {
         if (!data.forceRefresh && !context.getters.forceUpdate) {
             return;
         }
-
-        const response = await httpRequest('tutors/');
-
-        if ('result' in response) {
+        httpRequest('tutors/', 'get').then((data) => {
             const tutors = [];
             let tutor, areas;
 
-            for (let item of response['result']) {
+            for (let item of data[0]) {
                 areas = []
                 for (let area of item.areas) {
                     areas.push(area)
@@ -65,9 +61,9 @@ export default {
 
             context.commit('setTutors', tutors);
             context.commit('setFetchTimestamp');
-        } else {
-            const error = new Error(`${response.error || 'Couldn\'t load tutors.'} Please try again.`);
-            throw error;
-        }
+        }).catch(data => {
+            const e = new Error(`${data.error || 'Couldn\'t load tutors.'} Please try again.`);
+            throw e;
+        })
     }
 };

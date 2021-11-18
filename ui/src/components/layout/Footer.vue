@@ -61,7 +61,7 @@ export default {
 
 <style scoped>
 .footer {
-  background-color: #31c6cd33;
+  background-image: linear-gradient(177deg, #cdd8dc, #a7d2d8 30%, #5dc6d3 80%);
   position: absolute;
   bottom: 0px;
   width: 100%;

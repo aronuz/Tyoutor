@@ -7,23 +7,24 @@ const axios = axiosApi.create({
 axios.defaults.xsrfCookieName = "csrftoken"
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 
-const request = { 'post': axios.post, 'put': axios.put, 'delete': axios.delete }
+const request = { 'get': axios.get, 'post': axios.post, 'put': axios.put, 'delete': axios.delete }
 
-export default async function httpRequest(path, reqType = null, body = {}) {
-    data = []
-    try {
-        if (!reqType) {
-            const r = await axios.get(path);
-            data.push({ 'result': [...r.data.results] });
-            const next = r.data.next || null;
-            data.push({ 'next': next });
-        } else if (Object.keys(body).length > 0) {
-            const r = await request[reqType](endpoint, body);
-            data.push({ 'data': r.data });
-        }
-    } catch (e) {
-        data.push({ 'error': e.response.statusText })
-    } finally {
-        return data
-    }
-};
+export default function httpRequest(path, reqType, body = null) {
+    return new Promise((resolve, reject) => {
+        const data = [];
+        let next;
+        request[reqType](path, body).then(r => {
+            data.push(...r.data.results);
+            if (reqType === 'get') {
+                next = r.data.next || null;
+            } else if (Object.keys(body).length > 0) {
+                data.push(r.data);
+            }
+            resolve([data, next])
+        }).catch(e => {
+            data.push({ 'error': e.response.statusText })
+            console.log('error: ' + e.response.statusText)
+            reject(data)
+        });
+    })
+}
