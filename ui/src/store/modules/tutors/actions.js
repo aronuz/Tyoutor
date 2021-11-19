@@ -35,8 +35,8 @@ export default {
             throw error;
         }
     },
-    loadTutors(context, data) {
-        if (!data.forceRefresh && !context.getters.forceUpdate) {
+    fetchTutors(context, payload) {
+        if (!payload.forceRefresh && !context.getters.forceUpdate) {
             return;
         }
         httpRequest('tutors/', 'get').then((data) => {
@@ -49,12 +49,17 @@ export default {
                     areas.push(area)
                 }
                 tutor = {
-                    id: item.tutor_id,
-                    firstName: item.firstName,
-                    lastName: item.lastName,
-                    description: `${item.description.substr(0, 10)}...`,
-                    hourlyRate: item.hourlyRate,
-                    areas: areas
+                    tutorId: item.tutorId,
+                    createdAt: item.created_at,
+                    firstName: item.first_name,
+                    lastName: item.last_name,
+                    fullName: item.full_name,
+                    description: item.description,
+                    shortDescription: `${item.description.substr(0, 10)}...`,
+                    hourlyRateStr: item.hourlyRate,
+                    hourlyRate: item.hourly_rate,
+                    email: item.email,
+                    areas: item.areas
                 };
                 tutors.push(tutor);
             }

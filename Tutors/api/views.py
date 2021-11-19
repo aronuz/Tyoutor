@@ -23,8 +23,11 @@ class AreasListAPIView(generics.ListAPIView):
     serializer_class = AreaSerializer
 
     def get_queryset(self):
-        tutor_id = self.kwargs.get("tutor_id")
-        return Area.objects.filter(tutor_id=tutor_id).order_by("area")
+        tutor_id = self.kwargs.get("tutor_id", None)
+        if tutor_id:
+            return Area.objects.filter(tutor_id=tutor_id).order_by("area")
+        else:
+            return Area.objects.all().order_by("area")
 
 
 def AreaCreateAPIView(request):

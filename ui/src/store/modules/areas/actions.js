@@ -2,27 +2,27 @@
 import httpRequest from "@/common/httpRequest.js";
 
 export default {
-    async fetchAreas(context, data) {
+    fetchAreas(context) { //, data
         const areas = [];
-        for (let id of data) {
-            const response = await httpRequest(`tutors/${id}/areas/`, 'get');
-
-            if ('result' in response) {
-                let area;
-                for (let item of response['result']) {
-                    area = {
-                        tutorId: item.tutorId,
-                        areas: item.areas
-                    };
-                    areas.push(area);
-                }
-            }
-            else {
-                const error = new Error(`${response.error || 'Failed to fetch expertise.'} Please try again`);
-                throw error;
+        let area;
+        // for (let id of data) {
+        //httpRequest(`tutors/${id}/areas/`, 'get').then((data) => {
+        httpRequest(`areas/`, 'get').then((data) => {
+            for (let item of data[0]) {
+                area = {
+                    tutorId: item.tutor_id,
+                    createdAt: item.created_at,
+                    areaId: item.area_id,
+                    areas: item.area
+                };
+                areas.push(area);
             }
             if (areas.length) context.commit('setAreas', areas);
-        }
+        }).catch(data => {
+            const e = new Error(`${data.error || 'Failed to fetch expertise.'} Please try again`);
+            throw e;
+        })
+        // }
     },
     async addArea(context, data) {
         const areaData = {

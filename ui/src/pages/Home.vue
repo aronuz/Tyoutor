@@ -173,6 +173,8 @@ export default {
         let info = `${tutorItem["firstName"]} ${tutorItem["lastName"]}`;
         info += `\n${tutorItem["description"]}`;
         this.infoText = info;
+
+        this.fetchAreas();
       } else {
         this.infoText = "";
       }
@@ -204,21 +206,16 @@ export default {
     //   fetchAreas: "areas/fetchAreas",
     // }),
     // ...mapActions("tutors", ["loadTutors"]),
-    async fetchAreas() {
+    fetchAreas() {
       const idList = this.listTutors.map((tutor) => tutor.tutorId);
-      await this.$store.dispatch(
-        "areas/fetchAreas",
-        { data: idList },
-        { root: true }
-      );
+      this.$store.dispatch("areas/fetchAreas", { idList }, { root: true });
     },
-    async fetchTutors() {
+    fetchTutors() {
       this.isLoading = true;
       try {
-        await this.$store.dispatch("tutors/loadTutors", {
+        this.$store.dispatch("tutors/fetchTutors", {
           forceRefresh: true,
         });
-        this.fetchAreas();
       } catch (e) {
         this.error = e;
         console.log(`Error.\n${this.error}`);
