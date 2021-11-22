@@ -16,7 +16,7 @@
                 <div class="row-title title-area black--text">
                   Our tutors can help you with...
                 </div>
-                <div xs12 justify="start" class="row area-sub-row">
+                <div xs12 justify="start" class="inner-row area-sub-row">
                   <div class="col" cols="2" sm="12" md="5">
                     <div class="ml-md-16 ml-xs-1 area-list">
                       <AreasList :areas-list="areas" />
@@ -241,6 +241,18 @@ export default {
   width: 100vw;
   overflow-y: scroll;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.home-page::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.home-page {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .child_1 {
   position: relative;
   bottom: 0;
@@ -251,9 +263,9 @@ export default {
 
 .row {
   background-image: linear-gradient(
-    150deg,
+    180deg,
     rgb(17 164 221),
-    #bfc3c5 60%,
+    #52bff5 60%,
     rgb(17 164 221) 90%
   );
 }
