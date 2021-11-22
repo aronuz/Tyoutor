@@ -6,7 +6,7 @@
     <div class="home-page d-flex justify-center">
       <div class="child_1">
         <div class="container" fluid height="100%">
-          <div xs12 justify="center" class="row ml-n6 pt-1">
+          <div xs12 justify="center" class="row no-gutters">
             <div class="col" cols="12">
               <ui-card
                 width="100vw"
@@ -45,8 +45,8 @@
               </ui-card>
             </div>
           </div>
-          <div class="row ml-n6 mt-n3 tutor-row" no-gutters>
-            <div cols="6" class="col hide-on-big pt-md-12">
+          <div class="row tutor-row no-gutters">
+            <div class="col tutor-col hide-on-big">
               <ui-card
                 color="#FFF"
                 height="100%"
@@ -60,14 +60,8 @@
                 </div>
               </ui-card>
             </div>
-            <div class="col" md="6" xs="12">
-              <v-lazy
-                v-model="isActive"
-                :options="{
-                  threshold: 0.7,
-                }"
-                transition="fade-transition"
-              >
+            <div class="col tutor-col">
+              <div class="lazy">
                 <ui-card light flat color="#9ca39b" height="100%">
                   <div
                     id="carouselExampleFade"
@@ -92,10 +86,10 @@
                     </div>
                   </div>
                 </ui-card>
-              </v-lazy>
+              </div>
             </div>
           </div>
-          <div xs12 justify="center" class="row ml-n6 pt-1">
+          <div xs12 justify="center" class="row no-gutters">
             <div class="col" cols="12">
               <ui-card
                 width="100vw"
@@ -105,12 +99,11 @@
                 <div
                   class="mr-md-10 mt-md-0 pt-md-n16 ml-xs-0 pt-md-0 area-info"
                 >
-                  <ui-card
+                  <div
                     class="area-card black--text px-md-2 py-md-1 py-xs-5"
                     width="100%"
                     v-text="areaInfo"
-                  >
-                  </ui-card>
+                  ></div>
                 </div>
               </ui-card>
             </div>
@@ -246,18 +239,36 @@ export default {
   min-height: 100vh;
   max-height: 100vh;
   width: 100vw;
+  overflow-y: scroll;
 }
 .child_1 {
   position: relative;
   bottom: 0;
-  height: 90vh;
+  /* margin-bottom: 8vh; */
+  height: 100vh;
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+}
+
+.row {
+  background-image: linear-gradient(
+    150deg,
+    rgb(17 164 221),
+    #bfc3c5 60%,
+    rgb(17 164 221) 90%
+  );
+}
+
+.no-gutters {
+  margin-top: -5vh;
+  margin-bottom: 5vh;
 }
 
 .tutor-row {
   position: relative;
+}
+
+.tutor-col {
+  display: inline;
 }
 
 .area-card {
@@ -270,24 +281,17 @@ export default {
   width: 100% !important;
 }
 
-.info-sheet {
-  background-image: linear-gradient(
-    to right,
-    #90978ee3 1%,
-    rgb(255, 255, 255) 99%
-  );
-}
-
 .info-text {
   font-family: "Dancing Script" !important;
 }
 
 .card-row {
-  background-image: linear-gradient(
-    to right,
-    rgb(255, 255, 255) 10%,
-    #90978ee3 90%
-  );
+  /* background-image: linear-gradient(
+    149deg,
+    rgb(17 164 221),
+    #bfc3c5 60%,
+    rgb(17 164 221) 90%
+  ); */
 }
 
 .row-title {
@@ -497,19 +501,19 @@ export default {
     background-size: cover;
   }
   .child_1 > .container {
-    min-height: 90%;
+    height: 100%;
   }
   .info-text {
     font-size: 2em !important;
   }
 
   .tutor-row {
-    min-height: 90vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
-  .info-sheet {
-    height: 100%;
-    width: 97.5vw;
-  }
+
   .hide-on-big {
     display: block;
   }
@@ -559,7 +563,7 @@ export default {
   }
   .area-card {
     font-size: 1.9em;
-    height: 550px;
+    height: 10vh;
     overflow-y: scroll;
   }
 }
