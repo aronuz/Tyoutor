@@ -125,7 +125,6 @@ export default {
       isActive: false,
       isLoading: false,
       tutorInfo: "",
-      areas: [],
       error: null,
       colors: [
         "indigo",
@@ -153,10 +152,23 @@ export default {
       }
     },
     areaInfo() {
-      if (this.areas.length) {
-        const tutorId = this.listTutors[this.currentIndex].tutor_id;
-        const areaItem = this.areas.find((tutor_id) => tutor_id === tutorId);
-        return areaItem.areas.join(", ");
+      if (this.listAreas.length) {
+        const areas = [];
+        for (let item of this.listAreas) {
+          areas.push(item);
+        }
+        console.log("areas: " + areas[0]);
+        if (areas.length) {
+          const infoStr = [];
+          const tutorId = this.listTutors[this.currentIndex].tutorId;
+          const areaItem = areas[0].filter((el) => el.tutorId === tutorId);
+          for (let i in areaItem) {
+            infoStr.push(areaItem[i].areas);
+          }
+          return infoStr.join(", ");
+        } else {
+          return "";
+        }
       } else {
         return "";
       }
@@ -174,9 +186,6 @@ export default {
       } else {
         this.infoText = "";
       }
-    },
-    listAreas() {
-      this.areas = this.listAreas;
     },
   },
   mounted() {
