@@ -36,7 +36,7 @@
                       <ui-card
                         class="area-card black--text px-md-2 py-md-1 py-xs-5"
                         width="100%"
-                        v-html="areaInfo"
+                        v-html="allAreasInfo"
                       >
                       </ui-card>
                     </div>
@@ -102,8 +102,9 @@
                   <div
                     class="area-card black--text px-md-2 py-md-1 py-xs-5"
                     width="100%"
-                    v-text="areaInfo"
-                  ></div>
+                  >
+                    {{ tutorAreasInfo }}
+                  </div>
                 </div>
               </ui-card>
             </div>
@@ -138,6 +139,7 @@ export default {
   computed: {
     ...mapGetters({
       listAreas: "areas/getAreas",
+      tutorAreas: "areas/getTutorAreas",
     }),
     listTutors() {
       return this.$store.getters["tutors/getTutors"];
@@ -151,24 +153,48 @@ export default {
         return false;
       }
     },
-    areaInfo() {
-      if (this.listAreas.length) {
-        const areas = [];
-        for (let item of this.listAreas) {
-          areas.push(item);
-        }
+    tutorId() {
+      if (this.listTutors.length) {
+        return this.listTutors[this.currentIndex].tutorId;
+      } else {
+        return null;
+      }
+    },
+    allAreasInfo() {
+      const areas = this.listAreas;
+      if (areas.length) {
+        let area;
+        // for (let item of this.listAreas) {
+        //   areas.push(item);
+        // }
         console.log("areas: " + areas[0]);
         if (areas.length) {
           const infoStr = [];
-          const tutorId = this.listTutors[this.currentIndex].tutorId;
-          const areaItem = areas[0].filter((el) => el.tutorId === tutorId);
-          for (let i in areaItem) {
-            infoStr.push(areaItem[i].areas);
+          const tutorItems = areas[0].filter(
+            (el) => el.tutorId === this.tutorId
+          );
+          for (let i in tutorItems) {
+            area = tutorItems.includes(areas[0][i])
+              ? `<span style="color: #d1d1d1;">${areas[0][i].areas}</span>`
+              : areas[0][i].areas;
+            infoStr.push(area);
           }
           return infoStr.join(", ");
         } else {
           return "";
         }
+      } else {
+        return "";
+      }
+    },
+    tutorAreasInfo() {
+      const areas = this.tutorAreas(this.tutorId);
+      if (areas.length) {
+        const infoStr = [];
+        for (let i in areas) {
+          infoStr.push(areas[i].areas);
+        }
+        return infoStr.length ? infoStr.join(", ") : infoStr;
       } else {
         return "";
       }
@@ -252,12 +278,14 @@ export default {
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.home-page::-webkit-scrollbar {
+.home-page::-webkit-scrollbar,
+.card::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.home-page {
+.home-page,
+.card {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
@@ -293,7 +321,7 @@ export default {
 }
 
 .area-card {
-  background-color: #fff !important;
+  background-color: #2ba4d300;
 }
 
 .v-footer {
@@ -332,11 +360,14 @@ export default {
   font-family: "Times New Roman", Times, serif;
   background-color: lightgrey;
   position: relative;
+  width: 100%;
+  background-color: #00000017;
 }
 
 .contact-row .row-title {
   position: relative;
 }
+
 @media (max-width: 344px) {
   .area-row {
     height: 235px;
@@ -559,7 +590,7 @@ export default {
     left: 150px;
   }
   .area-info {
-    max-width: 62vw;
+    /* max-width: 62vw; */
   }
   .area-preview {
     width: 350px !important;
@@ -585,7 +616,6 @@ export default {
   .area-card {
     font-size: 1.9em;
     height: 10vh;
-    overflow-y: scroll;
   }
 }
 </style>
