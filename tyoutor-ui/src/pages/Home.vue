@@ -53,36 +53,29 @@
                 width="100%"
                 class="info-sheet"
               >
-                <div class="row" align="center" justify="center">
-                  <div class="display-1 black--text pa-10 info-text">
-                    {{ tutorInfo }}
-                  </div>
-                </div>
+                <div
+                  class="display-1 black--text pa-10 info-text"
+                  v-html="tutorInfo"
+                ></div>
               </ui-card>
             </div>
             <div class="col tutor-col">
               <div class="lazy">
                 <ui-card light flat color="#9ca39b" height="100%">
-                  <div
-                    id="carouselExampleFade"
-                    class="carousel slide carousel-fade"
-                    data-ride="carousel"
-                  >
-                    <div class="carousel-inner">
-                      <div
-                        class="carousel-item"
-                        :class="[{ active: index === 0 }]"
-                        v-for="(tutor, index) in listTutors"
-                        :key="tutor.tutor_id"
-                        :height="carouselHeight()"
-                        @click="showTutor(tutor.id)"
-                      >
-                        <img
-                          :src="getImgUrl_tutors('logo.png')"
-                          class="d-block w-100"
-                          alt="..."
-                        />
-                      </div>
+                  <div class="carousel">
+                    <div
+                      class="carousel-item"
+                      :class="[{ active: index === currentIndex }]"
+                      v-for="(tutor, index) in listTutors"
+                      :key="tutor.tutorId"
+                      :height="carouselHeight()"
+                      @click="showTutor(tutor.tutorId)"
+                    >
+                      <img
+                        :src="getImgUrl_tutors(`logo_${index}.png`)"
+                        class="d-block w-100"
+                        :alt="`${tutor.fullName} photo`"
+                      />
                     </div>
                   </div>
                 </ui-card>
@@ -122,9 +115,10 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      currentIndex: 0,
+      currentIndex: null,
       isActive: false,
       isLoading: false,
+      tutorId: "",
       tutorInfo: "",
       error: null,
       colors: [
@@ -153,36 +147,19 @@ export default {
         return false;
       }
     },
-    tutorId() {
-      if (this.listTutors.length) {
-        return this.listTutors[this.currentIndex].tutorId;
-      } else {
-        return null;
-      }
-    },
     allAreasInfo() {
       const areas = this.listAreas;
-      if (areas.length) {
+      if (areas.length && this.tutorId) {
         let area;
-        // for (let item of this.listAreas) {
-        //   areas.push(item);
-        // }
-        console.log("areas: " + areas[0]);
-        if (areas.length) {
-          const infoStr = [];
-          const tutorItems = areas[0].filter(
-            (el) => el.tutorId === this.tutorId
-          );
-          for (let i in tutorItems) {
-            area = tutorItems.includes(areas[0][i])
-              ? `<span style="color: #d1d1d1;">${areas[0][i].areas}</span>`
-              : areas[0][i].areas;
-            infoStr.push(area);
-          }
-          return infoStr.join(", ");
-        } else {
-          return "";
+        const infoStr = [];
+        const tutorItems = areas[0].filter((el) => el.tutorId === this.tutorId);
+        for (let i in areas) {
+          area = tutorItems.includes(areas[0][i])
+            ? `<span style="color: #d1d1d1;">${areas[0][i].areas}</span>`
+            : areas[0][i].areas;
+          infoStr.push(area);
         }
+        return infoStr.join(", ");
       } else {
         return "";
       }
@@ -203,14 +180,20 @@ export default {
   watch: {
     listTutors() {
       if (this.listTutors.length) {
-        const tutorItem = this.listTutors[this.currentIndex];
-        let info = `${tutorItem["firstName"]} ${tutorItem["lastName"]}`;
-        info += `\n${tutorItem["description"]}`;
-        this.infoText = info;
-
+        this.currentIndex = 0;
         this.fetchAreas();
+        setInterval(this.reCycle, 1000);
+      }
+    },
+    currentIndex() {
+      if (this.listTutors.length) {
+        this.tutorId = this.listTutors[this.currentIndex].tutorId;
+        const tutorItem = this.listTutors[this.currentIndex];
+        let info = `<span>${tutorItem["firstName"]} ${tutorItem["lastName"]}</span>`;
+        info += `<br/><span>${tutorItem["description"]}</span>`;
+        this.tutorInfo = info;
       } else {
-        this.infoText = "";
+        this.tutorInfo = "";
       }
     },
   },
@@ -253,6 +236,11 @@ export default {
       } finally {
         this.isLoading = false;
       }
+    },
+    reCycle() {
+      const listLength = this.listTutors.length;
+      this.currentIndex +=
+        this.currentIndex < listLength - 1 ? 1 : -this.currentIndex;
     },
     getImgUrl_tutors(link) {
       const picFolder = this.isBigScreen ? "big" : "small";
@@ -366,6 +354,14 @@ export default {
 
 .contact-row .row-title {
   position: relative;
+}
+
+.carousel-item {
+  display: none;
+}
+
+.carousel-item.active {
+  display: block;
 }
 
 @media (max-width: 344px) {
