@@ -8,11 +8,7 @@
         <div class="container" fluid height="100%">
           <div xs12 justify="center" class="row no-gutters">
             <div class="col" cols="12">
-              <ui-card
-                width="100vw"
-                class="mx-auto card-row area-row"
-                color="#fff"
-              >
+              <ui-card width="100vw" class="mx-auto card-row" color="#fff">
                 <div class="row-title title-area black--text">
                   Our tutors can help you with...
                 </div>
@@ -23,16 +19,7 @@
                     </div>
                   </div>
                   <div class="col" cols="10" sm="0" md="7">
-                    <div
-                      class="
-                        mr-md-10
-                        mt-md-0
-                        pt-md-n16
-                        ml-xs-0
-                        pt-md-0
-                        area-info
-                      "
-                    >
+                    <div class="area-info">
                       <ui-card
                         class="area-card black--text px-md-2 py-md-1 py-xs-5"
                         width="100%"
@@ -64,12 +51,14 @@
                 <ui-card light flat color="#9ca39b" height="100%">
                   <div class="carousel">
                     <div
+                      :id="`ci-${index}`"
                       class="carousel-item"
                       :class="[{ active: index === currentIndex }]"
                       v-for="(tutor, index) in listTutors"
                       :key="tutor.tutorId"
                       :height="carouselHeight()"
                       @click="showTutor(tutor.tutorId)"
+                      :style="`z-index:${index}`"
                     >
                       <img
                         :src="getImgUrl_tutors(`logo_${index}.png`)"
@@ -148,15 +137,15 @@ export default {
       }
     },
     allAreasInfo() {
-      const areas = this.listAreas;
-      if (areas.length && this.tutorId) {
+      const areas = this.listAreas[0];
+      if (areas && areas.length && this.tutorId) {
         let area;
         const infoStr = [];
-        const tutorItems = areas[0].filter((el) => el.tutorId === this.tutorId);
+        const tutorItems = areas.filter((el) => el.tutorId === this.tutorId);
         for (let i in areas) {
-          area = tutorItems.includes(areas[0][i])
-            ? `<span style="color: #d1d1d1;">${areas[0][i].areas}</span>`
-            : areas[0][i].areas;
+          area = tutorItems.includes(areas[i])
+            ? `<span style="color: #d1d1d1;">${areas[i].areas}</span>`
+            : areas[i].areas;
           infoStr.push(area);
         }
         return infoStr.join(", ");
@@ -182,7 +171,7 @@ export default {
       if (this.listTutors.length) {
         this.currentIndex = 0;
         this.fetchAreas();
-        setInterval(this.reCycle, 1000);
+        setInterval(this.reCycle, 6000);
       }
     },
     currentIndex() {
@@ -241,6 +230,13 @@ export default {
       const listLength = this.listTutors.length;
       this.currentIndex +=
         this.currentIndex < listLength - 1 ? 1 : -this.currentIndex;
+      setTimeout(() => {
+        const ix =
+          this.currentIndex === listLength - 1 ? 0 : this.currentIndex + 1;
+        // if (ix > 0) {
+        document.getElementById(`ci-${ix}`).classList.add("n-active");
+        // }
+      }, 2000);
     },
     getImgUrl_tutors(link) {
       const picFolder = this.isBigScreen ? "big" : "small";
@@ -304,9 +300,9 @@ export default {
   position: relative;
 }
 
-.tutor-col {
+/* .tutor-col {
   display: inline;
-}
+} */
 
 .area-card {
   background-color: #2ba4d300;
@@ -356,12 +352,70 @@ export default {
   position: relative;
 }
 
+.tutor-col .card {
+  width: 232px;
+}
+
+.carousel {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+}
+
 .carousel-item {
   display: none;
+  position: relative;
+  height: 100%;
+  width: 100%;
 }
 
 .carousel-item.active {
-  display: block;
+  animation-name: slidein;
+  animation-duration: 6s;
+  animation-timing-function: ease-in-out;
+  display: inline;
+}
+
+.carousel-item.n-active {
+  animation-name: n-slidein;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  display: inline;
+}
+
+.carousel-item img {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+@keyframes slidein {
+  0% {
+    width: 0%;
+    right: -100%;
+  }
+  30% {
+    width: 100%;
+    right: 0%;
+  }
+  70% {
+    width: 100%;
+    right: 0%;
+  }
+  100% {
+    width: 0;
+    right: 0;
+  }
+}
+@keyframes n-slidein {
+  0% {
+    width: 0%;
+    right: 0%;
+  }
+  100% {
+    width: 100%;
+    right: 0%;
+  }
 }
 
 @media (max-width: 344px) {
@@ -560,6 +614,7 @@ export default {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    min-height: 36vh;
   }
 
   .hide-on-big {
@@ -570,12 +625,11 @@ export default {
     display: none;
   }
   .row-title {
-    top: 80px;
     left: 120px;
     font-size: 3.5rem !important;
   }
-  .area-row .row-title {
-    top: 0px;
+  .area-row {
+    height: 70px;
   }
   .area-list {
     top: -480px;
@@ -586,6 +640,7 @@ export default {
     left: 150px;
   }
   .area-info {
+    height: 100%;
     /* max-width: 62vw; */
   }
   .area-preview {
