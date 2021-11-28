@@ -13,20 +13,10 @@
                   Our tutors can help you with...
                 </div>
                 <div xs12 justify="start" class="inner-row area-sub-row">
-                  <div class="col" cols="2" sm="12" md="5">
-                    <div class="ml-md-16 ml-xs-1 area-list">
-                      <AreasList :areas-list="areas" />
-                    </div>
-                  </div>
                   <div class="col" cols="10" sm="0" md="7">
-                    <div class="area-info">
-                      <ui-card
-                        class="area-card black--text px-md-2 py-md-1 py-xs-5"
-                        width="100%"
-                        v-html="allAreasInfo"
-                      >
-                      </ui-card>
-                    </div>
+                    <areaList :tutor-id="tutorId" part="all">
+                      <template v-slot:default></template>
+                    </areaList>
                   </div>
                 </div>
               </ui-card>
@@ -73,22 +63,9 @@
           </div>
           <div xs12 justify="center" class="row no-gutters">
             <div class="col" cols="12">
-              <ui-card
-                width="100vw"
-                class="mx-auto card-row area-row"
-                color="#fff"
-              >
-                <div
-                  class="mr-md-10 mt-md-0 pt-md-n16 ml-xs-0 pt-md-0 area-info"
-                >
-                  <div
-                    class="area-card black--text px-md-2 py-md-1 py-xs-5"
-                    width="100%"
-                  >
-                    {{ tutorAreasInfo }}
-                  </div>
-                </div>
-              </ui-card>
+              <areaList :tutor-id="tutorId" part="tutor">
+                <template v-slot:tutor-areas></template>
+              </areaList>
             </div>
           </div>
         </div>
@@ -98,12 +75,12 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 // import { mapActions } from "vuex";
 
 export default {
   data() {
     return {
+      cycle: null,
       currentIndex: null,
       isActive: false,
       isLoading: false,
@@ -120,10 +97,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      listAreas: "areas/getAreas",
-      tutorAreas: "areas/getTutorAreas",
-    }),
     listTutors() {
       return this.$store.getters["tutors/getTutors"];
     },
@@ -136,42 +109,13 @@ export default {
         return false;
       }
     },
-    allAreasInfo() {
-      const areas = this.listAreas[0];
-      if (areas && areas.length && this.tutorId) {
-        let area;
-        const infoStr = [];
-        const tutorItems = areas.filter((el) => el.tutorId === this.tutorId);
-        for (let i in areas) {
-          area = tutorItems.includes(areas[i])
-            ? `<span style="color: #d1d1d1;">${areas[i].areas}</span>`
-            : areas[i].areas;
-          infoStr.push(area);
-        }
-        return infoStr.join(", ");
-      } else {
-        return "";
-      }
-    },
-    tutorAreasInfo() {
-      const areas = this.tutorAreas(this.tutorId);
-      if (areas.length) {
-        const infoStr = [];
-        for (let i in areas) {
-          infoStr.push(areas[i].areas);
-        }
-        return infoStr.length ? infoStr.join(", ") : infoStr;
-      } else {
-        return "";
-      }
-    },
   },
   watch: {
     listTutors() {
       if (this.listTutors.length) {
         this.currentIndex = 0;
         this.fetchAreas();
-        setInterval(this.reCycle, 6000);
+        this.cycle = setInterval(this.reCycle, 6000);
       }
     },
     currentIndex() {
@@ -204,6 +148,9 @@ export default {
     //   });
     this.fetchTutors();
   },
+  beforeUnmount() {
+    clearInterval(this.cycle);
+  },
   methods: {
     // ...mapActions({
     //   fetchAreas: "areas/fetchAreas",
@@ -213,10 +160,10 @@ export default {
       const idList = this.listTutors.map((tutor) => tutor.tutorId);
       this.$store.dispatch("areas/fetchAreas", { idList }, { root: true });
     },
-    fetchTutors() {
+    async fetchTutors() {
       this.isLoading = true;
       try {
-        this.$store.dispatch("tutors/fetchTutors", {
+        await this.$store.dispatch("tutors/fetchTutors", {
           forceRefresh: true,
         });
       } catch (e) {
@@ -230,11 +177,13 @@ export default {
       const listLength = this.listTutors.length;
       this.currentIndex +=
         this.currentIndex < listLength - 1 ? 1 : -this.currentIndex;
+      let carouselItem;
       setTimeout(() => {
         const ix =
           this.currentIndex === listLength - 1 ? 0 : this.currentIndex + 1;
         // if (ix > 0) {
-        document.getElementById(`ci-${ix}`).classList.add("n-active");
+        carouselItem = document.getElementById(`ci-${ix}`) || null;
+        if (carouselItem) carouselItem.classList.add("n-active");
         // }
       }, 2000);
     },
@@ -318,15 +267,6 @@ export default {
   font-family: "Dancing Script" !important;
 }
 
-.card-row {
-  /* background-image: linear-gradient(
-    149deg,
-    rgb(17 164 221),
-    #bfc3c5 60%,
-    rgb(17 164 221) 90%
-  ); */
-}
-
 .row-title {
   position: relative;
   z-index: 10;
@@ -334,9 +274,6 @@ export default {
 }
 .area-list {
   display: inline-block;
-  position: relative;
-}
-.area-list {
   position: relative;
 }
 .area-info {
@@ -422,11 +359,6 @@ export default {
   .area-row {
     height: 235px;
   }
-  .area-list {
-    position: relative;
-    left: 30vw;
-    top: -30px;
-  }
 }
 @media (min-width: 345px) and (max-width: 600px) {
   .area-row {
@@ -437,10 +369,6 @@ export default {
   .row-title {
     font-size: 1.9em !important;
   }
-  .area-list {
-    padding: 0px !important;
-    width: 40vw;
-  }
 }
 @media (min-width: 601px) and (max-width: 959px) {
   .row-title {
@@ -448,14 +376,6 @@ export default {
   }
   .area-row {
     height: 410px;
-  }
-  .area-list {
-    display: block;
-    width: 40vw;
-  }
-  .area-list {
-    padding: 0px !important;
-    width: 100%;
   }
 }
 @media (max-width: 959px) {
@@ -494,26 +414,12 @@ export default {
     max-height: 30vh;
     border-radius: 20px 20px 20px 20px !important;
   }
-  .area-sub-row {
-    float: left;
-    position: relative;
-    top: 35px;
-  }
-  .area-info {
-    display: none;
-  }
-  .area-card {
-    display: none;
-  }
   .contact-row {
     padding-top: 30px;
   }
   .message-button {
     font-size: 1.8em;
     line-height: 1.2;
-  }
-  .area-list {
-    top: 0px;
   }
 }
 @media (min-width: 960px) and (max-width: 1023px) {
@@ -573,22 +479,6 @@ export default {
   .area-row {
     min-height: 427px;
   }
-  .area-sub-row {
-    width: 95%;
-  }
-
-  .area-list {
-    width: 100%;
-    height: 100%;
-  }
-  .area-list {
-    padding: 0 0 0 15% !important;
-    width: 90%;
-  }
-  .area-card {
-    font-size: 1.8rem;
-    line-height: 1.13;
-  }
 }
 
 @media (min-width: 1024px) {
@@ -614,7 +504,18 @@ export default {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    min-height: 36vh;
+    height: 36vh;
+  }
+
+  .tutor-col .card {
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100%;
+  }
+
+  .tutor-col span {
+    margin: auto;
   }
 
   .hide-on-big {
@@ -630,43 +531,6 @@ export default {
   }
   .area-row {
     height: 70px;
-  }
-  .area-list {
-    top: -480px;
-    right: 90px;
-  }
-  .area-list {
-    top: 500px;
-    left: 150px;
-  }
-  .area-info {
-    height: 100%;
-    /* max-width: 62vw; */
-  }
-  .area-preview {
-    width: 350px !important;
-    height: 500px;
-    margin: 10px 0 0 20px !important;
-  }
-  .area-content {
-    padding: 10px;
-    text-align: center;
-    position: relative;
-    top: 200px;
-  }
-  .area-thumbnail {
-    width: 200%;
-  }
-  .area-content {
-    width: 200%;
-  }
-  .area-content h1 {
-    font-size: 2.5em;
-    font-weight: 200;
-  }
-  .area-card {
-    font-size: 1.9em;
-    height: 10vh;
   }
 }
 </style>

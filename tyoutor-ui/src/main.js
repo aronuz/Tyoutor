@@ -17,6 +17,8 @@ import ui_badge from "./components/ui_blocks/Badge.vue";
 import ui_dialog from "./components/ui_blocks/Dialog.vue";
 import ui_spinner from "./components/ui_blocks/Spinner.vue";
 
+import area_list from "./components/areas/AreaList";
+
 const emitter = mitt();
 
 const app = createApp(App);
@@ -35,5 +37,7 @@ app.component("ui-button", ui_button);
 app.component("ui-badge", ui_badge);
 app.component("ui-dialog", ui_dialog);
 app.component("ui-spinner", ui_spinner);
+
+app.component("areaList", area_list);
 
 app.mount("#app");

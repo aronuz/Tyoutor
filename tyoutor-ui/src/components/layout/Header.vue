@@ -57,6 +57,10 @@ header a {
   border: 1px solid transparent;
 }
 
+header a:not(.home):not(.router-link-active) {
+  box-shadow: 2px 2px 2px 0px grey;
+}
+
 a:active:not(.home),
 a.router-link-active:not(.home) {
   box-shadow: 2px 2px 8px #002d80 inset;

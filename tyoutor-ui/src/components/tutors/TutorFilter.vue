@@ -7,36 +7,38 @@
 
 <script>
 export default {
-  emits: ["change-filter"],
-  props: ["areasList"],
+  emits: ["set-filter"],
+  props: ["listAreas"],
   data() {
     return {
       filters: [],
     };
   },
-  created() {
-    let item,
-      area,
-      areaSet = new Set();
-    for (item of this.areasList) {
-      for (area of item.areas) {
-        areaSet.add(area);
-      }
-    }
-    areaSet.forEach((el) => {
-      const filterId = el.replace(" ", "-~");
-      const spanEl = document.createElement("span");
-      spanEl.classList.add("filter-option");
-      document
-        .querySelectorAll(".card")[0]
-        .insertAdjacentElement("beforeend", spanEl);
-      const filter = `
-      <input type="checkbox" id="${filterId}" @change="setFilter" />
-      <label for="${filterId}">${el}</label>`;
-      spanEl.insertAdjacentHTML("beforeend", filter);
-    });
+  mounted() {
+    this.buildFilters();
   },
   methods: {
+    buildFilters() {
+      const areas = this.listAreas;
+      if (areas && areas.length) {
+        const areaSet = new Set();
+        for (let item of areas) {
+          areaSet.add(item.areas);
+        }
+        areaSet.forEach((el) => {
+          const filterId = el.replace(" ", "-~");
+          const spanEl = document.createElement("span");
+          spanEl.classList.add("filter-option");
+          document
+            .querySelectorAll(".card")[0]
+            .insertAdjacentElement("beforeend", spanEl);
+          const filter = `
+      <input type="checkbox" id="${filterId}" @change="setFilter" />
+      <label for="${filterId}">${el}</label>`;
+          spanEl.insertAdjacentHTML("beforeend", filter);
+        });
+      }
+    },
     setFilter(event) {
       const inputId = event.target.id;
       const isActive = event.target.checked;
@@ -48,7 +50,7 @@ export default {
       }
     },
     submitFilters() {
-      this.$emit("change-filter", this.filters);
+      this.$emit("set-filter", this.filters);
     },
   },
 };

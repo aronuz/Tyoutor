@@ -9,9 +9,9 @@ export default {
     return state.tutors && state.tutors.length > 0;
   },
   isTutor(_, getters, _1, rootGetters) {
-    const tutors = getters.tutors;
+    const tutors = getters.getTutors;
     const userId = rootGetters.userId;
-    return tutors.some((tutor) => tutor.id === userId);
+    return tutors.some((tutor) => tutor.tutorId === userId);
   },
   forceUpdate(state) {
     const fetchTimeStamp = state.fetchTimeStamp;

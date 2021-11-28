@@ -8,16 +8,16 @@
     </div>
     <section>
       <tutor-filter
-        @change-filter="setFilters"
-        :areas-list="areasList"
+        @set-filter="setFilters"
+        :list-areas="listAreas_0"
       ></tutor-filter>
     </section>
     <section>
       <ui-card>
         <div class="controls">
-          <ui-button mode="outline" @click="loadTutors(true)"
-            >Refresh</ui-button
-          >
+          <ui-button mode="outline" @click="fetchTutors(true)">
+            Refresh
+          </ui-button>
           <ui-button v-if="!isTutor" link to="/register">
             Tutor registration
           </ui-button>
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import TutorItem from "@/components/tutors/TutorItem.vue";
 import TutorFilter from "@/components/tutors/TutorFilter.vue";
 
@@ -58,51 +59,56 @@ export default {
     };
   },
   computed: {
-    isTutor() {
-      return this.$store.getters["tutors/isTutor"];
-    },
-    areasList() {
-      return this.$store.getters["areas/getAreas"];
+    ...mapGetters({
+      listTutors: "tutors/getTutors",
+      isTutor: "tutors/isTutor",
+      hasTutors: "tutors/hasTutors",
+      listAreas: "areas/getAreas",
+    }),
+    listAreas_0(){
+      return this.listAreas[0];
     },
     filteredTutors() {
-      const tutors = this.$store.getters["tutors/tutors"];
+      const tutors = this.listTutors;
       if (this.activeFilters.length === 0) {
         return tutors;
       } else {
-        const idSet = new Set();
-        let af;
-        for (let fi of this.activeFilters) {
-          af = fi.replace(" ", "-~");
-          for (let el of this.areasList) {
-            if (el.areas.includes(af)) {
-              idSet.add(el.tutor_id);
+        const areas = this.listAreas[0];
+        if (areas && areas.length) {
+          const idSet = new Set();
+          let af;
+          for (let fi of this.activeFilters) {
+            af = fi.replace(" ", "-~");
+            for (let el of areas) {
+              if (el.areas.includes(af)) {
+                idSet.add(el.tutor_id);
+              }
             }
           }
+          return tutors.filter((tutor) => {
+            idSet.has(tutor.tutor_id);
+          });
+        } else {
+          return null;
         }
-        return tutors.filter((tutor) => {
-          idSet.has(tutor.tutor_id);
-        });
       }
     },
     hasTutors() {
-      return this.$store.getters["tutors/hasTutors"];
+      return this.hasTutors;
     },
   },
   mounted() {
-    this.loadTutors();
-    this.emitter.on("remove-area", (data) => {
-      this.$store.dispatch("areas/removeArea", data);
-    });
+    this.fetchTutors();
   },
   methods: {
     setFilters(updatedFilters) {
       this.activeFilters = updatedFilters;
     },
-    async loadTutors(refresh = false) {
+    async fetchTutors(refresh = false) {
       this.isLoading = true;
       try {
         await this.$store.dispatch(
-          "tutors/loadTutors",
+          "tutors/fetchTutors",
           {
             forceRefresh: refresh,
           },
