@@ -3,7 +3,7 @@
     <div v-if="isLoading">
       <ui-spinner></ui-spinner>
     </div>
-    <div class="home-page d-flex justify-center">
+    <div class="home-page">
       <div class="child_1">
         <div class="container" fluid height="100%">
           <div xs12 justify="center" class="row no-gutters">
@@ -204,6 +204,8 @@ export default {
 <style scoped>
 .home-page {
   position: fixed;
+  top: 2.5rem;
+  z-index: 0;
   min-height: 100vh;
   max-height: 100vh;
   width: 100vw;

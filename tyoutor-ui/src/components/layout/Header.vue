@@ -32,6 +32,8 @@ export default {
 
 <style scoped>
 header {
+  position: fixed;
+  z-index: 10;
   width: 100%;
   height: 4rem;
   background-image: linear-gradient(34deg, #06b9fe, #66c8ee 49%, #d3d9db 60%);

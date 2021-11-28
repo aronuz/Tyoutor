@@ -20,11 +20,8 @@
 
 <script>
 export default {
-  props: ["id", "firstName", "lastName", "description", "rate", "areas"],
+  props: ["id", "fullName", "description", "rate", "areas"],
   computed: {
-    fullName() {
-      return `${this.firstName} ${this.lastName}`;
-    },
     tutorContactLink() {
       return `${this.$route.path}/${this.id}/contact`; // /tutors/c1/contact
     },

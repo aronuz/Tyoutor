@@ -5,9 +5,6 @@ export default {
   currentUser: (_, _1, _2, rootGetters) => (id) => {
     return id === rootGetters.userId;
   },
-  hasTutors(state) {
-    return state.tutors && state.tutors.length > 0;
-  },
   isTutor(_, getters, _1, rootGetters) {
     const tutors = getters.getTutors;
     const userId = rootGetters.userId;
