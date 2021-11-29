@@ -12,7 +12,12 @@
           <ui-card>
             <header>
               <h2>Send a message</h2>
-              <ui-button link :to="contactLink">Contact</ui-button>
+              <ui-button
+                link
+                :to="contactLink"
+                :style="{ display: buttonPressed ? 'display' : 'none' }"
+                >Contact</ui-button
+              >
             </header>
             <router-view></router-view>
           </ui-card>
@@ -65,6 +70,9 @@ export default {
     },
     contactLink() {
       return `${this.$route.path}/${this.id}/contact`;
+    },
+    buttonPressed() {
+      return document.querySelector("request-form");
     },
   },
   created() {

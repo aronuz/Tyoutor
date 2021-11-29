@@ -56,14 +56,14 @@ class AreaSerializer(serializers.ModelSerializer):
 
 class RequestSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
-    sender_email = serializers.StringRelatedField()
+    email = serializers.StringRelatedField()
     request_id = serializers.StringRelatedField
     message = serializers.StringRelatedField()
     tutor_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Request
-        exclude = ["id", "updated_at"]
+        exclude = ["id", "tutor", "updated_at"]
 
     def get_created_at(self, instance):
         return instance.created_at.strftime("%B %d, %Y")

@@ -1,12 +1,12 @@
 <template>
-  <v-app>
+  <div>
     <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
       <p>{{ error }}</p>
     </ui-dialog>
     <div v-if="isLoading">
       <ui-spinner></ui-spinner>
     </div>
-    <form @submit.prevent="submitForm">
+    <form id="request-form" @submit.prevent="submitForm">
       <div class="form-control">
         <label for="email">Your E-Mail</label>
         <input type="email" id="email" v-model.trim="email" />
@@ -22,7 +22,7 @@
         <ui-button>Send</ui-button>
       </div>
     </form>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -44,10 +44,11 @@ export default {
       if (!this.formIsValid) return;
       this.isLoading = true;
       try {
+        const tutorId = this.$route.params.id;
         await this.$store.dispatch("requests/contactTutor", {
           email: this.email,
           message: this.message,
-          tutorId: this.$route.id,
+          tutorId,
         });
         this.$router.replace("/tutors");
       } catch (error) {
@@ -64,10 +65,18 @@ export default {
 
 <style scoped>
 form {
+  position: absolute;
+  z-index: 20;
   margin: 1rem;
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 1rem;
+  background-image: linear-gradient(
+    180deg,
+    rgb(17 164 221),
+    #52bff5 60%,
+    rgb(17 164 221) 90%
+  );
 }
 
 .form-control {

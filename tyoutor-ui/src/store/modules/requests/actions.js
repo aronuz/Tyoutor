@@ -7,14 +7,13 @@ export default {
     const requestId = `${tutorId}@${sentDate}`;
     const requestData = {
       requestId,
-      tutorId,
       sentDate,
       userEmail: data.email,
       message: data.message,
     };
 
     const response = await httpRequest(
-      `tutors/${tutorId}/request/`,
+      `tutors/${tutorId}/requests/new`,
       "post",
       requestData
     );
@@ -24,8 +23,7 @@ export default {
       context.commit("addRequest", response.data);
     } else {
       const error = new Error(
-        `${
-          response.error.message || "Failed to send message."
+        `${response.error.message || "Failed to send message."
         } Please try again.`
       );
       throw error;

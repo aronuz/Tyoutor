@@ -42,6 +42,8 @@ a {
   border-radius: 30px;
   margin-right: 0.5rem;
   display: inline-block;
+  box-shadow: 0px 0px 0px 3px #685e5e;
+  background-image: linear-gradient(180deg, #6c63ed, #0a1116 90%);
 }
 
 a:hover,
@@ -59,9 +61,8 @@ button:active {
 }
 
 .outline {
-  background-color: transparent;
+  background-image: linear-gradient(180deg, #0071ff, #0a1116 90%);
   border-color: #270041;
-  color: #270041;
 }
 
 .flat:hover,

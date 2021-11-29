@@ -70,15 +70,15 @@ class RequestsListAPIView(generics.ListAPIView):
 
 
 class RequestCreateAPIView(generics.CreateAPIView):
-    queryset = Request.objects.all().order_by("-created_at")
+    # queryset = Request.objects.all().order_by("-created_at")
     serializer_class = RequestSerializer
 
     def perform_create(self, serializer):
-        request_id = self.kwargs.get("request_id")
-        tutor_id = self.request.POST.get("tutor_id")
-        email = self.request.POST.get("email")
+        tutor_id = self.kwargs.get("tutor_id")
+        request_id = self.request.POST.get("requestId")
+        email = self.request.POST.get("userEmail")
         message = self.request.POST.get("message")
-        serializer.save(request_id=request_id, tutor_id=tutor_id,
+        serializer.save(request_id=request_id, tutor=tutor_id,
                         email=email, message=message)
 
 
