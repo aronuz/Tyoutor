@@ -66,6 +66,7 @@ class RequestsListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         tutor_id = self.kwargs.get("tutor_id")
+        print('id: {}'.format(tutor_id))
         return Request.objects.filter(tutor_id=tutor_id).order_by("-created_at")
 
 
@@ -75,10 +76,11 @@ class RequestCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         tutor_id = self.kwargs.get("tutor_id")
-        request_id = self.request.POST.get("requestId")
-        email = self.request.POST.get("userEmail")
-        message = self.request.POST.get("message")
-        serializer.save(request_id=request_id, tutor=tutor_id,
+        tutor = generics.get_object_or_404(Tutor, tutor_id=tutor_id)
+        request_id = self.request.data.get("requestId")
+        email = self.request.data.get("userEmail")
+        message = self.request.data.get("message")
+        serializer.save(request_id=request_id, tutor=tutor,
                         email=email, message=message)
 
 

@@ -18,9 +18,9 @@ export default {
       requestData
     );
 
-    if (response.data) {
+    if (Response) {
       //if (response.ok) {
-      context.commit("addRequest", response.data);
+      context.commit("addRequest", response);
     } else {
       const error = new Error(
         `${response.error.message || "Failed to send message."
@@ -37,16 +37,16 @@ export default {
     const tutorId = context.rootGetters.userId;
     const response = await httpRequest(`tutors/${tutorId}/requests/`, "get");
 
-    if ("result" in response) {
+    if (response[0]) {
       const requests = [];
       let request;
-      for (let item of response["result"]) {
+      for (let item of response[0]) {
         request = {
           tutorId,
           requestId: item.request_id,
-          userEmail: item.user_email,
+          userEmail: item.email,
           message: item.message,
-          sentDate: item.sent_date,
+          sentDate: item.created_at,
         };
         requests.push(request);
       }

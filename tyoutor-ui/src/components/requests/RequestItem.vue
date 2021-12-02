@@ -1,7 +1,7 @@
 <template>
   <li>
     <div>
-      <a :href="emailLink">{{ email }}</a>
+      From: <a :href="emailLink">{{ email }}</a>
     </div>
     <p>{{ message }}</p>
   </li>
@@ -23,10 +23,11 @@ li {
   margin: 1rem 0;
   border: 1px solid #ccc;
   padding: 1rem;
+  background-color: #fff;
 }
 
 a {
-  color: #3d008d;
+  color: #140527;
   text-decoration: none;
   font-weight: bold;
 }

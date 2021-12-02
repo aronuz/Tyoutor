@@ -16,12 +16,12 @@ const request = {
 
 export default function httpRequest(path, reqType, body = null) {
   return new Promise((resolve, reject) => {
-    const data = [];
-    let next;
+    let data = [];
+    let next = 0;
     request[reqType](path, body)
       .then((r) => {
-        data.push(...r.data.results);
         if (reqType === "get") {
+          data.push(...r.data.results);
           next = r.data.next || null;
         } else if (Object.keys(body).length > 0) {
           data.push(r.data);
@@ -29,8 +29,8 @@ export default function httpRequest(path, reqType, body = null) {
         resolve([data, next]);
       })
       .catch((e) => {
-        data.push({ error: e.response.statusText });
-        console.log("Error: " + e.response.statusText);
+        data.push({ error: e });
+        console.log("Error: " + e);
         reject(data);
       });
   });

@@ -24,7 +24,7 @@ class Area(TimeStampedModel):
     area = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.area, '{} {}'.format(self.tutor.first_name, self.tutor.last_name)
+        return '{}, {} {}'.format(self.area, self.tutor.first_name, self.tutor.last_name)
 
 
 class Request(TimeStampedModel):
