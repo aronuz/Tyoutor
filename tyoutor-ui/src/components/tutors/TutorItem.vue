@@ -41,6 +41,8 @@ li {
   border: 1px solid #424242;
   border-radius: 12px;
   padding: 1rem;
+  background-color: #d7d7d7;
+  box-shadow: 1px 2px 0px 0px;
 }
 
 h3 {

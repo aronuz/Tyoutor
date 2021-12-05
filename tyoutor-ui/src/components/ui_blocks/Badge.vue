@@ -52,7 +52,7 @@ export default {
 }
 
 .other {
-  background-color: #ccc;
+  background-color: rgb(65, 57, 57);
   color: white;
 }
 
