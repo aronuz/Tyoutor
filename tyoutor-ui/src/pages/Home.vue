@@ -1,5 +1,8 @@
 <template>
   <div>
+    <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
+      <p>{{ error }}</p>
+    </ui-dialog>
     <div v-if="isLoading">
       <ui-spinner></ui-spinner>
     </div>
@@ -111,13 +114,6 @@ export default {
     },
   },
   watch: {
-    listTutors() {
-      if (this.listTutors.length) {
-        this.currentIndex = 0;
-        this.fetchAreas();
-        this.cycle = setInterval(this.reCycle, 6000);
-      }
-    },
     currentIndex() {
       if (this.listTutors.length) {
         this.tutorId = this.listTutors[this.currentIndex].tutorId;
@@ -155,23 +151,41 @@ export default {
     // ...mapActions({
     //   fetchAreas: "areas/fetchAreas",
     // }),
-    // ...mapActions("tutors", ["loadTutors"]),
-    fetchAreas() {
-      const idList = this.listTutors.map((tutor) => tutor.tutorId);
-      this.$store.dispatch("areas/fetchAreas", { idList }, { root: true });
+    // ...mapActions("tutors", ["loadTutors"])
+    async storeDispatch(endPoint, data) {
+      return await this.$store.dispatch(endPoint, data, { root: true });
     },
     async fetchTutors() {
       this.isLoading = true;
       try {
-        await this.$store.dispatch("tutors/fetchTutors", {
-          forceRefresh: true,
-        });
+        await this.storeDispatch("tutors/fetchTutors", { forceRefresh: true });
+        if (this.listTutors.length) this.setAreas();
       } catch (e) {
         this.error = e;
-        console.log(`Error.\n${this.error}`);
-      } finally {
+        console.log(this.error);
         this.isLoading = false;
       }
+    },
+    async setAreas() {
+      if (this.listTutors.length) {
+        this.currentIndex = 0;
+        this.fetchAreas()
+          .then(() => {
+            this.cycle = setInterval(this.reCycle, 6000);
+          })
+          .catch((e) => {
+            this.error = e;
+            console.log(`${this.error}`);
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      }
+    },
+    async fetchAreas() {
+      const idList = this.listTutors.map((tutor) => tutor.tutorId);
+      // this.$store.dispatch("areas/fetchAreas", { idList }, { root: true });
+      await this.storeDispatch("areas/fetchAreas", idList);
     },
     reCycle() {
       const listLength = this.listTutors.length;
@@ -196,6 +210,9 @@ export default {
     },
     carouselHeight() {
       return this.isBigScreen ? "80vh" : "300px";
+    },
+    closeDialogue() {
+      this.error = null;
     },
   },
 };

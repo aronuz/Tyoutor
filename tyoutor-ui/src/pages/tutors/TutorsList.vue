@@ -24,18 +24,26 @@
                 Tutor registration
               </ui-button>
             </div>
-            <ul v-if="hasTutors">
+            <div
+              v-if="hasTutors"
+              @scroll.prevent="onScroll($event)"
+              class="tutor-cards"
+              :style="{ top: cTop + 'px' }"
+            >
               <tutor-item
-                v-for="tutor in filteredTutors"
+                v-for="(tutor, index) in filteredTutors"
                 :key="tutor.id"
+                :index="index"
                 :id="tutor.tutorId"
                 :full-name="tutor.fullName"
                 :description="tutor.description"
                 :rate="tutor.hourlyRate"
                 :areas="tutor.areas"
+                :current-card="currentCard"
+                :total="listTutors.length"
               >
               </tutor-item>
-            </ul>
+            </div>
             <h3 v-else>No tutors found.</h3>
           </ui-card>
         </section>
@@ -59,6 +67,7 @@ export default {
       activeFilters: [],
       error: null,
       isLoading: false,
+      currentCard: 1,
     };
   },
   computed: {
@@ -99,6 +108,9 @@ export default {
     hasTutors() {
       return this.listTutors.length;
     },
+    cTop() {
+      return this.currentCard * 10;
+    },
   },
   mounted() {
     this.fetchTutors();
@@ -124,6 +136,13 @@ export default {
     },
     closeDialogue() {
       this.error = null;
+    },
+    onScroll(event) {
+      const el = event.target;
+      const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
+      const currentCard = Math.ceil(pos * 10) || 1;
+      if (currentCard <= this.listTutors.length) this.currentCard = currentCard;
+      console.log(this.currentCard);
     },
   },
 };
@@ -155,18 +174,26 @@ export default {
 }
 
 .main-list {
-  overflow-y: scroll;
+  overflow-y: hidden;
   height: 65vh;
   margin-top: -2rem;
 }
 
+.tutor-cards {
+  position: relative;
+  height: 50vh;
+  overflow-y: scroll;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
-.main-list::-webkit-scrollbar {
+.main-list::-webkit-scrollbar,
+.tutor-cards::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.main-list {
+.main-list,
+.tutor-cards {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
@@ -180,8 +207,7 @@ export default {
   );
 }
 
-ul {
-  list-style: none;
+.tutor-cards {
   margin: 0;
   padding: 0;
 }

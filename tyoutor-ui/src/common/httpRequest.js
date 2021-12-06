@@ -29,8 +29,8 @@ export default function httpRequest(path, reqType, body = null) {
         resolve([data, next]);
       })
       .catch((e) => {
-        data.push({ error: e });
-        console.log("Error: " + e);
+        data.push({ error: e.message });
+        console.log(e.message);
         reject(data);
       });
   });
