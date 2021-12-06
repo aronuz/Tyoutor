@@ -58,6 +58,12 @@ export default {
       title: "",
     };
   },
+  mounted() {
+    this.emitter.emit("button");
+  },
+  beforeUnmount() {
+    this.emitter.emit("button");
+  },
   methods: {
     onSubmit(e) {
       this.isLoading = true;

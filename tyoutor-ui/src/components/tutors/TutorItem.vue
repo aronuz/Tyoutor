@@ -12,8 +12,10 @@
       </ui-badge>
     </div>
     <div class="actions">
-      <ui-button mode="outline" link :to="tutorContactLink">Contact</ui-button>
-      <ui-button link :to="tutorDetailsLink">View Details</ui-button>
+      <ui-button mode="outline" link :to="tutorContactLink">
+        Contact
+      </ui-button>
+      <ui-button link :to="tutorDetailsLink"> View Details </ui-button>
     </div>
   </div>
 </template>
@@ -49,11 +51,6 @@ export default {
       const offSet = this.index !== this.currentCard - 1 ? -200 : -140;
       const firstOffset = this.currentCard === 1 ? 0 : 85;
       return this.index > 0 ? offSet + this.index * 10 : firstOffset;
-    },
-  },
-  methods: {
-    onScroll(e) {
-      console.log(e);
     },
   },
 };

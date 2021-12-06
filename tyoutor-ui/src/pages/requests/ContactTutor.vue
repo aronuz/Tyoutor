@@ -38,6 +38,12 @@ export default {
       isLoading: false,
     };
   },
+  mounted() {
+    this.emitter.emit("button");
+  },
+  beforeUnmount() {
+    this.emitter.emit("button");
+  },
   methods: {
     async submitForm() {
       this.formIsValid = emailRegEx.test(this.email) && this.message.length > 0;

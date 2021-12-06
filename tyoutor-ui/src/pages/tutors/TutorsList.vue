@@ -26,7 +26,7 @@
             </div>
             <div
               v-if="hasTutors"
-              @scroll.prevent="onScroll($event)"
+              @scroll.prevent.stop="onScroll($event)"
               class="tutor-cards"
               :style="{ top: cTop + 'px' }"
             >
@@ -109,7 +109,7 @@ export default {
       return this.listTutors.length;
     },
     cTop() {
-      return this.currentCard * 10;
+      return this.currentCard * 20;
     },
   },
   mounted() {
@@ -141,7 +141,12 @@ export default {
       const el = event.target;
       const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
       const currentCard = Math.ceil(pos * 10) || 1;
-      if (currentCard <= this.listTutors.length) this.currentCard = currentCard;
+      if (
+        currentCard <= this.listTutors.length &&
+        currentCard !== this.currentCard
+      )
+        this.currentCard = currentCard;
+
       console.log(this.currentCard);
     },
   },

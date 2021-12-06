@@ -47,11 +47,15 @@ a {
 }
 
 a:hover,
-a:active,
-button:hover,
-button:active {
+button:hover {
   background-color: #270041;
   border-color: #270041;
+}
+
+a:active,
+button:active {
+  background-image: linear-gradient(360deg, #6c63ed 30%, #0a1116);
+  box-shadow: 0px 0px 2px 2px #544a4a inset;
 }
 
 .flat {
@@ -67,8 +71,11 @@ button:active {
 
 .flat:hover,
 .flat:active,
-.outline:hover,
-.outline:active {
+.outline:hover {
   background-color: #edd2ff;
+}
+
+.outline:active {
+  background-image: linear-gradient(360deg, #0071ff 30%, #0a1116) !important;
 }
 </style>

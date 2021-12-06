@@ -12,12 +12,9 @@
           <ui-card>
             <header>
               <h2>Send a message</h2>
-              <ui-button
-                link
-                :to="contactLink"
-                :style="{ display: buttonPressed ? 'display' : 'none' }"
-                >Contact</ui-button
-              >
+              <ui-button link :to="contactLink" v-show="!hasForm">
+                Contact
+              </ui-button>
             </header>
             <router-view></router-view>
           </ui-card>
@@ -53,6 +50,7 @@ export default {
     return {
       selectedTutor: null,
       isOwnDetail: false,
+      hasForm: false,
     };
   },
   computed: {
@@ -69,13 +67,13 @@ export default {
       return this.selectedTutor.description;
     },
     contactLink() {
-      return `${this.$route.path}/${this.id}/contact`;
-    },
-    buttonPressed() {
-      return document.querySelector("request-form");
+      return `${this.$route.path}/contact`;
     },
   },
   created() {
+    this.emitter.on("button", () => {
+      this.hasForm = !this.hasForm;
+    });
     this.selectedTutor = this.$store.getters["tutors/getTutors"].find(
       (tutor) => tutor.tutorId === this.id
     );
