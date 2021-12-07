@@ -4,6 +4,10 @@ import mitt from "mitt";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
+  faArrowCircleUp,
+  faArrowCircleDown,
+} from "@fortawesome/free-solid-svg-icons";
+import {
   faFacebook,
   faTwitter,
   faLinkedin,
@@ -23,7 +27,14 @@ const emitter = mitt();
 
 const app = createApp(App);
 
-library.add(faFacebook, faTwitter, faLinkedin, faInstagram);
+library.add(
+  faArrowCircleUp,
+  faArrowCircleDown,
+  faFacebook,
+  faTwitter,
+  faLinkedin,
+  faInstagram
+);
 
 app.component("font-awesome-icon", FontAwesomeIcon);
 

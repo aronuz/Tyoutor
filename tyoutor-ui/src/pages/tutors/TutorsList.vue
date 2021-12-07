@@ -24,25 +24,40 @@
                 Tutor registration
               </ui-button>
             </div>
-            <div
-              v-if="hasTutors"
-              @scroll.prevent.stop="onScroll($event)"
-              class="tutor-cards"
-              :style="{ top: cTop + 'px' }"
-            >
-              <tutor-item
-                v-for="(tutor, index) in filteredTutors"
-                :key="tutor.id"
-                :index="index"
-                :id="tutor.tutorId"
-                :full-name="tutor.fullName"
-                :description="tutor.description"
-                :rate="tutor.hourlyRate"
-                :areas="tutor.areas"
-                :current-card="currentCard"
-                :total="listTutors.length"
+            <div v-if="hasTutors" class="tutor-cards">
+              <div
+                class="card-stack"
+                @scroll.prevent.stop="onScroll($event)"
+                :style="{ marginTop: cTop + 'px' }"
               >
-              </tutor-item>
+                <tutor-item
+                  v-for="(tutor, index) in filteredTutors"
+                  :key="tutor.id"
+                  :index="index"
+                  :id="tutor.tutorId"
+                  :full-name="tutor.fullName"
+                  :description="tutor.description"
+                  :rate="tutor.hourlyRate"
+                  :areas="tutor.areas"
+                  :current-card="currentCard"
+                  :total="listTutors.length"
+                >
+                </tutor-item>
+              </div>
+              <div class="card-arrows">
+                <div class="arrow-up" @click.stop="doScroll">
+                  <font-awesome-icon
+                    :icon="['fas', 'arrow-circle-up']"
+                    size="2x"
+                  />
+                </div>
+                <div class="arrow-down" @click.stop="doScroll">
+                  <font-awesome-icon
+                    :icon="['fas', 'arrow-circle-down']"
+                    size="2x"
+                  />
+                </div>
+              </div>
             </div>
             <h3 v-else>No tutors found.</h3>
           </ui-card>
@@ -137,17 +152,30 @@ export default {
     closeDialogue() {
       this.error = null;
     },
+    doScroll(event) {
+      const el = event.target.parentNode;
+      const scrollEl = document.querySelectorAll(".card-stack")[0];
+      const scrollPos = scrollEl.scrollTop;
+      const dir = el.className === "arrow-up" ? scrollPos - 50 : scrollPos + 50;
+      scrollEl.scrollTo(0, dir);
+    },
     onScroll(event) {
-      const el = event.target;
-      const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
-      const currentCard = Math.ceil(pos * 10) || 1;
-      if (
-        currentCard <= this.listTutors.length &&
-        currentCard !== this.currentCard
-      )
-        this.currentCard = currentCard;
+      if (event.target.scrollTop >= 0 && event.target.scrollTop <= 100) {
+        const el = event.target;
+        const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
+        const currentCard = Math.ceil(pos * 10) || 1;
+        if (
+          currentCard <= this.listTutors.length &&
+          currentCard !== this.currentCard
+        )
+          this.currentCard = currentCard;
 
-      console.log(this.currentCard);
+        console.log(this.currentCard);
+      } else if (event.target.scrollTop < 0) {
+        event.target.scrollTo(0, 0);
+      } else {
+        event.target.scrollTo(0, 100);
+      }
     },
   },
 };
@@ -187,18 +215,30 @@ export default {
 .tutor-cards {
   position: relative;
   height: 50vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: space-evenly;
+  align-items: stretch;
+}
+
+.card-stack {
+  width: 90vw;
   overflow-y: scroll;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .main-list::-webkit-scrollbar,
-.tutor-cards::-webkit-scrollbar {
+.card-stack::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .main-list,
-.tutor-cards {
+.card-stack {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
@@ -212,13 +252,31 @@ export default {
   );
 }
 
-.tutor-cards {
-  margin: 0;
-  padding: 0;
-}
-
 .controls {
   display: flex;
   justify-content: space-between;
+}
+
+.card-stack,
+.card-arrows {
+  display: inline-block;
+}
+
+.card-arrows {
+  position: relative;
+  bottom: 4.5vh;
+  right: 5vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: space-evenly;
+}
+
+.card-arrows div {
+  border-radius: 50px;
+  background: #39d704;
+  box-shadow: 0px 0px 0px 2px #3e3e3e;
+  cursor: pointer;
 }
 </style>
