@@ -3,9 +3,15 @@
     class="li"
     :style="{ zIndex: zIndex, top: cTop + 'px', left: cLeft, width: cWidth }"
   >
-    <h3>{{ fullName }}</h3>
+    <div class="card-owner">
+      <div>
+        <h3>{{ fullName }}</h3>
+      </div>
+      <div class="index" v-text="index + 1"></div>
+    </div>
     <h4>${{ rate }}/hr</h4>
-    <div>
+
+    <div class="areas">
       <ui-badge
         v-for="area in areas"
         :key="area"
@@ -34,6 +40,7 @@ export default {
     "index",
     "currentCard",
     "total",
+    "isScroll",
   ],
   computed: {
     tutorContactLink() {
@@ -45,24 +52,31 @@ export default {
     isOwnArea() {
       return this.$store.getters["tutors/currentUser"](this.id);
     },
+    isCardIndex() {
+      return this.index === this.currentCard - 1;
+    },
     zIndex() {
-      return this.index !== this.currentCard - 1
-        ? this.total - this.currentCard
-        : this.total;
+      return !this.isCardIndex ? this.total - this.currentCard : this.total;
     },
     cTop() {
-      const offSet = this.index !== this.currentCard - 1 ? -200 : -140;
-      const firstOffset = this.currentCard === 1 ? 0 : 85;
-      return this.index > 0 ? offSet + this.index * 10 : firstOffset;
+      const n = this.isScroll ? 0 : 85;
+      const offSet =
+        this.index > 0
+          ? (!this.isCardIndex ? -185 : -150 - n) + this.index * 10
+          : this.currentCard === 1 || !n
+          ? 10
+          : -10;
+      return offSet;
     },
     cLeft() {
-      return this.index !== this.currentCard - 1
-        ? `${this.currentCard}%`
-        : "0%";
+      const ix = this.index + 1;
+      const n =
+        this.currentCard > ix ? this.currentCard - ix : ix - this.currentCard;
+      return !this.isCardIndex ? `${n}%` : "0%";
     },
     cWidth() {
-      return this.index !== this.currentCard - 1
-        ? `${90 - this.currentCard}%`
+      return !this.isCardIndex
+        ? `${90 - this.currentCard - this.index}%`
         : "91%";
     },
   },
@@ -78,6 +92,28 @@ export default {
   padding: 1rem;
   background-color: #d7d7d7;
   box-shadow: 1px 2px 0px 0px;
+}
+
+.card-owner {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: flex-start;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+}
+
+.index {
+  border: 1px solid black;
+  border-radius: 50px;
+  padding: 1px 5px 0 5px;
+}
+
+.areas {
+  border: solid black;
+  border-width: 2px 0;
+  padding: 3px 0;
 }
 
 h3 {

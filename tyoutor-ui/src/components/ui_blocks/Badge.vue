@@ -49,6 +49,7 @@ export default {
   padding: 0.5rem 1.5rem;
   display: inline-block;
   margin-right: 0.5rem;
+  cursor: default;
 }
 
 .other {

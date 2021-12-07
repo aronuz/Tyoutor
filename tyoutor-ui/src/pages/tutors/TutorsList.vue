@@ -28,7 +28,7 @@
               <div
                 class="card-stack"
                 @scroll.prevent.stop="onScroll($event)"
-                :style="{ marginTop: cTop + 'px' }"
+                :style="{ marginTop: mTop + 'px', paddingTop: pTop + 'px' }"
               >
                 <tutor-item
                   v-for="(tutor, index) in filteredTutors"
@@ -41,17 +41,26 @@
                   :areas="tutor.areas"
                   :current-card="currentCard"
                   :total="listTutors.length"
+                  :is-scroll="isScroll"
                 >
                 </tutor-item>
               </div>
               <div class="card-arrows">
-                <div class="arrow-up" @click.stop="doScroll">
+                <div
+                  class="arrow-up"
+                  @click.stop="changeCard($event, -1)"
+                  @mouseup="resetButton($event)"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'arrow-circle-up']"
                     size="2x"
                   />
                 </div>
-                <div class="arrow-down" @click.stop="doScroll">
+                <div
+                  class="arrow-down"
+                  @click.stop="changeCard($event, 1)"
+                  @mouseup="resetButton($event)"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'arrow-circle-down']"
                     size="2x"
@@ -83,6 +92,8 @@ export default {
       error: null,
       isLoading: false,
       currentCard: 1,
+      isScroll: true,
+      hasScrolled: false,
     };
   },
   computed: {
@@ -123,8 +134,12 @@ export default {
     hasTutors() {
       return this.listTutors.length;
     },
-    cTop() {
-      return this.currentCard * 20;
+    mTop() {
+      return this.currentCard * 10;
+    },
+    pTop() {
+      if (!this.hasScrolled && this.pTop === 100) return 100;
+      else return this.hasScrolled ? this.currentCard * 50 : 0;
     },
   },
   mounted() {
@@ -152,25 +167,47 @@ export default {
     closeDialogue() {
       this.error = null;
     },
-    doScroll(event) {
-      const el = event.target.parentNode;
-      const scrollEl = document.querySelectorAll(".card-stack")[0];
-      const scrollPos = scrollEl.scrollTop;
-      const dir = el.className === "arrow-up" ? scrollPos - 50 : scrollPos + 50;
-      scrollEl.scrollTo(0, dir);
+    resetButton(event) {
+      let el = event.target.parentNode;
+      if (
+        !(
+          event.target.parentNode.classList.contains("arrow-up") ||
+          event.target.parentNode.classList.contains("arrow-down")
+        )
+      ) {
+        el = el.parentNode;
+      }
+      setTimeout(() => {
+        el.style.background = "#39d704";
+      }, 250);
+    },
+    changeCard(event, d) {
+      event.currentTarget.style.background = "#36e965";
+      const cardIdx = this.currentCard + d;
+      if (
+        1 <= cardIdx &&
+        cardIdx <= this.listTutors.length &&
+        cardIdx !== this.currentCard
+      ) {
+        this.isScroll = false;
+        this.currentCard = cardIdx;
+        this.hasScrolled = false;
+      }
     },
     onScroll(event) {
       if (event.target.scrollTop >= 0 && event.target.scrollTop <= 100) {
         const el = event.target;
         const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
-        const currentCard = Math.ceil(pos * 10) || 1;
+        const cardIdx = Math.ceil(pos * 10) || 1;
         if (
-          currentCard <= this.listTutors.length &&
-          currentCard !== this.currentCard
-        )
-          this.currentCard = currentCard;
-
-        console.log(this.currentCard);
+          1 <= cardIdx &&
+          cardIdx <= this.listTutors.length &&
+          cardIdx !== this.currentCard
+        ) {
+          this.isScroll = false;
+          this.currentCard = cardIdx;
+        }
+        this.hasScrolled = true;
       } else if (event.target.scrollTop < 0) {
         event.target.scrollTo(0, 0);
       } else {
