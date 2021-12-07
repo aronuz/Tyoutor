@@ -1,5 +1,8 @@
 <template>
-  <div class="li" :style="{ zIndex: zIndex, top: cTop + 'px' }">
+  <div
+    class="li"
+    :style="{ zIndex: zIndex, top: cTop + 'px', left: cLeft, width: cWidth }"
+  >
     <h3>{{ fullName }}</h3>
     <h4>${{ rate }}/hr</h4>
     <div>
@@ -52,6 +55,16 @@ export default {
       const firstOffset = this.currentCard === 1 ? 0 : 85;
       return this.index > 0 ? offSet + this.index * 10 : firstOffset;
     },
+    cLeft() {
+      return this.index !== this.currentCard - 1
+        ? `${this.currentCard}%`
+        : "0%";
+    },
+    cWidth() {
+      return this.index !== this.currentCard - 1
+        ? `${90 - this.currentCard}%`
+        : "91%";
+    },
   },
 };
 </script>
@@ -59,7 +72,6 @@ export default {
 <style scoped>
 .li {
   position: relative;
-  width: 90%;
   margin: 1rem 0;
   border: 1px solid #424242;
   border-radius: 12px;
