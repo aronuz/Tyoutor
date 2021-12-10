@@ -1,7 +1,10 @@
 <template>
   <ui-card>
     <h2>Find a Tutor</h2>
-    <ui-button @click="submitFilters">Apply</ui-button>
+    <div class="filter-block">
+      <input type="text" ref="filter-input" />
+      <ui-button @click="submitFilters">Search</ui-button>
+    </div>
   </ui-card>
 </template>
 
@@ -19,6 +22,12 @@ export default {
   },
   methods: {
     buildFilters() {
+      document
+        .querySelectorAll(".filter-block")[0]
+        .insertAdjacentHTML(
+          "beforeend",
+          "<div class='filter-head' style='font-weight: 600'>Filter by:</div>"
+        );
       const areas = this.listAreas;
       if (areas && areas.length) {
         const areaSet = new Set();
@@ -30,12 +39,12 @@ export default {
           const spanEl = document.createElement("span");
           spanEl.classList.add("filter-option");
           document
-            .querySelectorAll(".card")[0]
+            .querySelectorAll(".filter-block")[0]
             .insertAdjacentElement("beforeend", spanEl);
           const filter = `
       <input type="checkbox" id="${filterId}" @change="setFilter" />
       <label for="${filterId}">${el}</label>`;
-          spanEl.insertAdjacentHTML("beforeend", filter);
+          spanEl.insertAdjacentHTML("afterbegin", filter);
         });
       }
     },
@@ -57,12 +66,23 @@ export default {
 </script>
 
 <style scoped>
+.card {
+  background-image: linear-gradient(
+    140deg,
+    #10bbfd 15%,
+    #43465c 70%,
+    #b43811 80%,
+    #a29b24 90%
+  );
+}
+
 h2 {
   margin: 0.5rem 0;
 }
 
-.filter-option {
-  margin-right: 1rem;
+.filter-block {
+  position: relative;
+  bottom: 15px;
 }
 
 .filter-option label,
@@ -76,5 +96,9 @@ h2 {
 
 .filter-option.active label {
   font-weight: bold;
+}
+
+button {
+  margin-left: 40px;
 }
 </style>

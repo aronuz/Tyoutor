@@ -59,10 +59,11 @@ export default {
       return !this.isCardIndex ? this.total - this.currentCard : this.total;
     },
     cTop() {
+      const m = this.isScroll ? 0 : 15;
       const n = this.isScroll ? 0 : 85;
       const offSet =
         this.index > 0
-          ? (!this.isCardIndex ? -185 : -150 - n) + this.index * 10
+          ? (!this.isCardIndex ? -185 - m : -150 - n) + this.index * 10
           : this.currentCard === 1 || !n
           ? 10
           : -10;
