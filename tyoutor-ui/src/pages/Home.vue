@@ -250,6 +250,16 @@ export default {
   width: 100%;
 }
 
+.card-row {
+  background-image: linear-gradient(
+    140deg,
+    #10bbfd 15%,
+    #43465c 70%,
+    #b43811 80%,
+    #a29b24 90%
+  );
+}
+
 .row {
   background-image: linear-gradient(
     180deg,
@@ -294,6 +304,7 @@ export default {
 .area-list {
   display: inline-block;
   position: relative;
+  background-color: #2096ca;
 }
 .area-info {
   display: inline-block;
@@ -301,7 +312,7 @@ export default {
   background-color: lightgrey;
   position: relative;
   width: 100%;
-  background-color: #00000017;
+  background-color: transparent;
 }
 
 .contact-row .row-title {
@@ -545,7 +556,7 @@ export default {
     display: none;
   }
   .row-title {
-    left: 120px;
+    /* left: 120px; */
     font-size: 3.5rem !important;
   }
   .area-row {
