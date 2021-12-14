@@ -5,6 +5,7 @@
         <div class="area-info">
           <ui-card
             class="area-card"
+            :class="{ 'has-area': hasArea, 'has-no-area': !hasArea }"
             width="100%"
             :style="{ boxShadow: `1px -2px 18px 0px ${shadowColor}` }"
             v-html="allAreasInfo"
@@ -86,8 +87,11 @@ export default {
         return "";
       }
     },
+    hasArea() {
+      return this.allAreasInfo.includes("#d1d1d1");
+    },
     shadowColor() {
-      return this.allAreasInfo.includes("#d1d1d1") ? "#d1d1d1" : "#0000009e";
+      return this.hasArea ? "#d1d1d1" : "#0000009e";
     },
   },
   methods: {},
@@ -124,6 +128,40 @@ export default {
   position: relative;
   width: 100%;
   background-color: #00000017;
+}
+
+.has-area {
+  animation-name: with-area;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+}
+
+@keyframes with-area {
+  from {
+    background-color: inherit;
+    opacity: 0;
+  }
+  to {
+    background-color: #17a7df63;
+    opacity: 1;
+  }
+}
+
+.has-no-area {
+  animation-name: with-no-area;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+}
+
+@keyframes with-no-area {
+  from {
+    background-color: #17a7df63;
+    opacity: 0;
+  }
+  to {
+    background-color: inherit;
+    opacity: 1;
+  }
 }
 
 @media (max-width: 344px) {

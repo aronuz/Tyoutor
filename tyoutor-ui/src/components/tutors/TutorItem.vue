@@ -1,6 +1,7 @@
 <template>
   <div
     class="li"
+    :id="`t-card-${index}`"
     :style="{ zIndex: zIndex, top: cTop + 'px', left: cLeft, width: cWidth }"
   >
     <div class="card-owner">
@@ -41,6 +42,7 @@ export default {
     "currentCard",
     "total",
     "isScroll",
+    "direction",
   ],
   computed: {
     tutorContactLink() {
@@ -81,6 +83,18 @@ export default {
         : "91%";
     },
   },
+  watch: {
+    isCardIndex() {
+      const cardEl = document.getElementById(`t-card-${this.index}`);
+      if (this.isCardIndex) {
+        const dirSuffix = this.direction ? "up" : "down";
+        cardEl.classList.add("move-" + dirSuffix);
+      } else {
+        cardEl.classList.remove("move-up");
+        cardEl.classList.remove("move-down");
+      }
+    },
+  },
 };
 </script>
 
@@ -93,6 +107,64 @@ export default {
   padding: 1rem;
   background-color: #d7d7d7;
   box-shadow: 1px 2px 0px 0px;
+}
+
+.move-down {
+  animation-name: move-down;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+}
+
+@keyframes move-down {
+  0% {
+    transform: translateY(-35px) scale(0.9);
+    opacity: 0.2;
+  }
+  25% {
+    transform: translateY(-25px) scale(0.925);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-15px) scale(0.95);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translateY(-5px) scale(0.975);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+    opacity: 1;
+  }
+}
+
+.move-up {
+  animation-name: move-up;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+}
+
+@keyframes move-up {
+  0% {
+    transform: translateY(40px) scale(0.9);
+    opacity: 0.2;
+  }
+  25% {
+    transform: translateY(20px) scale(0.925);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(10px) scale(0.95);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translateY(5px) scale(0.975);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+    opacity: 1;
+  }
 }
 
 .card-owner {

@@ -283,7 +283,7 @@ export default {
 } */
 
 .area-card {
-  background-color: #2ba4d300;
+  background-color: #4cbdf347;
 }
 
 .v-footer {
@@ -340,6 +340,7 @@ export default {
   animation-name: slidein;
   animation-duration: 6s;
   animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
   display: inline;
 }
 
@@ -347,6 +348,7 @@ export default {
   animation-name: n-slidein;
   animation-duration: 2s;
   animation-timing-function: linear;
+  animation-fill-mode: forwards;
   display: inline;
 }
 

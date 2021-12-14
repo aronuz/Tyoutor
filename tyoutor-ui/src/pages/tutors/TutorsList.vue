@@ -42,6 +42,7 @@
                   :current-card="currentCard"
                   :total="listTutors.length"
                   :is-scroll="isScroll"
+                  :direction="direction"
                 >
                 </tutor-item>
               </div>
@@ -94,6 +95,7 @@ export default {
       currentCard: 1,
       isScroll: true,
       hasScrolled: false,
+      direction: null,
     };
   },
   computed: {
@@ -190,6 +192,7 @@ export default {
         cardIdx !== this.currentCard
       ) {
         this.isScroll = false;
+        this.direction = cardIdx > this.currentCard;
         this.currentCard = cardIdx;
         this.hasScrolled = false;
       }
@@ -205,6 +208,7 @@ export default {
           cardIdx !== this.currentCard
         ) {
           this.isScroll = false;
+          this.direction = cardIdx > this.currentCard;
           this.currentCard = cardIdx;
         }
         this.hasScrolled = true;
