@@ -66,16 +66,6 @@ export default {
 </script>
 
 <style scoped>
-.card {
-  background-image: linear-gradient(
-    140deg,
-    #10bbfd 15%,
-    #43465c 70%,
-    #b43811 80%,
-    #a29b24 90%
-  );
-}
-
 h2 {
   margin: 0.5rem 0;
 }

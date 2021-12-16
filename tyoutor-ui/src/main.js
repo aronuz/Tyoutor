@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import router from "./router/index.js";
 import store from "./store/index.js";
+import layout from "./pages/layout.vue";
 import ui_card from "./components/ui_blocks/Card.vue";
 import ui_button from "./components/ui_blocks/Button.vue";
 import ui_badge from "./components/ui_blocks/Badge.vue";
@@ -43,6 +44,7 @@ app.config.globalProperties.emitter = emitter;
 app.use(router);
 app.use(store);
 
+app.component("layout", layout);
 app.component("ui-card", ui_card);
 app.component("ui-button", ui_button);
 app.component("ui-badge", ui_badge);

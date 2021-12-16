@@ -1,38 +1,40 @@
 <template>
-  <div>
-    <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
-      <p>{{ error }}</p>
-    </ui-dialog>
-    <div v-if="isLoading">
-      <ui-spinner></ui-spinner>
-    </div>
-    <div class="home-page">
-      <div class="child_1">
-        <section class="main-list">
-          <ui-card class="request-card">
-            <header>
-              <h2>Incoming messages</h2>
-            </header>
-            <div class="controls">
-              <ui-button mode="outline" @click="loadRequests(true)">
-                Refresh
-              </ui-button>
-            </div>
-            <ul v-if="hasRequests">
-              <request-item
-                v-for="req in receivedRequests"
-                :key="req.id"
-                :email="req.userEmail"
-                :message="req.message"
-              >
-              </request-item>
-            </ul>
-            <h3 v-else>There are no new messages.</h3>
-          </ui-card>
-        </section>
+  <layout
+    :has-items="!!hasRequests"
+    :is-loading="isLoading"
+    :error="error"
+    :requests-style="true"
+  >
+    <template v-slot:default>
+      <ui-card>
+        <h2>Incoming messages</h2>
+      </ui-card>
+    </template>
+    <template v-slot:controls>
+      <ui-button mode="outline" @click="loadRequests(true)">
+        Refresh
+      </ui-button>
+    </template>
+    <template v-slot:cards>
+      <div
+        v-if="hasRequests"
+        class="card-stack"
+        @scroll.prevent.stop="onScroll($event)"
+      >
+        <request-item
+          v-for="(req, index) in receivedRequests"
+          :key="req.id"
+          :index="index"
+          :email="req.userEmail"
+          :message="req.message"
+          :current-card="currentCard"
+          :direction="direction"
+        >
+        </request-item>
       </div>
-    </div>
-  </div>
+      <h3 v-else>There are no new messages.</h3>
+    </template>
+  </layout>
 </template>
 
 <script>
@@ -46,6 +48,8 @@ export default {
     return {
       error: null,
       isLoading: false,
+      currentCard: 1,
+      direction: null,
     };
   },
   computed: {
@@ -74,82 +78,62 @@ export default {
     closeDialogue() {
       this.error = null;
     },
+    changeCard(event, d) {
+      event.currentTarget.style.background = "#36e965";
+      const cardIdx = this.currentCard + d;
+      if (
+        1 <= cardIdx &&
+        cardIdx <= this.receivedRequests.length &&
+        cardIdx !== this.currentCard
+      ) {
+        this.direction = cardIdx > this.currentCard;
+        this.currentCard = cardIdx;
+        const i = this.direction ? 128 : -128;
+        document.getElementsByClassName("card-stack")[0].scrollBy(0, i);
+      }
+    },
+    onScroll(event) {
+      if (event.target.scrollTop >= 0 && event.target.scrollTop <= 100) {
+        const el = event.target;
+        const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
+        const cardIdx = Math.ceil(pos * 10) || 1;
+        if (
+          1 <= cardIdx &&
+          cardIdx <= this.receivedRequests.length &&
+          cardIdx !== this.currentCard
+        ) {
+          this.direction = cardIdx > this.currentCard;
+          this.currentCard = cardIdx;
+        }
+      } else if (event.target.scrollTop < 0) {
+        event.target.scrollTo(0, 0);
+      } else {
+        event.target.scrollTo(0, 100);
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-.home-page {
-  position: fixed;
-  top: 2rem;
-  z-index: 0;
-  min-height: 100vh;
-  max-height: 100vh;
-  width: 100vw;
-  overflow-y: hidden;
-}
-
-.child_1 {
-  position: relative;
-  bottom: 0;
-  height: 100vh;
-  width: 100%;
-  overflow-y: hidden;
-  background-image: linear-gradient(
-    180deg,
-    rgb(17 164 221),
-    #52bff5 60%,
-    rgb(17 164 221) 90%
-  );
-}
-
-.main-list {
+.card-stack {
   overflow-y: scroll;
-  height: 92.5vh;
-  margin-top: -2rem;
+  list-style: none;
+  margin-top: 10px;
+  padding: 0;
+  height: 100%;
+  width: 30rem;
+  margin-right: -250px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.main-list::-webkit-scrollbar {
+.card-stack::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.main-list {
+.card-stack {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-}
-
-.main-list .card {
-  background-image: linear-gradient(
-    180deg,
-    rgb(17 164 221),
-    #52bff5 60%,
-    rgb(17 164 221) 90%
-  );
-}
-.request-card {
-  margin-top: 4rem !important;
-  height: 100%;
-}
-
-header {
-  text-align: center;
-}
-
-ul {
-  list-style: none;
-  margin: 2rem auto;
-  padding: 0;
-  max-width: 30rem;
-}
-
-h3 {
-  text-align: center;
-}
-
-.controls {
-  display: flex;
-  justify-content: space-between;
 }
 </style>
