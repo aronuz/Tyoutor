@@ -46,12 +46,12 @@ export default {
     },
   },
   created() {
-    this.initContacts();
+    this.fetchContacts();
   },
   mounted() {},
   methods: {
     ...mapActions({
-      initContacts: "contacts/initContacts",
+      fetchContacts: "contacts/fetchContacts",
     }),
   },
 };
