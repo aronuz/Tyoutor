@@ -1,33 +1,33 @@
 <template>
-  <v-app>
-    <div class="home-page d-flex justify-center"></div>
-    <div class="child_1">
-      <v-container fluid height="100%">
-        <v-row xs12 justify="center" class="ml-n6 pt-1">
-          <v-col cols="12">
-            <v-card
-              width="100vw"
-              class="mx-auto mt-1 card-row contact-row"
-              color="#fff"
-            >
-              <span class="row-title black--text"> Contact Us </span>
-              <ContactsList
-                :contacts="listContacts"
-                class="mt-md-n15 mt-xs-0"
-              />
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
-  </v-app>
+  <layout
+    :has-items="!!hasRequests"
+    :is-loading="isLoading"
+    :error="error"
+    :requests-style="true"
+  >
+    <template v-slot:default>
+      <ui-card>
+        <h2>Our mission and how to reach Tyoutor</h2>
+      </ui-card>
+    </template>
+    <template v-slot:cards>
+      <div class="card-stack">
+        <contact-list :contacts="listContacts" />
+      </div>
+    </template>
+  </layout>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
+import contactList from "@/components/contacts/ContactList.vue";
+
 export default {
+  components: {
+    contactList,
+  },
   data() {
     return {};
   },

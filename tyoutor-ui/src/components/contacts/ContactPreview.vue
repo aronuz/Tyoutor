@@ -1,5 +1,5 @@
 <template>
-  <v-card
+  <ui-card
     class="contact-preview"
     :to="getLocation"
     target="_blank"
@@ -12,7 +12,7 @@
     <div class="map-image" :style="mapDisplay">
       <img :data-url="getImgUrl(address)" alt="Location" />
     </div>
-  </v-card>
+  </ui-card>
 </template>
 
 <script>
@@ -45,11 +45,8 @@ export default {
     },
   },
   methods: {
-    getImgUrl(address) {
-      const markerImage =
-        address.indexOf("Brooklyn") > 0
-          ? "brooklyn_office.png"
-          : "manhattan_office.png";
+    getImgUrl(phone) {
+      const markerImage = `office_${phone.substr(0, 3)}.png`;
       return require(`@/assets/images/maps/${markerImage}`);
     },
   },
