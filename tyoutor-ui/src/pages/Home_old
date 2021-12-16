@@ -1,65 +1,80 @@
 <template>
-  <layout :has-items="true" :home-style="true" :is-loading="isLoading">
-    <template v-slot:default>
-      <div class="container" fluid height="100%">
-        <ui-card width="100vw" class="mx-auto card-row" color="#fff">
-          <div class="row-title title-area">
-            Our tutors can help you with...
+  <div>
+    <ui-dialog :show="!!error" title="Error" @close="closeDialogue">
+      <p>{{ error }}</p>
+    </ui-dialog>
+    <div v-if="isLoading">
+      <ui-spinner></ui-spinner>
+    </div>
+    <div class="home-page">
+      <div class="child_1">
+        <div class="container" fluid height="100%">
+          <div xs12 justify="center" class="row no-gutters">
+            <div class="col" cols="12">
+              <ui-card width="100vw" class="mx-auto card-row" color="#fff">
+                <div class="row-title title-area black--text">
+                  Our tutors can help you with...
+                </div>
+                <div xs12 justify="start" class="inner-row area-sub-row">
+                  <div class="col" cols="10" sm="0" md="7">
+                    <areaList :tutor-id="tutorId" part="all">
+                      <template v-slot:default></template>
+                    </areaList>
+                  </div>
+                </div>
+              </ui-card>
+            </div>
           </div>
-          <div xs12 justify="start" class="inner-row area-sub-row">
-            <div class="col" cols="10" sm="0" md="7">
-              <areaList :tutor-id="tutorId" part="all">
-                <template v-slot:default></template>
+          <div class="row tutor-row no-gutters">
+            <div class="col tutor-col hide-on-big">
+              <ui-card
+                color="#FFF"
+                height="100%"
+                width="100%"
+                class="info-sheet"
+              >
+                <div
+                  class="display-1 black--text pa-10 info-text"
+                  v-html="tutorInfo"
+                ></div>
+              </ui-card>
+            </div>
+            <div class="col tutor-col">
+              <div class="lazy">
+                <ui-card light flat color="#9ca39b" height="100%">
+                  <div class="carousel">
+                    <div
+                      :id="`ci-${index}`"
+                      class="carousel-item"
+                      :class="[{ active: index === currentIndex }]"
+                      v-for="(tutor, index) in listTutors"
+                      :key="tutor.tutorId"
+                      :height="carouselHeight()"
+                      @click="showTutor(tutor.tutorId)"
+                      :style="`z-index:${index}`"
+                    >
+                      <img
+                        :src="getImgUrl_tutors(`logo_${index}.png`)"
+                        class="d-block w-100"
+                        :alt="`${tutor.fullName} photo`"
+                      />
+                    </div>
+                  </div>
+                </ui-card>
+              </div>
+            </div>
+          </div>
+          <div xs12 justify="center" class="row no-gutters">
+            <div class="col" cols="12">
+              <areaList :tutor-id="tutorId" part="tutor">
+                <template v-slot:tutor-areas></template>
               </areaList>
             </div>
           </div>
-        </ui-card>
-      </div>
-    </template>
-    <template v-slot:cards>
-      <div class="row tutor-row no-gutters">
-        <div class="col tutor-col hide-on-big">
-          <ui-card color="#FFF" height="100%" width="100%" class="info-sheet">
-            <div
-              class="display-1 black--text pa-10 info-text"
-              v-html="tutorInfo"
-            ></div>
-          </ui-card>
-        </div>
-        <div class="col tutor-col">
-          <div class="lazy">
-            <ui-card light flat color="#9ca39b" height="100%">
-              <div class="carousel">
-                <div
-                  :id="`ci-${index}`"
-                  class="carousel-item"
-                  :class="[{ active: index === currentIndex }]"
-                  v-for="(tutor, index) in listTutors"
-                  :key="tutor.tutorId"
-                  :height="carouselHeight()"
-                  @click="showTutor(tutor.tutorId)"
-                  :style="`z-index:${index}`"
-                >
-                  <img
-                    :src="getImgUrl_tutors(`logo_${index}.png`)"
-                    class="d-block w-100"
-                    :alt="`${tutor.fullName} photo`"
-                  />
-                </div>
-              </div>
-            </ui-card>
-          </div>
         </div>
       </div>
-      <div xs12 justify="center" class="row no-gutters">
-        <div class="col" cols="12">
-          <areaList :tutor-id="tutorId" part="tutor">
-            <template v-slot:tutor-areas></template>
-          </areaList>
-        </div>
-      </div>
-    </template>
-  </layout>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -235,8 +250,14 @@ export default {
   width: 100%;
 }
 
-.area-sub-row {
-  background-color: #16a6dfd6;
+.card-row {
+  background-image: linear-gradient(
+    140deg,
+    #10bbfd 15%,
+    #43465c 70%,
+    #b43811 80%,
+    #a29b24 90%
+  );
 }
 
 .row {

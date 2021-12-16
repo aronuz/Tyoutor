@@ -12,13 +12,19 @@
           <slot></slot>
         </section>
         <section class="main-list">
-          <ui-card :class="{ 'requests-card': requestsStyle }">
+          <ui-card
+            :class="{ 'home-card': homeStyle, 'requests-card': requestsStyle }"
+          >
             <div class="controls">
               <slot name="controls"></slot>
             </div>
-            <div v-if="hasItems" class="item-cards">
+            <div
+              v-if="hasItems"
+              class="item-cards"
+              :style="{ display: !homeStyle ? 'flex' : 'block' }"
+            >
               <slot name="cards"></slot>
-              <div class="card-arrows">
+              <div v-if="!homeStyle" class="card-arrows">
                 <div
                   class="arrow-up"
                   @click.stop="$parent.changeCard($event, -1)"
@@ -54,6 +60,11 @@ export default {
     hasItems: {
       type: Boolean,
       required: true,
+      default: false,
+    },
+    homeStyle: {
+      type: Boolean,
+      required: false,
       default: false,
     },
     requestsStyle: {
@@ -157,6 +168,10 @@ export default {
   );
 }
 
+.home-card {
+  padding: 2rem 0 !important;
+}
+
 .requests-card {
   margin-top: 4rem !important;
   height: 100%;
@@ -171,7 +186,6 @@ h3 {
   height: 50vh;
   margin: 0;
   padding: 0;
-  display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-content: center;

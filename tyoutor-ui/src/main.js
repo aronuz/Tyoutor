@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import router from "./router/index.js";
 import store from "./store/index.js";
-import layout from "./pages/layout.vue";
+import layout from "./pages/PageLayout.vue";
 import ui_card from "./components/ui_blocks/Card.vue";
 import ui_button from "./components/ui_blocks/Button.vue";
 import ui_badge from "./components/ui_blocks/Badge.vue";
