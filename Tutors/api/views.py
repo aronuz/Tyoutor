@@ -2,6 +2,7 @@ from django.http.response import JsonResponse
 from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
 
+from core.pagination import TutorPagination, AreaPagination, RequestPagination
 from Tutors.api.permissions import IsSelfOrReadOnly
 from Tutors.api.serializers import TutorSerializer, AreaSerializer, RequestSerializer
 from Tutors.models import Tutor, Area, Request
@@ -12,6 +13,7 @@ class TutorViewSet(viewsets.ModelViewSet):
     serializer_class = TutorSerializer
     lookup_field = "tutor_id"
     permission_classes = [IsSelfOrReadOnly]
+    pagination_class = TutorPagination
 
     def perform_create(self, serializer):
         if Tutor.objects.filter(tutor_user=self.request.user).exists():
@@ -21,6 +23,7 @@ class TutorViewSet(viewsets.ModelViewSet):
 
 class AreasListAPIView(generics.ListAPIView):
     serializer_class = AreaSerializer
+    pagination_class = AreaPagination
 
     def get_queryset(self):
         tutor_id = self.kwargs.get("tutor_id", None)
@@ -63,6 +66,7 @@ class AreaRUDAPView(generics.RetrieveUpdateDestroyAPIView):
 
 class RequestsListAPIView(generics.ListAPIView):
     serializer_class = RequestSerializer
+    pagination_class = RequestPagination
 
     def get_queryset(self):
         tutor_id = self.kwargs.get("tutor_id")

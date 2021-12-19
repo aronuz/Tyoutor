@@ -12,3 +12,15 @@ class PageNumberPaginationNoCount(PageNumberPagination):
                 ('results', data)
             ])
         )
+
+
+class TutorPagination(PageNumberPagination):
+    page_size = 10
+
+
+class AreaPagination(PageNumberPagination):
+    page_size = 15
+
+
+class RequestPagination(PageNumberPagination):
+    page_size = 5
