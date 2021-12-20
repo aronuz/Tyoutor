@@ -42,6 +42,14 @@ export default {
       type: String,
       required: true,
     },
+    withText: {
+      type: Boolean,
+      default: false,
+    },
+    firstName: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {};
@@ -77,12 +85,36 @@ export default {
     tutorAreasInfo() {
       if (this.part !== "tutor") return "";
       const areas = this.tutorAreas(this.tutorId);
-      if (areas.length) {
-        const infoStr = [];
-        for (let i in areas) {
-          infoStr.push(areas[i].areas);
+      let areaslength = areas.length;
+      if (areaslength) {
+        let promptEnd = "";
+        if (this.withText && areaslength > 3) {
+          areaslength = 3;
+          promptEnd = " and more";
         }
-        return infoStr.length ? infoStr.join(", ") : "";
+        const infoStr = [];
+        for (let i = 0; i < areaslength; i++) {
+          infoStr.push(
+            areaslength === 3 && i == 2
+              ? `and ${areas[i].areas}`
+              : areas[i].areas
+          );
+        }
+        let prompt = "";
+        if (this.withText) {
+          const promptChoice = [
+            "is here to help with",
+            "can help you with",
+            "is a pro in",
+            "is a master of",
+            "helps with",
+          ];
+          const i = Math.floor(Math.random() * 5);
+          prompt = `${this.firstName} ${promptChoice[i]}`;
+        }
+        const infoString =
+          areaslength === 2 ? infoStr.join(" and ") : infoStr.join(", ");
+        return infoStr.length ? `${prompt} ${infoString}${promptEnd}` : "";
       } else {
         return "";
       }

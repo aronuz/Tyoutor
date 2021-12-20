@@ -53,7 +53,12 @@
       </div>
       <div xs12 justify="center" class="row no-gutters">
         <div class="col" cols="12">
-          <areaList :tutor-id="tutorId" part="tutor">
+          <areaList
+            :tutor-id="tutorId"
+            part="tutor"
+            :with-text="true"
+            :first-name="firstName"
+          >
             <template v-slot:tutor-areas></template>
           </areaList>
         </div>
@@ -73,6 +78,8 @@ export default {
       isActive: false,
       isLoading: false,
       tutorId: "",
+      firstName: "",
+      lastName: "",
       tutorInfo: "",
       error: null,
       colors: [
@@ -101,9 +108,11 @@ export default {
   watch: {
     currentIndex() {
       if (this.listTutors.length) {
-        this.tutorId = this.listTutors[this.currentIndex].tutorId;
         const tutorItem = this.listTutors[this.currentIndex];
-        let info = `<span>${tutorItem["firstName"]} ${tutorItem["lastName"]}</span>`;
+        this.tutorId = tutorItem.tutorId;
+        this.firstName = tutorItem.firstName;
+        this.lastName = tutorItem.lastName;
+        let info = `<span>${this.firstName} ${this.lastName}</span>`;
         info += `<br/><span>${tutorItem["description"]}</span>`;
         this.tutorInfo = info;
       } else {
