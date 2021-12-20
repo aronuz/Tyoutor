@@ -16,13 +16,14 @@
       <div
         v-if="hasTutors"
         class="card-stack"
+        ref="card-stack"
         @scroll.prevent.stop="onScroll($event)"
         :style="{ marginTop: mTop + 'px', paddingTop: pTop + 'px' }"
       >
         <tutor-item
           v-for="(tutor, index) in filteredTutors"
           :key="tutor.id"
-          :index="index"
+          :index="index + 1"
           :id="tutor.tutorId"
           :full-name="tutor.fullName"
           :description="tutor.description"
@@ -99,12 +100,18 @@ export default {
     hasTutors() {
       return this.listTutors.length;
     },
+    scrollY() {
+      return (this.listTutors.length + 2) * 50;
+    },
     mTop() {
       return this.currentCard * 10;
     },
     pTop() {
-      if (!this.hasScrolled && this.pTop === 100) return 100;
-      else return this.hasScrolled ? this.currentCard * 50 : 0;
+      if (!this.hasScrolled && this.pTop >= 100) return 100;
+      else if (this.hasScrolled && this.currentCard) {
+        const currentY = this.$refs["card-stack"].scrollTop - 50;
+        return currentY;
+      } else return this.currentCard * 10;
     },
   },
   mounted() {
@@ -147,7 +154,10 @@ export default {
       }
     },
     onScroll(event) {
-      if (event.target.scrollTop >= 0 && event.target.scrollTop <= 100) {
+      if (
+        event.target.scrollTop >= 0 &&
+        event.target.scrollTop <= this.scrollY
+      ) {
         const el = event.target;
         const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
         const cardIdx = Math.ceil(pos * 10) || 1;
@@ -164,7 +174,7 @@ export default {
       } else if (event.target.scrollTop < 0) {
         event.target.scrollTo(0, 0);
       } else {
-        event.target.scrollTo(0, 100);
+        event.target.scrollTo(0, this.scrollY - 50);
       }
     },
   },

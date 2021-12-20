@@ -8,7 +8,7 @@
       <div>
         <h3>{{ fullName }}</h3>
       </div>
-      <div class="index" v-text="index + 1"></div>
+      <div class="index" v-text="index"></div>
     </div>
     <h4>${{ rate }}/hr</h4>
 
@@ -55,32 +55,35 @@ export default {
       return this.$store.getters["tutors/currentUser"](this.id);
     },
     isCardIndex() {
-      return this.index === this.currentCard - 1;
+      return this.index === this.currentCard;
     },
     zIndex() {
-      return !this.isCardIndex ? this.total - this.currentCard : this.total;
+      const div = Math.abs(this.currentCard - this.index);
+      return !this.isCardIndex ? this.total - div : this.total;
     },
     cTop() {
-      const m = this.isScroll ? 0 : 15;
-      const n = this.isScroll ? 0 : 85;
-      const offSet =
-        this.index > 0
-          ? (!this.isCardIndex ? -185 - m : -150 - n) + this.index * 10
-          : this.currentCard === 1 || !n
-          ? 10
-          : -10;
+      let offSet =
+        this.index === 1
+          ? -10 * this.currentCard
+          : -20 * ((this.index - 1) * 10 + this.index - 1);
+      if (this.currentCard > 1 && this.index > 1)
+        if (this.index >= this.currentCard)
+          offSet -= (this.currentCard - 2) * 10;
+        else offSet -= (this.currentCard - 2) * 20;
       return offSet;
     },
     cLeft() {
-      const ix = this.index + 1;
-      const n =
-        this.currentCard > ix ? this.currentCard - ix : ix - this.currentCard;
-      return !this.isCardIndex ? `${n}%` : "0%";
+      // const ix = this.index;
+      // const n =
+      //   this.currentCard > ix ? this.currentCard - ix : ix - this.currentCard;
+      // return !this.isCardIndex ? `${n}%` : "0%";
+      const div = Math.abs(this.currentCard - this.index);
+      return `${div}%`;
     },
     cWidth() {
-      return !this.isCardIndex
-        ? `${90 - this.currentCard - this.index}%`
-        : "91%";
+      const div = Math.abs(this.currentCard - this.index);
+      const divi = Math.abs(this.currentCard - this.index);
+      return !this.isCardIndex ? `${92 - divi - div}%` : "92%";
     },
   },
   watch: {
@@ -107,6 +110,10 @@ export default {
   padding: 1rem;
   background-color: #d7d7d7;
   box-shadow: 1px 2px 0px 0px;
+}
+
+.li * {
+  cursor: default;
 }
 
 .move-down {
