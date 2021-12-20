@@ -2,7 +2,13 @@
   <span class="badge" :class="[getClass]">
     {{ text }}
   </span>
-  <ui-button v-if="isOwnArea" @click="removeArea()"> Remove </ui-button>
+  <ui-button
+    v-if="isOwnArea"
+    :class="{ 'remove-area': isOwnArea }"
+    @click="removeArea()"
+  >
+    &#215;
+  </ui-button>
 </template>
 
 <script>
@@ -75,5 +81,16 @@ export default {
 .u-z {
   background-color: #04af98;
   color: #140909;
+}
+
+.remove-area {
+  padding: 0.1rem 0.45rem;
+  position: relative;
+  margin-right: -22px;
+  left: -31px;
+  bottom: 0.05rem;
+  border: none;
+  box-shadow: 0px 0px 0px 1px #685e5e;
+  background-image: linear-gradient(180deg, #ed4f56, #2c0e10 90%);
 }
 </style>

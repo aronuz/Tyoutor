@@ -15,7 +15,11 @@
           <router-link :to="{ name: 'about' }">About Tyoutor</router-link>
         </li>
         <li>
-          <a class="btn btn-outline-secondary" href="/accounts/logout/">
+          <a
+            class="btn btn-outline-secondary"
+            @click="clearStorage"
+            href="/accounts/logout/"
+          >
             Logout
           </a>
         </li>
@@ -27,6 +31,11 @@
 <script>
 export default {
   name: "Header",
+  methods: {
+    clearStorage() {
+      localStorage.removeItem("areas");
+    },
+  },
 };
 </script>
 

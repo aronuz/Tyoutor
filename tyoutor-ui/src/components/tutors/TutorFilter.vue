@@ -22,30 +22,43 @@ export default {
   },
   methods: {
     buildFilters() {
+      let areas = this.listAreas;
+      let setLS = false,
+        lsItems = [],
+        isFromLS = false;
+      if (!areas || areas.length === 0) {
+        areas = localStorage.getItem("areas").split(",");
+        isFromLS = true;
+      } else {
+        setLS = true;
+      }
+      if (!areas || areas.length === 0) return;
       document
         .querySelectorAll(".filter-block")[0]
         .insertAdjacentHTML(
           "beforeend",
           "<div class='filter-head' style='font-weight: 600'>Filter by:</div>"
         );
-      const areas = this.listAreas;
-      if (areas && areas.length) {
-        const areaSet = new Set();
-        for (let item of areas) {
-          areaSet.add(item.areas);
-        }
-        areaSet.forEach((el) => {
-          const filterId = el.replace(" ", "-~");
-          const spanEl = document.createElement("span");
-          spanEl.classList.add("filter-option");
-          document
-            .querySelectorAll(".filter-block")[0]
-            .insertAdjacentElement("beforeend", spanEl);
-          const filter = `
+      const areaSet = new Set();
+      for (let item of areas) {
+        areaSet.add(isFromLS ? item : item.areas);
+      }
+      areaSet.forEach((el) => {
+        const filterId = el.replace(" ", "-~");
+        if (setLS) lsItems.push(el);
+        const spanEl = document.createElement("span");
+        spanEl.classList.add("filter-option");
+        document
+          .querySelectorAll(".filter-block")[0]
+          .insertAdjacentElement("beforeend", spanEl);
+        const filter = `
       <input type="checkbox" id="${filterId}" @change="setFilter" />
       <label for="${filterId}">${el}</label>`;
-          spanEl.insertAdjacentHTML("afterbegin", filter);
-        });
+        spanEl.insertAdjacentHTML("afterbegin", filter);
+      });
+      if (setLS && lsItems) {
+        const lsString = lsItems.join(",");
+        localStorage.setItem("areas", lsString);
       }
     },
     setFilter(event) {
