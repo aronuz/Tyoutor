@@ -31,6 +31,7 @@ export default {
   border: 1px solid #ccc;
   padding: 1rem;
   background-color: #8ccee8;
+  position: relative;
 }
 
 a {
@@ -53,13 +54,15 @@ a:active {
 .check-mark::before {
   content: "";
   position: absolute;
-  left: 20rem;
-  margin-top: 2.5em;
+  left: -0.15em;
+  top: 1.25em;
   height: 0.5em;
   width: 0.5em;
   transform: rotate(45deg);
   border-color: #14057e;
   border-style: solid;
-  border-width: 0.15em 0.15em 0 0;
+  border-width: 0.1em 0.1em 0 0;
+  background-color: #7e0505;
+  border-radius: 0px 0px 0px 40px;
 }
 </style>

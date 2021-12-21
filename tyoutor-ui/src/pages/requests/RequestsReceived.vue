@@ -59,6 +59,9 @@ export default {
     hasRequests() {
       return this.receivedRequests.length;
     },
+    scrollY() {
+      return (this.receivedRequests.length + 1) * 50;
+    },
   },
   mounted() {
     this.loadRequests();
@@ -93,7 +96,10 @@ export default {
       }
     },
     onScroll(event) {
-      if (event.target.scrollTop >= 0 && event.target.scrollTop <= 100) {
+      if (
+        event.target.scrollTop >= 0 &&
+        event.target.scrollTop <= this.scrollY
+      ) {
         const el = event.target;
         const pos = el.scrollTop / (2 * (el.scrollHeight - el.clientHeight));
         const cardIdx = Math.ceil(pos * 10) || 1;
@@ -108,7 +114,7 @@ export default {
       } else if (event.target.scrollTop < 0) {
         event.target.scrollTo(0, 0);
       } else {
-        event.target.scrollTo(0, 100);
+        event.target.scrollTo(0, this.scrollY - 50);
       }
     },
   },

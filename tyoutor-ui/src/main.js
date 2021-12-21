@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, defineAsyncComponent } from "vue";
 import App from "./App.vue";
 import mitt from "mitt";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -18,11 +18,16 @@ import store from "./store/index.js";
 import layout from "./pages/PageLayout.vue";
 import ui_card from "./components/ui_blocks/Card.vue";
 import ui_button from "./components/ui_blocks/Button.vue";
-import ui_badge from "./components/ui_blocks/Badge.vue";
-import ui_dialog from "./components/ui_blocks/Dialog.vue";
 import ui_spinner from "./components/ui_blocks/Spinner.vue";
-
-import area_list from "./components/areas/AreaList";
+const ui_badge = defineAsyncComponent(() =>
+  import("./components/ui_blocks/Badge.vue")
+);
+const ui_dialog = defineAsyncComponent(() =>
+  import("./components/ui_blocks/Dialog.vue")
+);
+const area_list = defineAsyncComponent(() =>
+  import("./components/areas/AreaList")
+);
 
 const emitter = mitt();
 
