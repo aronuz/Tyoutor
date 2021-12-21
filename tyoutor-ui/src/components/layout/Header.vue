@@ -52,11 +52,13 @@ header {
 }
 
 header h1 a {
-  width: 200px;
-  height: 50px;
-  background-image: linear-gradient(#50008d4a 10%, #1929764a 30%, #cebd0a61 60%),
-    url(../../assets/logo.png) !important;
+  width: 120px;
+  height: 35px;
+  background-image: linear-gradient(#4e3aa863 3%, #ffffff00 30%, #e5878687 97%),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAABZCAYAAAB8ILVtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAQfSURBVHhe7dxBbtNAGIZhp4UKISFVFZygZ2DBUVizZg1XYM0ZuAJXYMEZeoKiCgmBEGkJ+RsPnUw847FjJ/Y371NFcWrPjBN//TNJnC5WaxUg6KS+BuQcvXKfPP5YLx3Gn/N31aPrX/UtKDtq5T50sM3Z9w/V7Yun9S0oY1oCWUedlsQqd2zqMPb20DKZcLcH7mq9/ed6eVtOWLuNNQ1z3OcpmdC05GV9DQxjQuH+Wl9j46q+3lisf9ANLygnKpyCrdY/6IZwT9J21UY/M/r4fb8XlHPS9C4PLyi7o3JPiIW6Kdjop7jK7cITa5O73qTG7TqO329KaswmTf1aH07Y1++7qnpyWt/472bdz6d6uXkfwnG67ucYqNyZ7ODlBvD4LIzx/bVTENzFTkXwT0cIg73p5yHYodg4UzjNgXBn8A+eVaS/y7f3y0MeQOvTXZq4cXOqYVMYXfuwfz/kjgtsU2h9beuPrahpiTsYse2b1qfa+Ac3t42JtXP89U6sr1DYNmcfnC7bOqvqebU8f3P/B2LLi+pb9r6OjcqdkDqoJlZlS2BBthCvlq/vg2yPhS3nPrscAuGO8IM9ViUatt/NPNuX6n/fP0yr1lMJcQzhHlhbtR/PRX3d3xReBA6JcEvoVrUd9WlVMeF2Bz920P31VsGcYacOY1X2/au2Iio3ZBHuwilPTYoI96GmJP6UY+jpDLqjckMW4T4gKvthEW7Ikg9321tvbetThpqrYxzFVO62wBFIPUxLJPT/zuU+z1xTV3S4h5qS5FT8cUN0ufN+dZ/zRNSevajcPXQNdshvZ33ZpWsQ+7bzufuhakbhvqxe1UtDiB3YMT6xGyJEfiUea9/VXnPMqnJ/qa/3lRu2pqf2Iaud6yv3GcD2xx+/rV1qahLej+X5+3pJx0zCvXtKpy91EF01S23TRxgsv2r6Y4VhNG37klOBY8EO29pYofCxtL5Or3/Wt7bFHvehH88xzOI7lKlgO6kq5trbNu5gh8th29SYsbFy2jRts9vfzfpyEe0vNv6D7X/FENPWT+r+OO37cjyTDXfOAxvT9ID7/bn17nepAxTuR87BbGvTtC+74gHP2YeNeMhjfdyuL2cNY6a4LwmH/f24q6pnO/8D5XBm9O334eWEG/NV7FuBBFsf73NDFuGGrCLDzZSkDFRuyCou3FTtclC5IauocFO1yyIZbguxXfxzH1ywUY4iKrcfbKp2OWQ/fg8rtYXaEOxyFH1uCbTxbglkEW7IItyQRbghi3BDFuGGLMINWYQbsgg3ZBFuyCLckEW4IYtwQxbhhizCDVmEG7IIN2QRbsgi3JBFuCGLcEMW4YYswg1ZhBuyCDdkEW7IItyQRbghi3BDFuGGLMINWYQbsgg3ZBFuyCLckEW4IYtwQxbhhqiq+geVJSXTRlJ5bAAAAABJRU5ErkJggg==) !important;
   background-size: cover;
+  border-radius: 5px;
+  border-width: 0px;
 }
 
 header a {
@@ -83,8 +85,16 @@ a.router-link-active:not(.home) {
   ) !important;
 }
 
-a:hover {
+a:not(.home):hover {
   border: 1px solid #f391e3;
+}
+
+.home {
+  box-shadow: 2px 3px 5px 0px #4e3aa8;
+}
+
+.home:active {
+  box-shadow: 1px 1px 1px 0px #4e3aa8;
 }
 
 h1 {

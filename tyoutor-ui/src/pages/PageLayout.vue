@@ -132,8 +132,8 @@ export default {
     140deg,
     #10bbfd 15%,
     #43465c 70%,
-    #b43811 80%,
-    #a29b24 90%
+    #ffffffab 90%,
+    #ffa386 99%
   );
 }
 
