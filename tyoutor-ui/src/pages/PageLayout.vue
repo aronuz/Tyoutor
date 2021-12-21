@@ -131,7 +131,7 @@ export default {
   background-image: linear-gradient(
     140deg,
     #10bbfd 15%,
-    #43465c 70%,
+    #43465c8a 70%,
     #ffffffab 90%,
     #ffa386 99%
   );
