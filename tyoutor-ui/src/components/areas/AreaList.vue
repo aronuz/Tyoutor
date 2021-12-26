@@ -66,7 +66,7 @@ export default {
     }),
     allAreasInfo() {
       if (this.part !== "all") return "";
-      const areas = this.listAreas[0];
+      const areas = this.listAreas;
       if (areas && areas.length && this.tutorId) {
         let area;
         const infoStr = [];

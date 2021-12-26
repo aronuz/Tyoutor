@@ -1,6 +1,6 @@
 export default {
   setAreas(state, payload) {
-    state.areas.push(payload);
+    state.areas = payload;
   },
   addArea(state, payload) {
     for (let item of payload.areas) {

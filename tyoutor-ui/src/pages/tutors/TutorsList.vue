@@ -2,8 +2,9 @@
   <layout :has-items="!!hasTutors" :is-loading="isLoading" :error="error">
     <template v-slot:default>
       <tutor-filter
+        @set-search="setSearch"
         @set-filter="setFilters"
-        :list-areas="listAreas_0"
+        :list-areas="listAreas"
       ></tutor-filter>
     </template>
     <template v-slot:controls>
@@ -30,7 +31,7 @@
           :rate="tutor.hourlyRate"
           :areas="tutor.areas"
           :current-card="currentCard"
-          :total="listTutors.length"
+          :total="filteredTutors.length"
           :is-scroll="isScroll"
           :direction="direction"
         >
@@ -60,48 +61,24 @@ export default {
       isScroll: true,
       hasScrolled: false,
       direction: null,
+      filteredTutors: [],
+      searchTerm: "",
+      previousTerm: "",
+      activeSearch: [],
+      filterTimeOut: null,
     };
   },
   computed: {
     ...mapGetters({
       listTutors: "tutors/getTutors",
       isTutor: "tutors/isTutor",
-      hasTutors: "tutors/hasTutors",
       listAreas: "areas/getAreas",
     }),
-    listAreas_0() {
-      return this.listAreas[0];
-    },
-    filteredTutors() {
-      const tutors = this.listTutors;
-      if (this.activeFilters.length === 0) {
-        return tutors;
-      } else {
-        const areas = this.listAreas[0];
-        if (areas && areas.length) {
-          const idSet = new Set();
-          let af;
-          for (let fi of this.activeFilters) {
-            af = fi.replace(" ", "-~");
-            for (let el of areas) {
-              if (el.areas.includes(af)) {
-                idSet.add(el.tutor_id);
-              }
-            }
-          }
-          return tutors.filter((tutor) => {
-            idSet.has(tutor.tutor_id);
-          });
-        } else {
-          return null;
-        }
-      }
-    },
     hasTutors() {
-      return this.listTutors.length;
+      return this.filteredTutors.length;
     },
     scrollY() {
-      return (this.listTutors.length + 2) * 50;
+      return (this.filteredTutors.length + 2) * 50;
     },
     mTop() {
       return this.currentCard * 10;
@@ -115,11 +92,49 @@ export default {
     },
   },
   mounted() {
-    this.fetchTutors();
+    if (!this.listTutors.length) this.fetchTutors(true);
+    else this.filteredTutors = this.listTutors;
+  },
+  watch: {
+    searchTerm() {
+      if (this.searchTerm) {
+        if (this.previousTerm.indexOf(this.searchTerm) === -1)
+          this.filteredTutors = this.listTutors;
+        const params = [this.searchTerm, this.filteredTutors].slice();
+        const setSearchFunc = () => {
+          const tutors = params[1].filter(
+            (item) =>
+              item.fullName.toLowerCase().indexOf(params[0].toLowerCase()) > -1
+          );
+          if (tutors) {
+            this.activeSearch = tutors;
+            this.setTutorFilter();
+          } else {
+            this.activeSearch = null;
+          }
+        };
+
+        this.filterTimeOut = setTimeout(setSearchFunc.bind(this, params), 500);
+      }
+    },
   },
   methods: {
-    setFilters(updatedFilters) {
-      this.activeFilters = updatedFilters;
+    setSearch(term) {
+      clearTimeout(this.filterTimeOut);
+      if (!term && this.searchTerm) {
+        this.activeSearch = this.listTutors;
+        this.searchTerm = "";
+        this.setTutorFilter();
+      } else if (term && this.searchTerm !== term) {
+        this.activeSearch = [];
+        this.previousTerm = this.searchTerm;
+        this.searchTerm = term;
+      } else this.setTutorFilter();
+    },
+    setFilters(data) {
+      clearTimeout(this.filterTimeOut);
+      this.activeFilters = data.filters;
+      this.setSearch(data.searchTerm);
     },
     async fetchTutors(refresh = false) {
       this.isLoading = true;
@@ -131,10 +146,50 @@ export default {
           },
           { root: true }
         );
+        this.filteredTutors = this.listTutors;
+        await this.fetchAreas();
+        this.setTutorFilter();
       } catch (error) {
         this.error = error.message;
       }
       this.isLoading = false;
+    },
+    async fetchAreas() {
+      const idList = this.listTutors.map((tutor) => tutor.tutorId);
+      await this.$store.dispatch("areas/fetchAreas", idList);
+    },
+    setTutorFilter() {
+      if (typeof this.activeSearch === "object" && !this.activeSearch) {
+        this.filteredTutors = [];
+      } else if (this.activeFilters.length === 0) {
+        const tutors = this.activeSearch.length
+          ? this.activeSearch
+          : this.listTutors;
+        this.filteredTutors = tutors;
+      } else {
+        const tutors = this.activeSearch.length
+          ? this.activeSearch
+          : this.listTutors;
+        const areas = this.listAreas;
+        if (areas && areas.length) {
+          const tutorSet = new Set();
+          let areaFilters = [];
+          for (let fi of this.activeFilters.map((item) =>
+            item.replace(" ", "-~")
+          )) {
+            areaFilters.push(areas.filter((item) => item.areas === fi)[0]);
+          }
+          for (let item of areaFilters) {
+            tutorSet.add(item.tutorId);
+          }
+          const filteredTutors = tutors.filter((tutors) =>
+            tutorSet.has(tutors.tutorId)
+          );
+          this.filteredTutors = filteredTutors;
+        } else {
+          this.filteredTutors = [];
+        }
+      }
     },
     closeDialogue() {
       this.error = null;

@@ -2,15 +2,29 @@
   <ui-card>
     <h2>Find a Tutor</h2>
     <div class="filter-block">
-      <input type="text" ref="filter-input" />
+      <label for="search-input" style="font-weight: 600">Search: </label>
+      <input
+        type="search"
+        @input="setSearch"
+        id="search-input"
+        ref="search-input"
+      />
       <ui-button @click="submitFilters">Search</ui-button>
+    </div>
+    <div
+      v-if="getAreas"
+      class="filter-head"
+      @click="setFilter($event)"
+      style="font-weight: 600"
+    >
+      Filter by:
     </div>
   </ui-card>
 </template>
 
 <script>
 export default {
-  emits: ["set-filter"],
+  emits: ["set-search", "set-filter"],
   props: ["listAreas"],
   data() {
     return {
@@ -20,59 +34,66 @@ export default {
   mounted() {
     this.buildFilters();
   },
-  methods: {
-    buildFilters() {
-      let areas = this.listAreas;
-      let setLS = false,
-        lsItems = [],
-        isFromLS = false;
-      if (!areas || areas.length === 0) {
+  computed: {
+    getAreas() {
+      let areas,
+        islistAreas = !!this.listAreas.length;
+      if (!islistAreas && localStorage.getItem("areas")) {
         areas = localStorage.getItem("areas").split(",");
-        isFromLS = true;
       } else {
-        setLS = true;
+        areas = this.listAreas;
       }
-      if (!areas || areas.length === 0) return;
-      document
-        .querySelectorAll(".filter-block")[0]
-        .insertAdjacentHTML(
-          "beforeend",
-          "<div class='filter-head' style='font-weight: 600'>Filter by:</div>"
-        );
+      if (!areas) return;
       const areaSet = new Set();
       for (let item of areas) {
-        areaSet.add(isFromLS ? item : item.areas);
+        areaSet.add(item.areas || item);
       }
-      areaSet.forEach((el) => {
-        const filterId = el.replace(" ", "-~");
-        if (setLS) lsItems.push(el);
-        const spanEl = document.createElement("span");
-        spanEl.classList.add("filter-option");
-        document
-          .querySelectorAll(".filter-block")[0]
-          .insertAdjacentElement("beforeend", spanEl);
-        const filter = `
-      <input type="checkbox" id="${filterId}" @change="setFilter" />
+      if (islistAreas) {
+        const areaList = Array.from(areaSet).map((item) =>
+          item.replace("-~", " ")
+        );
+        localStorage.setItem("areas", areaList.join(","));
+        return areaList;
+      }
+      return areaSet;
+    },
+  },
+  methods: {
+    buildFilters() {
+      if (this.getAreas) {
+        this.getAreas.forEach((el) => {
+          const filterId = el.replace(" ", "-~");
+          const spanEl = document.createElement("span");
+          spanEl.classList.add("filter-option");
+          document
+            .querySelectorAll(".filter-head")[0]
+            .insertAdjacentElement("beforeend", spanEl);
+          const filter = `
+      <input type="checkbox" id="${filterId}" />
       <label for="${filterId}">${el}</label>`;
-        spanEl.insertAdjacentHTML("afterbegin", filter);
-      });
-      if (setLS && lsItems) {
-        const lsString = lsItems.join(",");
-        localStorage.setItem("areas", lsString);
+          spanEl.insertAdjacentHTML("afterbegin", filter);
+        });
       }
     },
     setFilter(event) {
-      const inputId = event.target.id;
-      const isActive = event.target.checked;
-      if (isActive) {
-        this.filters.push(inputId);
-      } else {
-        const ix = this.filters.indexOf(inputId);
-        this.filters.splice(ix, 1);
+      const target = event.target;
+      if (target.type === "checkbox") {
+        const inputId = target.id;
+        const isActive = target.checked;
+        if (isActive) {
+          this.filters.push(inputId);
+        } else {
+          const ix = this.filters.indexOf(inputId);
+          this.filters.splice(ix, 1);
+        }
       }
     },
+    setSearch(event) {
+      this.$emit("set-search", event.target.value);
+    },
     submitFilters() {
-      this.$emit("set-filter", this.filters);
+      const searchTerm = this.$refs["search-input"].value;
+      this.$emit("set-filter", { searchTerm, filters: this.filters });
     },
   },
 };
