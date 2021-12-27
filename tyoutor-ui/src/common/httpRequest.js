@@ -17,16 +17,19 @@ const request = {
 export default function httpRequest(path, reqType, body = null) {
   return new Promise((resolve, reject) => {
     let data = [];
-    let next = 0;
+    let total = null;
+    let previous, next;
     request[reqType](path, body)
       .then((r) => {
         if (reqType === "get") {
           data.push(...r.data.results);
-          next = r.data.next || null;
+          previous = r.data.previous;
+          next = r.data.next;
+          total = r.data.count || null;
         } else if (Object.keys(body).length > 0) {
           data.push(r.data);
         }
-        resolve([data, next]);
+        resolve([data, previous, next, total]);
       })
       .catch((e) => {
         data.push({ error: e.message });

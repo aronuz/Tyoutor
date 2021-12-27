@@ -1,5 +1,11 @@
 <template>
-  <layout :has-items="!!hasTutors" :is-loading="isLoading" :error="error">
+  <layout
+    :has-items="!!hasTutors"
+    :is-loading="isLoading"
+    :error="error"
+    :up-active="upActive"
+    :down-active="downActive"
+  >
     <template v-slot:default>
       <tutor-filter
         @set-search="setSearch"
@@ -32,7 +38,6 @@
           :areas="tutor.areas"
           :current-card="currentCard"
           :total="filteredTutors.length"
-          :is-scroll="isScroll"
           :direction="direction"
         >
         </tutor-item>
@@ -58,7 +63,6 @@ export default {
       error: null,
       isLoading: false,
       currentCard: 1,
-      isScroll: true,
       hasScrolled: false,
       direction: null,
       filteredTutors: [],
@@ -71,6 +75,7 @@ export default {
   computed: {
     ...mapGetters({
       listTutors: "tutors/getTutors",
+      listPageTutors: "tutors/getTutorsSlice",
       isTutor: "tutors/isTutor",
       listAreas: "areas/getAreas",
     }),
@@ -89,6 +94,12 @@ export default {
         const currentY = this.$refs["card-stack"].scrollTop - 50;
         return currentY;
       } else return this.currentCard * 10;
+    },
+    upActive() {
+      return this.currentCard > 1;
+    },
+    downActive() {
+      return this.currentCard < +localStorage.getItem("tutorsTotal");
     },
   },
   mounted() {
@@ -136,19 +147,28 @@ export default {
       this.activeFilters = data.filters;
       this.setSearch(data.searchTerm);
     },
-    async fetchTutors(refresh = false) {
+    async fetchTutors(refresh = false, page = -1) {
       this.isLoading = true;
       try {
-        await this.$store.dispatch(
-          "tutors/fetchTutors",
-          {
-            forceRefresh: refresh,
-          },
-          { root: true }
-        );
-        this.filteredTutors = this.listTutors;
-        await this.fetchAreas();
-        this.setTutorFilter();
+        let storedTutors;
+        console.log("page: " + page);
+        if (page > -1) storedTutors = await this.listPageTutors(page);
+        if (storedTutors && storedTutors.length) {
+          for (let tutor of storedTutors) this.filteredTutors.push(tutor);
+        } else {
+          await this.$store.dispatch(
+            "tutors/fetchTutors",
+            {
+              forceRefresh: refresh,
+              page,
+            },
+            { root: true }
+          );
+          this.filteredTutors = this.listTutors;
+          if (page === -1) await this.fetchAreas();
+          else this.currentCard = page * 2 - 1;
+          this.setTutorFilter();
+        }
       } catch (error) {
         this.error = error.message;
       }
@@ -197,15 +217,19 @@ export default {
     changeCard(event, d) {
       event.currentTarget.style.background = "#36e965";
       const cardIdx = this.currentCard + d;
+      console.log(cardIdx);
       if (
         1 <= cardIdx &&
         cardIdx <= this.listTutors.length &&
         cardIdx !== this.currentCard
       ) {
-        this.isScroll = false;
         this.direction = cardIdx > this.currentCard;
         this.currentCard = cardIdx;
         this.hasScrolled = false;
+      } else if (cardIdx < 1) {
+        this.loadPage(false, false);
+      } else {
+        this.loadPage(true, false);
       }
     },
     onScroll(event) {
@@ -221,15 +245,45 @@ export default {
           cardIdx <= this.listTutors.length &&
           cardIdx !== this.currentCard
         ) {
-          this.isScroll = false;
           this.direction = cardIdx > this.currentCard;
           this.currentCard = cardIdx;
+          this.hasScrolled = true;
         }
-        this.hasScrolled = true;
       } else if (event.target.scrollTop < 0) {
         event.target.scrollTo(0, 0);
+        this.loadPage(false, true);
       } else {
         event.target.scrollTo(0, this.scrollY - 50);
+        this.loadPage(true, true);
+        this.currentCard = 1;
+      }
+    },
+    async loadPage(direction, isScroll) {
+      const lsItem = !direction ? "tutorsPrevious" : "tutorsNext";
+      const page = parseInt(localStorage.getItem(lsItem));
+      if (page > 0) {
+        {
+          this.direction = direction;
+          this.hasScrolled = isScroll;
+          await this.fetchTutors(true, page);
+        }
+        // if (page === 0 && n < 0) {
+        //   document
+        //     .querySelectorAll(".arrow-up")[0]
+        //     .setAttribute("disabled", "disabled");
+        //   document
+        //     .querySelectorAll(".arrow-down")[0]
+        //     .removeAttribute("disabled");
+        // } else if (page === 0 && n > 0) {
+        //   document
+        //     .querySelectorAll(".arrow-down")[0]
+        //     .setAttribute("disabled", "disabled");
+        //   document.querySelectorAll(".arrow-up")[0].removeAttribute("disabled");
+        // } else {
+        //   document
+        //     .querySelectorAll("[class^='arrow-']")
+        //     .forEach((el) => el.removeAttribute("disabled"));
+        // }
       }
     },
   },

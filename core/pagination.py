@@ -15,12 +15,12 @@ class PageNumberPaginationNoCount(PageNumberPagination):
 
 
 class TutorPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 2
 
 
-class AreaPagination(PageNumberPagination):
+class AreaPagination(PageNumberPaginationNoCount):
     page_size = 15
 
 
-class RequestPagination(PageNumberPagination):
+class RequestPagination(PageNumberPaginationNoCount):
     page_size = 5

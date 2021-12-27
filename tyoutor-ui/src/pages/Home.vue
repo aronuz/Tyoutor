@@ -152,7 +152,10 @@ export default {
     async fetchTutors() {
       this.isLoading = true;
       try {
-        await this.storeDispatch("tutors/fetchTutors", { forceRefresh: true });
+        await this.storeDispatch("tutors/fetchTutors", {
+          forceRefresh: true,
+          page: 0,
+        });
         if (this.listTutors.length) this.setAreas();
       } catch (e) {
         this.error = e;

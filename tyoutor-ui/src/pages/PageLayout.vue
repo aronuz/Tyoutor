@@ -29,6 +29,7 @@
                   class="arrow-up"
                   @click.stop="$parent.changeCard($event, -1)"
                   @mouseup="resetButton($event)"
+                  v-show="upActive"
                 >
                   <font-awesome-icon
                     :icon="['fas', 'arrow-circle-up']"
@@ -39,6 +40,7 @@
                   class="arrow-down"
                   @click.stop="$parent.changeCard($event, 1)"
                   @mouseup="resetButton($event)"
+                  v-show="downActive"
                 >
                   <font-awesome-icon
                     :icon="['fas', 'arrow-circle-down']"
@@ -71,6 +73,16 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    upActive: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    downActive: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     isLoading: {
       type: Boolean,

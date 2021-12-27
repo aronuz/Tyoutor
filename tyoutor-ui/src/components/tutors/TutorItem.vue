@@ -41,7 +41,6 @@ export default {
     "index",
     "currentCard",
     "total",
-    "isScroll",
     "direction",
   ],
   computed: {
@@ -88,6 +87,7 @@ export default {
   },
   watch: {
     isCardIndex() {
+      console.log("index: " + this.isCardIndex);
       const cardEl = document.getElementById(`t-card-${this.index}`);
       if (this.isCardIndex) {
         const dirSuffix = this.direction ? "up" : "down";

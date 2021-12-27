@@ -39,7 +39,8 @@ export default {
       return;
     }
     try {
-      const data = await httpRequest("tutors/", "get");
+      const pageParam = payload.page < 1 ? "" : `?page=${payload.page}`;
+      const data = await httpRequest(`tutors/${pageParam}`, "get");
       const tutors = [];
       let tutor, areas;
       for (let item of data[0]) {
@@ -65,11 +66,21 @@ export default {
 
       context.commit("setTutors", tutors);
       context.commit("setFetchTimestamp");
+      localStorage.setItem("tutorsPrevious", getQueryPage(data[1]));
+      localStorage.setItem("tutorsNext", getQueryPage(data[2]));
+      localStorage.setItem("tutorsTotal", data[3]);
     } catch (err) {
       console.log(err);
       const message = err[0].error || "Failed to load tutors";
       const e = new Error(`${message}. Please try again.`);
       throw e;
+    }
+
+    function getQueryPage(url) {
+      if (url === null) return -1;
+      const page =
+        url.indexOf("?page=") > -1 ? url.substr(url.indexOf("?page=") + 6) : 0;
+      return page;
     }
   },
 };
