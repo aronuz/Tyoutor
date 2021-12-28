@@ -1,6 +1,6 @@
 <template>
-  <ui-card>
-    <h2>Find a Tutor</h2>
+  <ui-card class="filter-card">
+    <!-- <h2>Find a Tutor</h2> -->
     <div class="filter-block">
       <label for="search-input" style="font-weight: 600">Search: </label>
       <input
@@ -11,13 +11,16 @@
       />
       <ui-button @click="submitFilters">Search</ui-button>
     </div>
-    <div
-      v-if="getAreas"
-      class="filter-head"
-      @click="setFilter($event)"
-      style="font-weight: 600"
-    >
-      Filter by:
+    <div>
+      <div class="filter-div">Filter by:</div>
+      <div
+        v-if="getAreas"
+        class="filter-div filter-head"
+        @click="setFilter($event)"
+      ></div>
+      <div class="filter-div">
+        <ui-button class="load-more" @click="loadMore">More</ui-button>
+      </div>
     </div>
   </ui-card>
 </template>
@@ -58,22 +61,43 @@ export default {
       return areaSet;
     },
   },
+  watch: {
+    getAreas() {
+      if (this.getAreas) this.buildFilters();
+    },
+  },
   methods: {
     buildFilters() {
       if (this.getAreas) {
-        this.getAreas.forEach((el) => {
-          const filterId = el.replace(" ", "-~");
-          const spanEl = document.createElement("span");
+        const filterBlock = document.querySelectorAll(".filter-head")[0];
+        filterBlock.innerHTML = "";
+        let areaSection = document.createElement("div");
+        areaSection.classList.add("area-section");
+        filterBlock.insertAdjacentElement("beforeend", areaSection);
+        let filterId, spanEl, filter;
+        let sections = 0;
+        let lastSection = document.querySelectorAll(".area-section")[0];
+        Array.from(this.getAreas).forEach((el, ix) => {
+          if (ix > 3 && ix % 3 === 1) {
+            areaSection = document.createElement("div");
+            areaSection.classList.add("area-section");
+            filterBlock.insertAdjacentElement("beforeend", areaSection);
+            sections += 1;
+            lastSection = document.querySelectorAll(".area-section")[sections];
+          }
+          filterId = el.replace(" ", "-~");
+          spanEl = document.createElement("span");
           spanEl.classList.add("filter-option");
-          document
-            .querySelectorAll(".filter-head")[0]
-            .insertAdjacentElement("beforeend", spanEl);
-          const filter = `
+          lastSection.insertAdjacentElement("beforeend", spanEl);
+          filter = `
       <input type="checkbox" id="${filterId}" />
       <label for="${filterId}">${el}</label>`;
           spanEl.insertAdjacentHTML("afterbegin", filter);
         });
       }
+    },
+    loadMore() {
+      this.$emit("load-areas");
     },
     setFilter(event) {
       const target = event.target;
@@ -100,13 +124,56 @@ export default {
 </script>
 
 <style scoped>
-h2 {
+/* h2 {
   margin: 0.5rem 0;
+} */
+.filter-card {
+  padding: 1.5rem 1rem !important;
 }
 
 .filter-block {
   position: relative;
   bottom: 15px;
+}
+
+#search-input {
+  margin-left: 10px;
+}
+
+.filter-div {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.filter-head {
+  height: 50px;
+  max-height: 50px;
+  overflow-y: auto;
+  padding: 0 10px 5px;
+  margin: 0 0 0 5px;
+  background-color: #fff;
+  border: 0.1em solid #767676;
+}
+
+#search-input,
+.filter-div,
+.filter-head {
+  font-weight: 600;
+}
+
+.filter-div:last-of-type {
+  position: relative;
+  top: 5px;
+}
+
+.load-more {
+  margin-left: 0;
+  padding: 10px 5px;
+  border-width: 0.5px;
+  border-radius: 0 30px 30px 0;
+  box-shadow: 2px 0px 0px 1px #685e5e;
+  height: 40px;
+  font-weight: 400;
 }
 
 .filter-option label,

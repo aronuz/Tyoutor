@@ -70,7 +70,7 @@ export default {
       localStorage.setItem("tutorsNext", getQueryPage(data[2]));
       localStorage.setItem("tutorsTotal", data[3]);
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       const message = err[0].error || "Failed to load tutors";
       const e = new Error(`${message}. Please try again.`);
       throw e;

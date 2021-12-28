@@ -19,7 +19,7 @@ class TutorPagination(PageNumberPagination):
 
 
 class AreaPagination(PageNumberPaginationNoCount):
-    page_size = 15
+    page_size = 4
 
 
 class RequestPagination(PageNumberPaginationNoCount):

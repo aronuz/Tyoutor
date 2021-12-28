@@ -8,7 +8,7 @@
           </div>
           <div xs12 justify="start" class="inner-row area-sub-row">
             <div class="col" cols="10" sm="0" md="7">
-              <areaList :tutor-id="tutorId" part="all">
+              <areaList :tutor-id="tutorId" :areas="areas" part="all">
                 <template v-slot:default></template>
               </areaList>
             </div>
@@ -31,14 +31,14 @@
             <ui-card light flat color="#9ca39b" height="100%">
               <div class="carousel">
                 <div
-                  :id="`ci-${index}`"
-                  class="carousel-item"
-                  :class="[{ active: index === currentIndex }]"
                   v-for="(tutor, index) in listTutors"
+                  class="carousel-item"
+                  :id="`ci-${index}`"
+                  :class="[{ active: index === currentIndex }]"
                   :key="tutor.tutorId"
                   :height="carouselHeight()"
-                  @click="showTutor(tutor.tutorId)"
                   :style="`z-index:${index}`"
+                  @click="showTutor(tutor.tutorId)"
                 >
                   <img
                     :src="getImgUrl_tutors(`logo_${index}.png`)"
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-// import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -92,9 +92,10 @@ export default {
     };
   },
   computed: {
-    listTutors() {
-      return this.$store.getters["tutors/getTutors"];
-    },
+    ...mapGetters({
+      listTutors: "tutors/getTutors",
+      listAreas: "areas/getAreas",
+    }),
     isBigScreen() {
       try {
         return (
@@ -103,6 +104,9 @@ export default {
       } catch (e) {
         return false;
       }
+    },
+    areas() {
+      return this.listAreas;
     },
   },
   watch: {
@@ -121,22 +125,10 @@ export default {
     },
   },
   mounted() {
-    // const loadData = new Promise((resolve, reject) => {
-    //   try {
-    //     this.fetchTutors();
-    //     resolve(true);
-    //   } catch (e) {
-    //     reject(e);
-    //   }
-    // });
-    // loadData
-    //   .then(() => {
-    //     this.fetchAreas();
-    //   })
-    //   .catch((e) => {
-    //     alert(`Failed to load tutor data. ${e}`);
-    //   });
-    this.fetchTutors();
+    if (!this.listTutors.length) this.fetchTutors();
+    else {
+      this.setAreas();
+    }
   },
   beforeUnmount() {
     clearInterval(this.cycle);
@@ -159,20 +151,23 @@ export default {
         if (this.listTutors.length) this.setAreas();
       } catch (e) {
         this.error = e;
-        console.log(this.error);
+        //console.log(this.error);
         this.isLoading = false;
       }
     },
     async setAreas() {
-      if (this.listTutors.length) {
-        this.currentIndex = 0;
+      this.currentIndex = 0;
+      if (this.areas && this.areas.length > 0) {
+        this.cycle = setInterval(this.reCycle, 6000);
+      } else {
+        localStorage.removeItem("areasNext");
         this.fetchAreas()
           .then(() => {
             this.cycle = setInterval(this.reCycle, 6000);
           })
           .catch((e) => {
             this.error = e;
-            console.log(`${this.error}`);
+            //console.log(`${this.error}`);
           })
           .finally(() => {
             this.isLoading = false;

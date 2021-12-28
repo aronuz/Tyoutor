@@ -8,6 +8,7 @@
   >
     <template v-slot:default>
       <tutor-filter
+        @load-areas="loadAreas"
         @set-search="setSearch"
         @set-filter="setFilters"
         :list-areas="listAreas"
@@ -70,6 +71,7 @@ export default {
       previousTerm: "",
       activeSearch: [],
       filterTimeOut: null,
+      isSearch: false,
     };
   },
   computed: {
@@ -99,7 +101,10 @@ export default {
       return this.currentCard > 1;
     },
     downActive() {
-      return this.currentCard < +localStorage.getItem("tutorsTotal");
+      const total = !this.isSearch
+        ? +localStorage.getItem("tutorsTotal")
+        : this.filteredTutors.length;
+      return this.currentCard < total;
     },
   },
   mounted() {
@@ -130,6 +135,9 @@ export default {
     },
   },
   methods: {
+    async loadAreas() {
+      await this.fetchAreas();
+    },
     setSearch(term) {
       clearTimeout(this.filterTimeOut);
       if (!term && this.searchTerm) {
@@ -151,7 +159,7 @@ export default {
       this.isLoading = true;
       try {
         let storedTutors;
-        console.log("page: " + page);
+        //console.log("page: " + page);
         if (page > -1) storedTutors = await this.listPageTutors(page);
         if (storedTutors && storedTutors.length) {
           for (let tutor of storedTutors) this.filteredTutors.push(tutor);
@@ -186,11 +194,13 @@ export default {
           ? this.activeSearch
           : this.listTutors;
         this.filteredTutors = tutors;
+        this.isSearch = this.activeSearch.length ? true : false;
       } else {
         const tutors = this.activeSearch.length
           ? this.activeSearch
           : this.listTutors;
         const areas = this.listAreas;
+        this.isSearch = this.activeFilters.length ? true : false;
         if (areas && areas.length) {
           const tutorSet = new Set();
           let areaFilters = [];
@@ -217,7 +227,7 @@ export default {
     changeCard(event, d) {
       event.currentTarget.style.background = "#36e965";
       const cardIdx = this.currentCard + d;
-      console.log(cardIdx);
+      //console.log(cardIdx);
       if (
         1 <= cardIdx &&
         cardIdx <= this.listTutors.length &&

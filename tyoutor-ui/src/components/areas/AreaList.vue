@@ -38,6 +38,11 @@ export default {
       type: String,
       required: true,
     },
+    areas: {
+      type: Array,
+      required: false,
+      default: null,
+    },
     part: {
       type: String,
       required: true,
@@ -61,13 +66,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      listAreas: "areas/getAreas",
+      // listAreas: "areas/getAreas",
       tutorAreas: "areas/getTutorAreas",
     }),
     allAreasInfo() {
       if (this.part !== "all") return "";
-      const areas = this.listAreas;
-      if (areas && areas.length && this.tutorId) {
+      const areas = this.areas || []; //this.listAreas;
+      if (areas.length && this.tutorId) {
         let area;
         const infoStr = [];
         const tutorItems = areas.filter((el) => el.tutorId === this.tutorId);

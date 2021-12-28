@@ -162,7 +162,7 @@ export default {
         if (this.listTutors.length) this.setAreas();
       } catch (e) {
         this.error = e;
-        console.log(this.error);
+        //console.log(this.error);
         this.isLoading = false;
       }
     },
@@ -175,7 +175,7 @@ export default {
           })
           .catch((e) => {
             this.error = e;
-            console.log(`${this.error}`);
+            //console.log(`${this.error}`);
           })
           .finally(() => {
             this.isLoading = false;

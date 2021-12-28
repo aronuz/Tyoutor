@@ -33,7 +33,7 @@ export default function httpRequest(path, reqType, body = null) {
       })
       .catch((e) => {
         data.push({ error: e.message });
-        console.log(e.message);
+        //console.log(e.message);
         reject(data);
       });
   });

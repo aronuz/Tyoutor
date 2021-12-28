@@ -1,11 +1,13 @@
 export default {
   getTutors(state) {
-    return state.tutors;
+    if (state.tutors) {
+      return state.tutors;
+    }
   },
   getTutorsSlice(state) {
     const tutors = (page) => {
       const start = page === 0 ? 0 : page * 2 - 2;
-      console.log("store page: " + page);
+      //console.log("store page: " + page);
       return state.tutors.slice(start, 2);
     };
     return tutors;
