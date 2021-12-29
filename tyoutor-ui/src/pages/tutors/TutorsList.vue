@@ -72,6 +72,7 @@ export default {
       activeSearch: [],
       filterTimeOut: null,
       isSearch: false,
+      filteredIDs: [],
     };
   },
   computed: {
@@ -101,10 +102,12 @@ export default {
       return this.currentCard > 1;
     },
     downActive() {
-      const total = !this.isSearch
-        ? +localStorage.getItem("tutorsTotal")
-        : this.filteredTutors.length;
-      return this.currentCard < total;
+      const totalKey =
+        this.searchTerm && this.filteredIDs.length
+          ? "tutorsTotalFilter"
+          : "tutorsTotal";
+      const total = localStorage.getItem(totalKey);
+      return this.currentCard < +total;
     },
   },
   mounted() {
@@ -144,6 +147,7 @@ export default {
         this.activeSearch = this.listTutors;
         this.searchTerm = "";
         this.setTutorFilter();
+        this.unsetFilteredState();
       } else if (term && this.searchTerm !== term) {
         this.activeSearch = [];
         this.previousTerm = this.searchTerm;
@@ -155,15 +159,16 @@ export default {
       this.activeFilters = data.filters;
       this.setSearch(data.searchTerm);
     },
-    async fetchTutors(refresh = false, page = -1) {
+    async fetchTutors(refresh = false, page = -1, filter) {
       this.isLoading = true;
       try {
         let storedTutors;
         //console.log("page: " + page);
-        if (page > -1) storedTutors = await this.listPageTutors(page);
+        if (page > -1)
+          storedTutors = await this.listPageTutors({ page, filter: filter });
         if (storedTutors && storedTutors.length) {
           for (let tutor of storedTutors) this.filteredTutors.push(tutor);
-        } else {
+        } else if (!filter) {
           await this.$store.dispatch(
             "tutors/fetchTutors",
             {
@@ -172,33 +177,56 @@ export default {
             },
             { root: true }
           );
-          this.filteredTutors = this.listTutors;
+          // this.filteredTutors = this.listTutors;
           if (page === -1) await this.fetchAreas();
           else this.currentCard = page * 2 - 1;
           this.setTutorFilter();
+        } else {
+          const filterLength = this.filteredIDs.length;
+          if (filterLength > 2) page = Math.ceil(filterLength / 2);
+          await this.$store.dispatch(
+            "tutors/fetchFilteredTutors",
+            {
+              page,
+              filter,
+              tutorIDs: this.filteredIDs,
+            },
+            { root: true }
+          );
+          this.currentCard = page * 2 - 1;
+          this.filteredTutors = this.listPageTutors({ page, filter: filter });
         }
       } catch (error) {
         this.error = error.message;
       }
       this.isLoading = false;
     },
+    unsetFilteredState() {
+      const items = [
+        "tutorsPreviousFilter",
+        "tutorsNextFilter",
+        "tutorsTotalFilter",
+      ];
+      for (let item of items) {
+        localStorage.removeItem(item);
+      }
+      this.filteredIDs = [];
+      this.$store.commit("tutors/unsetTutors");
+    },
     async fetchAreas() {
       const idList = this.listTutors.map((tutor) => tutor.tutorId);
       await this.$store.dispatch("areas/fetchAreas", idList);
     },
     setTutorFilter() {
+      let tutors;
       if (typeof this.activeSearch === "object" && !this.activeSearch) {
         this.filteredTutors = [];
       } else if (this.activeFilters.length === 0) {
-        const tutors = this.activeSearch.length
-          ? this.activeSearch
-          : this.listTutors;
+        tutors = this.activeSearch.length ? this.activeSearch : this.listTutors;
         this.filteredTutors = tutors;
         this.isSearch = this.activeSearch.length ? true : false;
       } else {
-        const tutors = this.activeSearch.length
-          ? this.activeSearch
-          : this.listTutors;
+        tutors = this.activeSearch.length ? this.activeSearch : this.listTutors;
         const areas = this.listAreas;
         this.isSearch = this.activeFilters.length ? true : false;
         if (areas && areas.length) {
@@ -219,6 +247,19 @@ export default {
         } else {
           this.filteredTutors = [];
         }
+      }
+      if (this.isSearch) {
+        const totalFiltered = [];
+        tutors.forEach((tutor) => totalFiltered.push(tutor.tutorId));
+        const totalFilteredLength = totalFiltered.length;
+        if (this.currentCard > totalFilteredLength)
+          this.currentCard = totalFilteredLength;
+        this.filteredIDs = totalFiltered.slice();
+        // localStorage.setItem("tutorsTotalFilter", totalFilteredLength);
+        this.$store.commit("tutors/setTutors", { tutors, filtered: true });
+        const page =
+          totalFilteredLength < 2 ? 0 : Math.ceil(totalFilteredLength / 2);
+        this.fetchTutors(true, page, this.searchTerm);
       }
     },
     closeDialogue() {
@@ -269,32 +310,32 @@ export default {
       }
     },
     async loadPage(direction, isScroll) {
+      const isFiltered = this.searchTerm ? "Filter" : "";
       const lsItem = !direction ? "tutorsPrevious" : "tutorsNext";
-      const page = parseInt(localStorage.getItem(lsItem));
+      const page = parseInt(localStorage.getItem(`${lsItem}${isFiltered}`));
       if (page > 0) {
-        {
-          this.direction = direction;
-          this.hasScrolled = isScroll;
-          await this.fetchTutors(true, page);
-        }
-        // if (page === 0 && n < 0) {
-        //   document
-        //     .querySelectorAll(".arrow-up")[0]
-        //     .setAttribute("disabled", "disabled");
-        //   document
-        //     .querySelectorAll(".arrow-down")[0]
-        //     .removeAttribute("disabled");
-        // } else if (page === 0 && n > 0) {
-        //   document
-        //     .querySelectorAll(".arrow-down")[0]
-        //     .setAttribute("disabled", "disabled");
-        //   document.querySelectorAll(".arrow-up")[0].removeAttribute("disabled");
-        // } else {
-        //   document
-        //     .querySelectorAll("[class^='arrow-']")
-        //     .forEach((el) => el.removeAttribute("disabled"));
-        // }
+        this.direction = direction;
+        this.hasScrolled = isScroll;
+        const filter = !this.searchTerm ? false : this.searchTerm;
+        await this.fetchTutors(true, page, filter);
       }
+      // if (page === 0 && n < 0) {
+      //   document
+      //     .querySelectorAll(".arrow-up")[0]
+      //     .setAttribute("disabled", "disabled");
+      //   document
+      //     .querySelectorAll(".arrow-down")[0]
+      //     .removeAttribute("disabled");
+      // } else if (page === 0 && n > 0) {
+      //   document
+      //     .querySelectorAll(".arrow-down")[0]
+      //     .setAttribute("disabled", "disabled");
+      //   document.querySelectorAll(".arrow-up")[0].removeAttribute("disabled");
+      // } else {
+      //   document
+      //     .querySelectorAll("[class^='arrow-']")
+      //     .forEach((el) => el.removeAttribute("disabled"));
+      // }
     },
   },
 };

@@ -41,30 +41,10 @@ export default {
     try {
       const pageParam = payload.page < 1 ? "" : `?page=${payload.page}`;
       const data = await httpRequest(`tutors/${pageParam}`, "get");
-      const tutors = [];
-      let tutor, areas;
-      for (let item of data[0]) {
-        areas = [];
-        for (let area of item.areas) {
-          areas.push(area);
-        }
-        tutor = {
-          tutorId: item.tutorId,
-          createdAt: item.created_at,
-          firstName: item.first_name,
-          lastName: item.last_name,
-          fullName: item.full_name,
-          description: item.description,
-          shortDescription: `${item.description.substr(0, 10)}...`,
-          hourlyRateStr: item.hourlyRate,
-          hourlyRate: item.hourly_rate,
-          email: item.email,
-          areas: item.areas,
-        };
-        tutors.push(tutor);
-      }
 
-      context.commit("setTutors", tutors);
+      const tutors = setTutor(data[0], false);
+
+      context.commit("setTutors", { tutors, filtered: false });
       context.commit("setFetchTimestamp");
       localStorage.setItem("tutorsPrevious", getQueryPage(data[1]));
       localStorage.setItem("tutorsNext", getQueryPage(data[2]));
@@ -75,12 +55,61 @@ export default {
       const e = new Error(`${message}. Please try again.`);
       throw e;
     }
+  },
+  async fetchFilteredTutors(context, payload) {
+    try {
+      const filterParam = payload.filter;
+      const pageParam = payload.page < 1 ? "" : `?page=${payload.page}`;
+      const data = await httpRequest(
+        `tutors/${filterParam}/${pageParam}`,
+        "get"
+      );
 
-    function getQueryPage(url) {
-      if (url === null) return -1;
-      const page =
-        url.indexOf("?page=") > -1 ? url.substr(url.indexOf("?page=") + 6) : 0;
-      return page;
+      const tutors = setTutor(data[0], payload.tutorIDs);
+
+      context.commit("setTutors", { tutors, filtered: true });
+      localStorage.setItem("tutorsPreviousFilter", getQueryPage(data[1]));
+      localStorage.setItem("tutorsNextFilter", getQueryPage(data[2]));
+      localStorage.setItem("tutorsTotalFilter", data[3]);
+    } catch (err) {
+      //console.log(err);
+      const message = err[0].error || "Tutor search failed";
+      const e = new Error(`${message}. Please try again.`);
+      throw e;
     }
   },
 };
+function getQueryPage(url) {
+  if (url === null) return -1;
+  const page =
+    url.indexOf("?page=") > -1 ? url.substr(url.indexOf("?page=") + 6) : 0;
+  return page;
+}
+function setTutor(data, tutorIds) {
+  const tutors = [];
+  let tutor, areas;
+  const tutorsData = !tutorIds
+    ? data.slice()
+    : data.filter((item) => !tutorIds.includes(item.tutorId));
+  for (let item of tutorsData) {
+    areas = [];
+    for (let area of item.areas) {
+      areas.push(area);
+    }
+    tutor = {
+      tutorId: item.tutorId,
+      createdAt: item.created_at,
+      firstName: item.first_name,
+      lastName: item.last_name,
+      fullName: item.full_name,
+      description: item.description,
+      shortDescription: `${item.description.substr(0, 10)}...`,
+      hourlyRateStr: item.hourlyRate,
+      hourlyRate: item.hourly_rate,
+      email: item.email,
+      areas: item.areas,
+    };
+    tutors.push(tutor);
+  }
+  return tutors;
+}

@@ -8,6 +8,8 @@ router.register(r"tutors", tutor_views.TutorViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("tutors/<str:name_filter>/",
+         tutor_views.TutorsListAPIView.as_view(), name="tutor_filter"),
     path("areas/",
          tutor_views.AreasListAPIView.as_view(), name="area-list"),
     path("tutors/<str:tutor_id>/areas/",

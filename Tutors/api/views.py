@@ -21,6 +21,16 @@ class TutorViewSet(viewsets.ModelViewSet):
         serializer.save(tutor_user=self.request.user)
 
 
+class TutorsListAPIView(generics.ListAPIView):
+    serializer_class = TutorSerializer
+    pagination_class = TutorPagination
+
+    def get_queryset(self):
+        name_filter = self.kwargs.get("name_filter", "")
+        if name_filter:
+            return Tutor.objects.filter(full_name__icontains=name_filter).order_by("-created_at")
+
+
 class AreasListAPIView(generics.ListAPIView):
     serializer_class = AreaSerializer
     pagination_class = AreaPagination

@@ -8,6 +8,7 @@ export default {
     return {
       fetchTimeStamp: null,
       tutors: [],
+      filteredTutors: [],
     };
   },
   mutations,

@@ -5,10 +5,11 @@ export default {
     }
   },
   getTutorsSlice(state) {
-    const tutors = (page) => {
-      const start = page === 0 ? 0 : page * 2 - 2;
+    const tutors = (data) => {
+      const start = data.page === 0 ? 0 : data.page * 2 - 2;
       //console.log("store page: " + page);
-      return state.tutors.slice(start, 2);
+      const stateTutors = !data.filter ? state.tutors : state.filteredTutors;
+      return stateTutors.slice(start, 2);
     };
     return tutors;
   },
