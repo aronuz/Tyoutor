@@ -8,7 +8,7 @@
     </div>
     <div class="home-page">
       <div class="child_1">
-        <section class="page-top">
+        <section class="page-top" :class="{ 'not-home-top': !homeStyle }">
           <slot></slot>
         </section>
         <section class="main-list">
@@ -147,6 +147,10 @@ export default {
     #ffffffab 90%,
     #ffa386 99%
   );
+}
+
+.not-home-top {
+  height: 120px;
 }
 
 .controls {
