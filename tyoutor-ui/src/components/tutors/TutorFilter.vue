@@ -1,27 +1,31 @@
 <template>
   <ui-card class="filter-card">
-    <!-- <h2>Find a Tutor</h2> -->
-    <div class="filter-block">
-      <label for="search-input" style="font-weight: 600">Search: </label>
-      <input
-        type="search"
-        @input="setSearch"
-        id="search-input"
-        ref="search-input"
-      />
-      <ui-button @click="submitFilters">Search</ui-button>
+    <div class="page-title">
+      <h2>Tutors</h2>
     </div>
-    <div>
-      <div class="filter-div">Filter by:</div>
-      <div
-        v-if="getAreas"
-        class="filter-div filter-head"
-        @click="setFilter($event)"
-      ></div>
-      <div class="filter-div">
-        <ui-button class="load-more" @click="loadMore">More</ui-button>
+    <ui-card class="card search-card">
+      <div class="filter-block">
+        <label for="search-input" style="font-weight: 600">Search: </label>
+        <input
+          type="search"
+          @input="setSearch"
+          id="search-input"
+          ref="search-input"
+        />
+        <ui-button @click="submitFilters">Search</ui-button>
       </div>
-    </div>
+      <div>
+        <div class="filter-div">Filter by:</div>
+        <div
+          v-if="getAreas"
+          class="filter-div filter-head"
+          @click="setFilter($event)"
+        ></div>
+        <div class="filter-div">
+          <ui-button class="load-more" @click="loadMore">More</ui-button>
+        </div>
+      </div>
+    </ui-card>
   </ui-card>
 </template>
 
@@ -129,8 +133,27 @@ export default {
 } */
 .filter-card {
   padding: 1.5rem 1rem !important;
+  width: 100%;
+  height: 100%;
+  min-width: 35vw;
+  text-align: center;
+  margin-right: 0 !important;
 }
 
+.page-title {
+  float: left;
+}
+
+.search-card {
+  margin: 0 !important;
+  padding: 0 0 1rem 0 !important;
+  box-shadow: -3px 0px 2px rgb(0 0 0 / 26%) !important;
+}
+
+.page-title,
+.search-card {
+  display: inline-block;
+}
 .filter-block {
   position: relative;
   bottom: 15px;
@@ -161,10 +184,10 @@ export default {
   font-weight: 600;
 }
 
-.filter-div:last-of-type {
+/* .filter-div:last-of-type {
   position: relative;
   top: 5px;
-}
+} */
 
 .load-more {
   margin-left: 0;
@@ -172,7 +195,7 @@ export default {
   border-width: 0.5px;
   border-radius: 0 30px 30px 0;
   box-shadow: 2px 0px 0px 1px #685e5e;
-  height: 40px;
+  height: 50px;
   font-weight: 400;
 }
 
@@ -190,6 +213,8 @@ export default {
 }
 
 button {
-  margin-left: 40px;
+  margin-left: 20px;
+  padding: 0.35rem 0.5rem !important;
+  font-size: 0.8rem !important;
 }
 </style>

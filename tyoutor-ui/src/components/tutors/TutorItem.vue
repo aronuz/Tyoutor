@@ -25,7 +25,7 @@
       <ui-button mode="outline" link :to="tutorContactLink">
         Contact
       </ui-button>
-      <ui-button link :to="tutorDetailsLink"> View Details </ui-button>
+      <ui-button link :to="tutorDetailsLink">Details</ui-button>
     </div>
   </div>
 </template>
@@ -212,5 +212,13 @@ div {
 .actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.actions a:first-child {
+  border-radius: 30px 0 0 30px;
+}
+
+.actions a:last-child {
+  border-radius: 0 30px 30px 0;
 }
 </style>
