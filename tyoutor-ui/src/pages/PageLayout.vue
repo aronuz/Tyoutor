@@ -11,7 +11,10 @@
         <section class="page-top" :class="{ 'not-home-top': !homeStyle }">
           <slot></slot>
         </section>
-        <section class="main-list">
+        <section
+          class="main-list"
+          :class="{ 'main-list-no-top': !(homeStyle || requestsStyle) }"
+        >
           <ui-card
             :class="{ 'home-card': homeStyle, 'requests-card': requestsStyle }"
           >
@@ -162,6 +165,10 @@ export default {
   overflow-y: hidden;
   height: 65vh;
   margin-top: -2rem;
+}
+
+.main-list-no-top {
+  margin-top: 0rem !important;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

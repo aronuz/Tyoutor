@@ -4,7 +4,7 @@
       <h2>Tutors</h2>
     </div>
     <ui-card class="card search-card">
-      <div class="filter-block">
+      <div class="search-block">
         <label for="search-input" style="font-weight: 600">Search: </label>
         <input
           type="search"
@@ -14,7 +14,7 @@
         />
         <ui-button @click="submitFilters">Search</ui-button>
       </div>
-      <div>
+      <div class="filter-block">
         <div class="filter-div">Filter by:</div>
         <div
           v-if="getAreas"
@@ -132,7 +132,7 @@ export default {
   margin: 0.5rem 0;
 } */
 .filter-card {
-  padding: 1.5rem 1rem !important;
+  padding: 0rem 1rem !important;
   width: 100%;
   height: 100%;
   min-width: 35vw;
@@ -145,8 +145,9 @@ export default {
 }
 
 .search-card {
+  height: 7.5rem !important;
+  padding: 0 !important;
   margin: 0 !important;
-  padding: 0 0 1rem 0 !important;
   box-shadow: -3px 0px 2px rgb(0 0 0 / 26%) !important;
 }
 
@@ -154,15 +155,19 @@ export default {
 .search-card {
   display: inline-block;
 }
-.filter-block {
+.search-block {
   position: relative;
-  bottom: 15px;
+  top: 10px;
 }
 
 #search-input {
   margin-left: 10px;
 }
 
+.filter-block {
+  position: relative;
+  top: 20px;
+}
 .filter-div {
   display: inline-block;
   vertical-align: top;
