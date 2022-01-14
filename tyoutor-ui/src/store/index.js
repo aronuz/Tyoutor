@@ -14,9 +14,15 @@ const store = createStore({
   },
   state() {
     return {
-      userId: "ACogan-6wB",
-      tutorId: null,
+      userId: null, //"ACogan-6wB",
+      tutorId: -1,
     };
+  },
+  mutations: {
+    setIds(state, payload) {
+      state.userId = payload.email;
+      state.tutorId = payload.tutor_id;
+    },
   },
   getters: {
     userId(state) {

@@ -8,6 +8,18 @@ from Tutors.api.serializers import TutorSerializer, AreaSerializer, RequestSeria
 from Tutors.models import Tutor, Area, Request, Contact
 
 
+def getIds(request):
+    user = request.user
+    email = user.email
+    try:
+        tutor_id = Tutor.objects.get(tutor_user=request.user).tutor_id
+    except:
+        tutor_id = -1
+
+    data = {'email': email, 'tutor_id': tutor_id}
+    return JsonResponse(data)
+
+
 class TutorViewSet(viewsets.ModelViewSet):
     queryset = Tutor.objects.all().order_by('-created_at')
     serializer_class = TutorSerializer

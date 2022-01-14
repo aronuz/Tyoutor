@@ -124,6 +124,11 @@ export default {
       }
     },
   },
+  created() {
+    if (!this.isUserId) {
+      this.setUserIds();
+    }
+  },
   mounted() {
     if (!this.listTutors.length) this.fetchTutors();
     else {
@@ -138,6 +143,9 @@ export default {
     //   fetchAreas: "areas/fetchAreas",
     // }),
     // ...mapActions("tutors", ["loadTutors"])
+    async setUserIds() {
+      await this.$store.dispatch("tutors/setUserIds");
+    },
     async storeDispatch(endPoint, data) {
       return await this.$store.dispatch(endPoint, data, { root: true });
     },

@@ -58,6 +58,12 @@ export default {
     TutorItem,
     TutorFilter,
   },
+  props:{
+    isTutor: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       activeFilters: [],
@@ -79,7 +85,6 @@ export default {
     ...mapGetters({
       listTutors: "tutors/getTutors",
       listPageTutors: "tutors/getTutorsSlice",
-      isTutor: "tutors/isTutor",
       listAreas: "areas/getAreas",
     }),
     hasTutors() {

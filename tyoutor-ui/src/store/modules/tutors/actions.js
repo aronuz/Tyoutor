@@ -1,8 +1,21 @@
 import httpRequest from "@/common/httpRequest.js";
 
 export default {
+  setUserIds(context) {
+    httpRequest(`tutors/ids/`, "get")
+      .then((response) => {
+        context.commit("setIds", response.data, { root: true });
+      })
+      .catch((data) => {
+        const e = new Error(
+          `${data.error || "Failed to fetch user id."
+          } Please try refreshing the page`
+        );
+        throw e;
+      });
+  },
   async registerTutor(context, data) {
-    const tutorId = context.rootGetters.userId;
+    const tutorId = context.rootGetters.tutorId;
     const tutorData = {
       tutorId,
       description: data.desc,

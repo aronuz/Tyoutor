@@ -14,16 +14,11 @@ export default {
     return tutors;
   },
   currentUser: (_, _1, _2, rootGetters) => (id) => {
-    return id === rootGetters.userId;
+    return id === rootGetters.tutorId;
   },
   isTutor(_, getters, _1, rootGetters) {
     const tutorId = rootGetters.tutorId;
-    if (!tutorId) return false;
-    else {
-      const userId = rootGetters.userId;
-      const tutors = getters.getTutors;
-      return tutors.some((tutor) => tutor.tutorId === userId);
-    }
+    return tutorId !== -1;
   },
   forceUpdate(state) {
     const fetchTimeStamp = state.fetchTimeStamp;

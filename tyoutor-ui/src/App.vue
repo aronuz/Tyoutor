@@ -1,8 +1,8 @@
 <template>
-  <app-header></app-header>
+  <app-header :is-tutor="isTutor"></app-header>
   <router-view v-slot="slotProps">
     <transition name="route" mode="out-in">
-      <component :is="slotProps.Component"></component>
+      <component :is="slotProps.Component" :is-tutor="isTutor"></component>
     </transition>
   </router-view>
   <app-footer></app-footer>
@@ -13,6 +13,11 @@ import appHeader from "./components/layout/Header.vue";
 import appFooter from "./components/layout/Footer.vue";
 
 export default {
+  computed: {
+    isTutor() {
+      return this.$store.getters["tutors/isTutor"];
+    },
+  },
   components: {
     appHeader,
     appFooter,

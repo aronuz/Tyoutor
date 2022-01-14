@@ -8,7 +8,7 @@
         <li>
           <router-link :to="{ name: 'tutors' }">All Tutors</router-link>
         </li>
-        <li>
+        <li v-if="isTutor">
           <router-link :to="{ name: 'requests' }">Requests</router-link>
         </li>
         <li>
@@ -31,6 +31,12 @@
 <script>
 export default {
   name: "Header",
+  props: {
+    isTutor: {
+      type: Boolean,
+      default: false,
+    },
+  },
   methods: {
     clearStorage() {
       localStorage.removeItem("areas");

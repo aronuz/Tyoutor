@@ -1,6 +1,6 @@
 export default {
   requests(state, _, _2, rootGetters) {
-    const tutorId = rootGetters.userId;
+    const tutorId = rootGetters.tutorId;
     return state.requests
       ? state.requests.filter((req) => req.tutorId === tutorId)
       : [];

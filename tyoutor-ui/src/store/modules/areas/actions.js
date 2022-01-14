@@ -51,7 +51,7 @@ export default {
     const response = await httpRequest(`tutors/area/`, "post", data.areasList);
 
     if (response.data) {
-      areaData[data.tutorId] = context.rootGetters.userId;
+      areaData[data.tutorId] = context.rootGetters.tutorId;
       context.commit("addArea", areaData);
     } else {
       const error = new Error(
@@ -65,7 +65,7 @@ export default {
       return;
     }
 
-    const tutorId = context.rootGetters.userId;
+    const tutorId = context.rootGetters.tutorId;
     const area = data[area];
     const areaId = `${area}@${tutorId}`;
     const response = await httpRequest(`tutors/area/${areaId}/`, "delete");
