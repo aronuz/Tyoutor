@@ -26,4 +26,6 @@ urlpatterns = [
          tutor_views.RequestRUDAPView.as_view(), name="request"),
     path("tutors/<str:tutor_id>/requests/",
          tutor_views.RequestsListAPIView.as_view(), name="request-list"),
+    path("contacts/",
+         tutor_views.ContactsListAPIView.as_view(), name="contact-list"),
 ]

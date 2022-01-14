@@ -37,3 +37,11 @@ class Request(TimeStampedModel):
     def __str__(self):
         full_name = '{} {}'.format(self.tutor.first_name, self.tutor.last_name)
         return '{}, {}, {}'.format(self.message, self.email, full_name)
+
+
+class Contact(TimeStampedModel):
+    address = models.CharField(max_length=50)
+    phone = models.CharField(max_length=10)
+
+    def __str__(self):
+        return '{}, {}'.format(self.address, self.phone)

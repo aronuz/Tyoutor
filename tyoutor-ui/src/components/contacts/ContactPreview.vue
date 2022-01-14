@@ -10,7 +10,7 @@
       <h3>{{ phone }}</h3>
     </div>
     <div class="map-image" :style="mapDisplay">
-      <img :data-url="getImgUrl(address)" alt="Location" />
+      <img :data-url="getImgUrl()" alt="Location" />
     </div>
   </ui-card>
 </template>
@@ -19,10 +19,6 @@
 export default {
   name: "ContactPreview",
   props: {
-    id: {
-      type: String,
-      required: true,
-    },
     address: {
       type: String,
       required: true,
@@ -45,8 +41,8 @@ export default {
     },
   },
   methods: {
-    getImgUrl(phone) {
-      const markerImage = `office_${phone.substr(0, 3)}.png`;
+    getImgUrl() {
+      const markerImage = `office_${this.phone.substr(0, 3)}.png`;
       return require(`@/assets/images/maps/${markerImage}`);
     },
   },

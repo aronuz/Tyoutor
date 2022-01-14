@@ -8,7 +8,13 @@
     </div>
     <div class="home-page">
       <div class="child_1">
-        <section class="page-top" :class="{ 'not-home-top': !homeStyle }">
+        <section
+          class="page-top"
+          :class="{
+            'not-home-top': !(homeStyle || requestsStyle),
+            'requests-top': requestsStyle,
+          }"
+        >
           <slot></slot>
         </section>
         <section
@@ -154,6 +160,10 @@ export default {
 
 .not-home-top {
   height: 120px;
+}
+
+.requests-top {
+  height: 100px;
 }
 
 .controls {

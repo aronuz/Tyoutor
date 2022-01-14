@@ -6,7 +6,7 @@
     :requests-style="true"
   >
     <template v-slot:default>
-      <ui-card>
+      <ui-card class="title">
         <h2>Incoming messages</h2>
       </ui-card>
     </template>
@@ -122,6 +122,10 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  height: 100%;
+}
+
 .card-stack {
   overflow-y: scroll;
   list-style: none;

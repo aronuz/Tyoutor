@@ -17,9 +17,13 @@ export default {
     return id === rootGetters.userId;
   },
   isTutor(_, getters, _1, rootGetters) {
-    const tutors = getters.getTutors;
-    const userId = rootGetters.userId;
-    return tutors.some((tutor) => tutor.tutorId === userId);
+    const tutorId = rootGetters.tutorId;
+    if (!tutorId) return false;
+    else {
+      const userId = rootGetters.userId;
+      const tutors = getters.getTutors;
+      return tutors.some((tutor) => tutor.tutorId === userId);
+    }
   },
   forceUpdate(state) {
     const fetchTimeStamp = state.fetchTimeStamp;

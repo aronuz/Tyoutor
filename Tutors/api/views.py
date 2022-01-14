@@ -4,8 +4,8 @@ from rest_framework.exceptions import ValidationError
 
 from core.pagination import TutorPagination, AreaPagination, RequestPagination
 from Tutors.api.permissions import IsSelfOrReadOnly
-from Tutors.api.serializers import TutorSerializer, AreaSerializer, RequestSerializer
-from Tutors.models import Tutor, Area, Request
+from Tutors.api.serializers import TutorSerializer, AreaSerializer, RequestSerializer, ContactSerializer
+from Tutors.models import Tutor, Area, Request, Contact
 
 
 class TutorViewSet(viewsets.ModelViewSet):
@@ -103,3 +103,10 @@ class RequestRUDAPView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RequestSerializer
     permission_classes = [IsSelfOrReadOnly]
     lookup_field = "request_id"
+
+
+class ContactsListAPIView(generics.ListAPIView):
+    serializer_class = ContactSerializer
+
+    def get_queryset(self):
+        return Contact.objects.all().order_by("address")

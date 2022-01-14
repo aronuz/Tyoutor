@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from Tutors.models import Tutor, Area, Request
+from Tutors.models import Tutor, Area, Request, Contact
 
 
 class TutorSerializer(serializers.ModelSerializer):
@@ -70,3 +70,11 @@ class RequestSerializer(serializers.ModelSerializer):
 
     def get_tutor_id(self, instance):
         return instance.tutor.tutor_id
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    area = serializers.StringRelatedField()
+
+    class Meta:
+        model = Contact
+        exclude = ["id", "created_at", "updated_at"]

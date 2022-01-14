@@ -3,7 +3,6 @@
     <ContactPreview
       v-for="contact in contacts"
       :key="contact.id"
-      :id="contact.id"
       :address="contact.address"
       :phone="contact.phone"
     />
