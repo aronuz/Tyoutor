@@ -45,3 +45,20 @@ class Contact(TimeStampedModel):
 
     def __str__(self):
         return '{}, {}'.format(self.address, self.phone)
+
+
+uploadType = {0: "tutors", 1: "areas", 2: "requests", 3: "contacts"}
+
+
+def imagelocation(instance, filename):
+    return '/'.join(['images', uploadType[instance.type], str(instance.title), filename])
+
+
+class PhotoUpload(models.Model):
+    type = models.IntegerField()
+    source_id = models.TextField(db_index=True, max_length=60, editable=False)
+    title = models.CharField(max_length=50)
+    photo = models.ImageField(upload_to=imagelocation)
+
+    def __str__(self):
+        return '{}, {}'.format(uploadType[self.type], self.title)

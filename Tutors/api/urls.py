@@ -5,6 +5,7 @@ from Tutors.api import views as tutor_views
 
 router = DefaultRouter()
 router.register(r"tutors", tutor_views.TutorViewSet)
+router.register(r'photoupload', tutor_views.PhotoUploadView)
 
 urlpatterns = [
     path("", include(router.urls)),

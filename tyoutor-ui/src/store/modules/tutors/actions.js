@@ -38,6 +38,16 @@ export default {
 
     if (response.data) {
       //response.ok
+      if ("file" in data) {
+        const uploadData = { file: data.file, source_id: tutorId };
+        const upload_response = await httpRequest(
+          "photoupload",
+          "post",
+          uploadData
+        );
+        if (upload_response.data.error) throw upload_response.data.error;
+      }
+
       context.commit("registerTutor", tutorData);
       context.commit("areas/addArea", areaData);
     } else {

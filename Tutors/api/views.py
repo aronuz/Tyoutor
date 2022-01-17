@@ -1,11 +1,13 @@
+from sre_constants import SUCCESS
 from django.http.response import JsonResponse
 from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
+from rest_framework.decorators import action
 
 from core.pagination import TutorPagination, AreaPagination, RequestPagination
 from Tutors.api.permissions import IsSelfOrReadOnly
-from Tutors.api.serializers import TutorSerializer, AreaSerializer, RequestSerializer, ContactSerializer
-from Tutors.models import Tutor, Area, Request, Contact
+from Tutors.api.serializers import TutorSerializer, AreaSerializer, RequestSerializer, ContactSerializer, PhotoUploadSerializer
+from Tutors.models import Tutor, Area, Request, Contact, PhotoUpload
 
 
 def getIds(request):
@@ -122,3 +124,22 @@ class ContactsListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         return Contact.objects.all().order_by("address")
+
+
+class PhotoUploadView(viewsets.ModelViewSet):
+    queryset = PhotoUpload.objects.all()
+    serializer_class = PhotoUploadSerializer
+
+    @action(methods=['POST'], detail=True)
+    def upload_photo(request):
+        data = {'success': True}
+        try:
+            file = request.data['file']
+            type = request.data.get("type", 0)
+            source_id = request.data.get("source_id", 0)
+            photo = PhotoUpload.objects.create(
+                photo=file, type=type, source_id=source_id)
+        except KeyError:
+            data = {'success': False, 'error': 'Bad Request'}
+
+        return JsonResponse(data)

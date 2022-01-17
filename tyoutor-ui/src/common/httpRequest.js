@@ -19,22 +19,36 @@ export default function httpRequest(path, reqType, body = null) {
     let data = [];
     let total = null;
     let previous, next;
-    request[reqType](path, body)
-      .then((r) => {
-        if (reqType === "get") {
-          data.push(...r.data.results);
-          previous = r.data.previous;
-          next = r.data.next;
-          total = r.data.count || null;
-        } else if (Object.keys(body).length > 0) {
-          data.push(r.data);
-        }
-        resolve([data, previous, next, total]);
+    if (path === "photoupload") {
+      request[reqType](path, body, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
-      .catch((e) => {
-        data.push({ error: e.message });
-        //console.log(e.message);
-        reject(data);
-      });
+        .then((r) => {
+          data.push(r.data);
+          resolve(data);
+        })
+        .catch((e) => {
+          data.push({ error: e });
+          reject(data);
+        });
+    } else {
+      request[reqType](path, body)
+        .then((r) => {
+          if (reqType === "get") {
+            data.push(...r.data.results);
+            previous = r.data.previous;
+            next = r.data.next;
+            total = r.data.count || null;
+          } else if (Object.keys(body).length > 0) {
+            data.push(r.data);
+          }
+          resolve([data, previous, next, total]);
+        })
+        .catch((e) => {
+          data.push({ error: e });
+          //console.log(e.message);
+          reject(data);
+        });
+    }
   });
 }

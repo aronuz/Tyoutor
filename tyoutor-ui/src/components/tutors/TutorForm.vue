@@ -59,6 +59,10 @@
     <p v-if="!formIsValid">Please fix the above errors and submit again.</p>
     <ui-button>Register</ui-button>
   </form>
+  <div id="photo_upload">
+    <label for="photo">Upload Photo</label>
+    <input type="file" name="photo" ref="photo" />
+  </div>
 </template>
 
 <script>
@@ -133,6 +137,10 @@ export default {
         areas: areasList,
       };
 
+      const fileUpload = this.$refs.photo.files[0];
+      if (fileUpload) {
+        Object.assign(formData, { file: fileUpload });
+      }
       this.$emit("save-data", formData);
     },
   },

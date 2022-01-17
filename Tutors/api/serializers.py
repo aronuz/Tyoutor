@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from Tutors.models import Tutor, Area, Request, Contact
+from Tutors.models import Tutor, Area, Request, Contact, PhotoUpload
 
 
 class TutorSerializer(serializers.ModelSerializer):
@@ -78,3 +78,10 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         exclude = ["id", "created_at", "updated_at"]
+
+
+class PhotoUploadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PhotoUpload
+        fields = ('type', 'title', 'photo')

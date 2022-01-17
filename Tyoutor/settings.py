@@ -129,6 +129,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = BASE_DIR / "uploads"
+MEDIA_URL = "/media/"
+
 AUTH_USER_MODEL = 'Users.CustomUser'
 
 STATICFILES_DIRS = [
@@ -147,6 +150,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.MultiPartParser',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.PageNumberPaginationNoCount',
     'PAGE_SIZE': 2
 }
