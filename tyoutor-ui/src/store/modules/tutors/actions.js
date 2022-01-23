@@ -2,17 +2,19 @@ import httpRequest from "@/common/httpRequest.js";
 
 export default {
   setUserIds(context) {
-    httpRequest(`tutors/ids/`, "get")
-      .then((response) => {
-        context.commit("setIds", response.data, { root: true });
-      })
-      .catch((data) => {
-        const e = new Error(
-          `${data.error || "Failed to fetch user id."
-          } Please try refreshing the page`
-        );
+    httpRequest(`tutors/ids/`, "get").then((r) => {
+      if (r.success) context.commit("setIds", r.data, { root: true });
+      else {
+        const error = r.error || "Failed to fetch user id.";
+        const e = new Error(`${error} Please try refreshing the page`);
         throw e;
-      });
+      }
+    });
+    // .catch((err) => {
+    //   const error = err || "Failed to fetch user id.";
+    //   const e = new Error(`${error} Please try refreshing the page`);
+    //   throw e;
+    // });
   },
   async registerTutor(context, data) {
     const tutorId = context.rootGetters.tutorId;
@@ -36,7 +38,7 @@ export default {
     //     }
     // );
 
-    if (response.data) {
+    if (response.success) {
       //response.ok
       if ("file" in data) {
         const uploadData = { file: data.file, source_id: tutorId };
@@ -45,7 +47,10 @@ export default {
           "post",
           uploadData
         );
-        if (upload_response.data.error) throw upload_response.data.error;
+        if (!upload_response.success) {
+          const e = new Error(upload_response.error);
+          throw e;
+        }
       }
 
       context.commit("registerTutor", tutorData);
@@ -61,10 +66,11 @@ export default {
     if (!payload.forceRefresh && !context.getters.forceUpdate) {
       return;
     }
-    try {
-      const pageParam = payload.page < 1 ? "" : `?page=${payload.page}`;
-      const data = await httpRequest(`tutors/${pageParam}`, "get");
+    const pageParam = payload.page < 1 ? "" : `?page=${payload.page}`;
+    const response = await httpRequest(`tutors/${pageParam}`, "get");
 
+    if (response.success) {
+      const data = response.data;
       const tutors = setTutor(data[0], false);
 
       context.commit("setTutors", { tutors, filtered: false });
@@ -72,31 +78,32 @@ export default {
       localStorage.setItem("tutorsPrevious", getQueryPage(data[1]));
       localStorage.setItem("tutorsNext", getQueryPage(data[2]));
       localStorage.setItem("tutorsTotal", data[3]);
-    } catch (err) {
+    } else {
       //console.log(err);
-      const message = err[0].error || "Failed to load tutors";
+      const message = response.error || "Failed to load tutors";
       const e = new Error(`${message}. Please try again.`);
       throw e;
     }
   },
   async fetchFilteredTutors(context, payload) {
-    try {
-      const filterParam = payload.filter;
-      const pageParam = payload.page < 1 ? "" : `?page=${payload.page}`;
-      const data = await httpRequest(
-        `tutors/${filterParam}/${pageParam}`,
-        "get"
-      );
+    const filterParam = payload.filter;
+    const pageParam = payload.page < 1 ? "" : `?page=${payload.page}`;
+    const response = await httpRequest(
+      `tutors/${filterParam}/${pageParam}`,
+      "get"
+    );
 
+    if (response.success) {
+      const data = response.data;
       const tutors = setTutor(data[0], payload.tutorIDs);
 
       context.commit("setTutors", { tutors, filtered: true });
       localStorage.setItem("tutorsPreviousFilter", getQueryPage(data[1]));
       localStorage.setItem("tutorsNextFilter", getQueryPage(data[2]));
       localStorage.setItem("tutorsTotalFilter", data[3]);
-    } catch (err) {
+    } else {
       //console.log(err);
-      const message = err[0].error || "Tutor search failed";
+      const message = response.error || "Tutor search failed";
       const e = new Error(`${message}. Please try again.`);
       throw e;
     }

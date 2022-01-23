@@ -75,7 +75,7 @@ def AreaCreateAPIView(request):
         'added': added_num
     }
     if has_area:
-        data['message'] = '{} areas were added. User has previously added {} areas.'.format(
+        data['error'] = '{} areas were added. User has previously added {} areas.'.format(
             added_num, has_area)
 
     return JsonResponse(data)

@@ -18,15 +18,13 @@ export default {
       requestData
     );
 
-    if (Response) {
+    if (response.success) {
       //if (response.ok) {
-      context.commit("addRequest", response);
+      context.commit("addRequest", response.data[0]);
     } else {
-      const error = new Error(
-        `${response.error.message || "Failed to send message."
-        } Please try again.`
-      );
-      throw error;
+      const message = response.error || "Failed to send your message";
+      const e = new Error(`${message}. Please try again.`);
+      throw e;
     }
   },
   async fetchRequests(context, data) {
@@ -37,10 +35,10 @@ export default {
     const tutorId = context.rootGetters.tutorId;
     const response = await httpRequest(`tutors/${tutorId}/requests/`, "get");
 
-    if (response[0]) {
+    if (response.success) {
       const requests = [];
       let request;
-      for (let item of response[0]) {
+      for (let item of response.data[0]) {
         request = {
           tutorId,
           requestId: item.request_id,
@@ -54,10 +52,9 @@ export default {
       context.commit("setRequests", requests);
       context.commit("setFetchTimestamp");
     } else {
-      const error = new Error(
-        `${response.error || "Failed to fetch messages."} Please try again`
-      );
-      throw error;
+      const message = response.error || "Failed to fetch messages.";
+      const e = new Error(`${message}. Please try again.`);
+      throw e;
     }
   },
 };

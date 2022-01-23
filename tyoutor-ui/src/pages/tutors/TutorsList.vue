@@ -58,7 +58,7 @@ export default {
     TutorItem,
     TutorFilter,
   },
-  props:{
+  props: {
     isTutor: {
       type: Boolean,
       default: false,
