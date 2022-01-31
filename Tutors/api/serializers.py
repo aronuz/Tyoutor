@@ -73,7 +73,6 @@ class RequestSerializer(serializers.ModelSerializer):
 
 
 class ContactSerializer(serializers.ModelSerializer):
-    area = serializers.StringRelatedField()
 
     class Meta:
         model = Contact

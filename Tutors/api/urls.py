@@ -30,4 +30,8 @@ urlpatterns = [
          tutor_views.RequestsListAPIView.as_view(), name="request-list"),
     path("contacts/",
          tutor_views.ContactsListAPIView.as_view(), name="contact-list"),
+    path("contact/<int:contact_id>/add",
+         tutor_views.ContactCreateAPIView.as_view(), name="contact-add"),
+    path("contact/<int:contact_id>/remove",
+         tutor_views.ContactRUDAPView.as_view(), name="contact-remove"), 
 ]

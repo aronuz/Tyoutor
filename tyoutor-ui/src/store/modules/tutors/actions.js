@@ -57,7 +57,7 @@ export default {
       context.commit("areas/addArea", areaData);
     } else {
       const error = new Error(
-        `${response.error || "Couldn't load tutors."} Please try again.`
+        `${response.error || "Failed to register tutor."} Please try again.`
       );
       throw error;
     }

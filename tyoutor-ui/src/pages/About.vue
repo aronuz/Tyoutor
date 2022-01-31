@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      listContacts: "contacts/ListContacts",
+      listContacts: "contacts/getContacts",
     }),
     isBigScreen() {
       try {

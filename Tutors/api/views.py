@@ -126,6 +126,25 @@ class ContactsListAPIView(generics.ListAPIView):
         return Contact.objects.all().order_by("address")
 
 
+class ContactCreateAPIView(generics.CreateAPIView):
+    serializer_class = ContactSerializer
+
+    def perform_create(self, serializer):
+        contact_id = self.kwargs.get("contact_id")
+        address = self.request.data.get("address")
+        phone = self.request.data.get("phone")
+        if Contact.objects.filter(address=address, phone=phone).exists():
+            raise ValidationError("This contact already exists!")
+        serializer.save(contact_id=contact_id, 
+                        address=address, phone=phone)
+
+
+class ContactRUDAPView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    lookup_field = "contact_id"
+
+
 class PhotoUploadView(viewsets.ModelViewSet):
     queryset = PhotoUpload.objects.all()
     serializer_class = PhotoUploadSerializer

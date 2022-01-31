@@ -1,5 +1,5 @@
 export default {
-  ListContacts(state) {
+  getContacts(state) {
     return state.contacts;
   },
 };
